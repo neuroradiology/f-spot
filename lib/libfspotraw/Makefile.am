@@ -3,9 +3,6 @@ include $(top_srcdir)/Makefile.include
 LIBRAW = LibRaw-0.8.0-Beta3
 INCLUDES = -I $(top_srcdir) -I $(top_srcdir)/lib/libfspotraw/LibRaw $(F_CFLAGS)
 
-CFLAGS = -g -O4
-CXXFLAGS = -g -O4
-
 fspotlibdir = $(libdir)/f-spot
 fspotlib_LTLIBRARIES = libfspotraw.la
 libfspotraw_files = \
