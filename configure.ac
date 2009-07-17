@@ -353,6 +353,8 @@ lib/gio-sharp/gio/Makefile
 lib/gio-sharp/generator/Makefile
 lib/gtk-sharp-beans/Makefile
 lib/libfspot/Makefile
+lib/libfspotraw/Makefile
+lib/libfspotraw-sharp/Makefile
 lib/libgphoto2-sharp/Makefile
 lib/libgphoto2-sharp/libgphoto2-sharp.dll.config
 lib/libgphoto2-sharp/glue/Makefile
