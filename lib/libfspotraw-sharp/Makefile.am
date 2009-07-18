@@ -32,20 +32,21 @@ libfspotraw-sharp.dll: generated/LibrawLoader.cs $(SRCS)
 	$(CSC) -target:library -out:$@ $(UNSAFE) $(DEBUG) $(ASSEMBLIES) $(SRCS) generated/*.cs
 
 assemblydir = $(pkglibdir)
-assembly_DATA =			\
-	libfspotraw-sharp.dll		\
+assembly_DATA =						\
+	libfspotraw-sharp.dll			\
 	libfspotraw-sharp.dll.config
 
-CLEANFILES = 			\
-	generated/*.cs 		\
-	libfspotraw-api.raw	\
-	libfspotraw-sharp.dll 	\
-	libfspotraw-sharp.dll.mdb \
+CLEANFILES = 						\
+	generated/*.cs 					\
+	libfspotraw-api.raw				\
+	libfspotraw-sharp.dll 			\
+	libfspotraw-sharp.dll.mdb 		\
+	libfspotraw-sharp.dll.config	\
 	libfspotraw-api.xml
 
-EXTRA_DIST =			\
-	$(SRCS)			\
-	$(CUSTOMS)		\
-	libfspotraw.metadata		\
-	libfspotraw-sharp.dll.config	\
+EXTRA_DIST =						\
+	$(SRCS)							\
+	$(CUSTOMS)						\
+	libfspotraw.metadata			\
+	libfspotraw-sharp.dll.config.in	\
 	libfspotraw-api.raw

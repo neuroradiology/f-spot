@@ -4,3 +4,4 @@
 /libfspotraw-api.*
 /*.dll
 /*.dll.mdb
+/libfspotraw-sharp.dll.config

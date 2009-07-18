@@ -34,12 +34,14 @@ namespace FSpot.Loaders {
 
 			Pixbuf thumb = loader.LoadThumbnail ();
 			PixbufOrientation = PixbufOrientation.TopLeft;
+			Pixbuf = thumb;
 			EventHandler<AreaPreparedEventArgs> prep = AreaPrepared;
 			if (prep != null)
 				prep (this, new AreaPreparedEventArgs (true));
 			EventHandler<AreaUpdatedEventArgs> upd = AreaUpdated;
 			if (upd != null)
 				upd (this, new AreaUpdatedEventArgs (new Rectangle (0, 0, thumb.Width, thumb.Height)));
+
 		}
 
 		public event EventHandler<AreaPreparedEventArgs> AreaPrepared;
@@ -55,9 +57,7 @@ namespace FSpot.Loaders {
 
 		}
 
-		public Pixbuf Pixbuf {
-			get { throw new Exception ("Not implemented yet!"); }
-		}
+		public Pixbuf Pixbuf { get; private set; }
 
 		public PixbufOrientation PixbufOrientation { get; private set; }
 	}
