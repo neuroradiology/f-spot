@@ -35,6 +35,7 @@ REFS = \
 	$(LINK_GTKSHARPBEANS)	\	
 	$(LINK_GPHOTO2)		\
 	$(LINK_UNIQUESHARP)	\
+	$(LINK_FSPOTRAWSHARP)	\
 	-r:Mono.Posix.dll
 
 PKGS = \

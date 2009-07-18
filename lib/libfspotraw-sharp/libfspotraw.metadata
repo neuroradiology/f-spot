@@ -1,0 +1,5 @@
+<?xml version="1.0" ?>
+<metadata>
+	<attr path="/api/namespace" name="name">FSpot.Loaders.Native</attr>
+	<attr path="/api/namespace/object[@cname='FSpotLibrawLoader']" name="name">NativeLibrawLoader</attr>
+</metadata>

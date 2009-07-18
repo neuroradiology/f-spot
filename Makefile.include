@@ -14,6 +14,7 @@ DIR_SRC = $(top_builddir)/src
 DIR_GIOSHARP = $(top_builddir)/lib/gio-sharp/gio
 DIR_GTKSHARPBEANS = $(top_builddir)/lib/gtk-sharp-beans
 DIR_UNIQUESHARP = $(top_builddir)/lib/unique-sharp/unique
+DIR_FSPOTRAWSHARP = $(top_builddir)/lib/libfspotraw-sharp
 
 ## Links
 
@@ -23,6 +24,7 @@ LINK_SEMWEB = -r:$(DIR_SEMWEB)/SemWeb.dll
 LINK_GIOSHARP = -r:$(DIR_GIOSHARP)/gio-sharp.dll
 LINK_GTKSHARPBEANS = -r:$(DIR_GTKSHARPBEANS)/gtk-sharp-beans.dll
 LINK_UNIQUESHARP = -r:$(DIR_UNIQUESHARP)/unique-sharp.dll
+LINK_FSPOTRAWSHARP = -r:$(DIR_FSPOTRAWSHARP)/libfspotraw-sharp.dll
 
 ## Build
 

@@ -20,6 +20,7 @@ REFS =						\
 	$(LINK_GTKSHARPBEANS)			\
 	$(LINK_KEYRING)				\
 	$(LINK_UNIQUESHARP)			\
+	$(LINK_FSPOTRAWSHARP)			\
 	-r:Mono.Posix
 
 PKGS =					\

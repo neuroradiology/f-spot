@@ -19,6 +19,7 @@ REFS =						\
 	$(LINK_GIOSHARP)			\
 	$(LINK_GTKSHARPBEANS)			\
 	$(LINK_UNIQUESHARP)			\
+	$(LINK_FSPOTRAWSHARP)		\
 	-r:FlickrNet/FlickrNet.dll	\
 	-r:Mono.Posix
 

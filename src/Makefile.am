@@ -191,6 +191,7 @@ F_SPOT_CSDISTFILES =				\
 	$(srcdir)/Loaders/ImageLoader.cs		\
 	$(srcdir)/Loaders/IImageLoader.cs		\
 	$(srcdir)/Loaders/GdkImageLoader.cs		\
+	$(srcdir)/Loaders/LibrawImageLoader.cs		\
 	$(srcdir)/ImageLoaderThread.cs		\
 	$(srcdir)/ImportBackend.cs		\
 	$(srcdir)/ImportCommand.cs		\
@@ -392,6 +393,7 @@ F_SPOT_ASSEMBLIES = 				\
 	$(LINK_GTKSHARPBEANS)			\
 	$(LINK_GIOSHARP)			\
 	$(LINK_UNIQUESHARP)			\
+	$(LINK_FSPOTRAWSHARP)		\
 	-r:System.Data				\
 	-r:System.Web				\
 	-r:Mono.Data.SqliteClient		\

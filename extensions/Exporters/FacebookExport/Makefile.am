@@ -44,6 +44,7 @@ REFS =							\
 	$(LINK_GPHOTO2)					\
 	$(LINK_GIOSHARP)				\
 	$(LINK_UNIQUESHARP)				\
+	$(LINK_FSPOTRAWSHARP)						\
 	-r:Mono.Posix
 
 PKGS =					\

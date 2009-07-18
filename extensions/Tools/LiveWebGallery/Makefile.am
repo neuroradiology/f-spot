@@ -25,9 +25,6 @@ addin_resources =			\
 	ui/f-spot.js			\
 	ui/gallery.html
 
-addin_packages =			\
-	gtk-sharp-2.0
-
 addin_extradist =
 
 include $(top_srcdir)/Makefile.addins

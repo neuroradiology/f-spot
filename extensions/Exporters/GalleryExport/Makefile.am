@@ -20,6 +20,7 @@ REFS =						\
 	$(LINK_GIOSHARP)			\
 	$(LINK_GTKSHARPBEANS)			\
 	$(LINK_UNIQUESHARP)			\
+	$(LINK_FSPOTRAWSHARP)		\
 	-r:System.Web				\
 	-r:Mono.Posix
 

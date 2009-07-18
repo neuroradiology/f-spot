@@ -19,6 +19,7 @@ REFS =						\
 	$(LINK_GIOSHARP)			\
 	$(LINK_GPHOTO2)				\
 	$(LINK_UNIQUESHARP)			\
+	$(LINK_FSPOTRAWSHARP)			\
 	-r:System.Web				\
 	-r:Mono.Posix
 

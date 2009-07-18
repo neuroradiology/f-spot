@@ -18,6 +18,7 @@ REFS =						\
 	$(LINK_GTKSHARPBEANS)			\
 	$(LINK_GIOSHARP)			\
 	$(LINK_UNIQUESHARP)			\
+	$(LINK_FSPOTRAWSHARP)			\
 	-r:System.Web				\
 	-r:ICSharpCode.SharpZipLib		\
 	-r:Mono.Posix

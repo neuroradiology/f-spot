@@ -12,7 +12,7 @@ addin_references =		\
 	Mono.Posix		\
 	Mono.Simd
 
-addin_packages =		\	
+addin_packages =		\
 	gtk-sharp-2.0
 
 addin_extraflags = -unsafe
