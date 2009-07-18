@@ -16,9 +16,13 @@ using FSpot.Loaders.Native;
 
 namespace FSpot.Loaders {
 	public class LibrawImageLoader : IImageLoader {
+		Uri uri = null;
 
 		public void Load (Uri uri)
 		{
+			if (this.uri != null)
+				throw new Exception ("You should only request one image per loader!");
+			this.uri = uri;
 
 		}
 

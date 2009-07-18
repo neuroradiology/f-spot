@@ -18,6 +18,8 @@ using FSpot.Platform;
 namespace FSpot.Loaders {
 	public class GdkImageLoader : Gdk.PixbufLoader, IImageLoader
 	{
+		Uri uri = null;
+
 #region public api
 		public GdkImageLoader () : base ()
 		{	
@@ -25,6 +27,10 @@ namespace FSpot.Loaders {
 
 		public void Load (Uri uri)
 		{
+			if (this.uri != null)
+				throw new Exception ("You should only request one image per loader!");
+			this.uri = uri;
+
 			if (is_disposed)
 				return;
 
