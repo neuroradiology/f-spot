@@ -29,7 +29,7 @@ namespace FSpot.Loaders {
 			name_table [".jpg"] = typeof (GdkImageLoader);
 			name_table [".png"] = typeof (GdkImageLoader);
 			name_table [".cr2"] = typeof (LibrawImageLoader);
-			name_table [".nef"] = typeof (GdkImageLoader);
+			name_table [".nef"] = typeof (LibrawImageLoader);
 			name_table [".pef"] = typeof (GdkImageLoader);
 			name_table [".raw"] = typeof (GdkImageLoader);
 			name_table [".kdc"] = typeof (GdkImageLoader);
