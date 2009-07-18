@@ -163,6 +163,7 @@ CSC_DEFINES=""
 PKG_CHECK_MODULES(GNOME_SHARP, gnome-sharp-2.0 >= 2.8)
 
 PKG_CHECK_MODULES(GLIBSHARP, glib-sharp-2.0 >= 2.12)
+PKG_CHECK_MODULES(GTKSHARP, gtk-sharp-2.0 >= $GTKSHARP_REQUIRED)
 
 if pkg-config --atleast-version=1.2.5 mono-cairo; then
    CSC_DEFINES="$CSC_DEFINES -d:CAIRO_1_2_5"
