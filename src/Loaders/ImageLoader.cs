@@ -22,10 +22,44 @@ namespace FSpot.Loaders {
 		static ImageLoader ()
 		{
 			name_table = new Dictionary<string, System.Type> ();
-			System.Type gdk_loader = typeof (GdkImageLoader);
-			foreach (string key in ImageFile.NameTable.Keys) {
-				name_table [key] = gdk_loader;
-			}
+			name_table [".svg"] = typeof (GdkImageLoader);
+			name_table [".gif"] = typeof (GdkImageLoader);
+			name_table [".bmp"] = typeof (GdkImageLoader);
+			name_table [".jpeg"] = typeof (GdkImageLoader);
+			name_table [".jpg"] = typeof (GdkImageLoader);
+			name_table [".png"] = typeof (GdkImageLoader);
+			name_table [".cr2"] = typeof (LibrawImageLoader);
+			name_table [".nef"] = typeof (GdkImageLoader);
+			name_table [".pef"] = typeof (GdkImageLoader);
+			name_table [".raw"] = typeof (GdkImageLoader);
+			name_table [".kdc"] = typeof (GdkImageLoader);
+			name_table [".arw"] = typeof (GdkImageLoader);
+			name_table [".tiff"] = typeof (GdkImageLoader);
+			name_table [".tif"] = typeof (GdkImageLoader);
+			name_table [".orf"] =  typeof (GdkImageLoader);
+			name_table [".srf"] = typeof (GdkImageLoader);
+			name_table [".dng"] = typeof (LibrawImageLoader);
+			name_table [".crw"] = typeof (GdkImageLoader);
+			name_table [".ppm"] = typeof (GdkImageLoader);
+			name_table [".mrw"] = typeof (GdkImageLoader);
+			name_table [".raf"] = typeof (GdkImageLoader);
+			name_table [".x3f"] = typeof (GdkImageLoader);
+
+			// add mimetypes for fallback
+			name_table ["image/bmp"]     = name_table ["image/x-bmp"] = name_table [".bmp"];
+			name_table ["image/gif"]     = name_table [".gif"];
+			name_table ["image/pjpeg"]   = name_table ["image/jpeg"] = name_table ["image/jpg"] = name_table [".jpg"];
+			name_table ["image/x-png"]   = name_table ["image/png"]  = name_table [".png"];
+			name_table ["image/svg+xml"] = name_table [".svg"];
+			name_table ["image/tiff"]    = name_table [".tiff"];
+			name_table ["image/x-dcraw"] = name_table [".raw"];
+			name_table ["image/x-ciff"]  = name_table [".crw"];
+			name_table ["image/x-mrw"]   = name_table [".mrw"];
+			name_table ["image/x-x3f"]   = name_table [".x3f"];
+			name_table ["image/x-orf"]   = name_table [".orf"];
+			name_table ["image/x-nef"]   = name_table [".nef"];
+			name_table ["image/x-cr2"]   = name_table [".cr2"];
+			name_table ["image/x-raf"]   = name_table [".raf"];
 
 			//as xcf pixbufloader is not part of gdk-pixbuf, check if it's there,
 			//and enable it if needed.

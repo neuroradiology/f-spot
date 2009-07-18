@@ -1,6 +1,6 @@
 <gapi-parser-input>
 	<api filename="libfspotraw-api.raw">
-		<library name="libfspotraw-sharp.dll">
+		<library name="libfspotraw.dll">
 			<namespace name="FSpot">
 				<file>../libfspotraw/fspot-librawloader.h</file>
 			</namespace>

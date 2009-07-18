@@ -16,7 +16,10 @@ using FSpot.Loaders.Native;
 
 namespace FSpot.Loaders {
 	public class LibrawImageLoader : IImageLoader {
-		Uri uri = null;
+		NativeLibrawLoader loader;
+		Uri uri;
+		bool is_disposed = false;
+		bool is_loading = false;
 
 		public void Load (Uri uri)
 		{
@@ -24,6 +27,19 @@ namespace FSpot.Loaders {
 				throw new Exception ("You should only request one image per loader!");
 			this.uri = uri;
 
+			if (is_disposed)
+				return;
+
+			loader = new NativeLibrawLoader (uri.AbsolutePath);
+
+			Pixbuf thumb = loader.LoadThumbnail ();
+			PixbufOrientation = PixbufOrientation.TopLeft;
+			EventHandler<AreaPreparedEventArgs> prep = AreaPrepared;
+			if (prep != null)
+				prep (this, new AreaPreparedEventArgs (true));
+			EventHandler<AreaUpdatedEventArgs> upd = AreaUpdated;
+			if (upd != null)
+				upd (this, new AreaUpdatedEventArgs (new Rectangle (0, 0, thumb.Width, thumb.Height)));
 		}
 
 		public event EventHandler<AreaPreparedEventArgs> AreaPrepared;
@@ -31,7 +47,7 @@ namespace FSpot.Loaders {
 		public event EventHandler Completed;
 
 		public bool Loading {
-			get { throw new Exception ("Not implemented yet!"); }
+			get { return is_loading; }
 		}
 
 		public void Dispose ()
@@ -43,8 +59,6 @@ namespace FSpot.Loaders {
 			get { throw new Exception ("Not implemented yet!"); }
 		}
 
-		public PixbufOrientation PixbufOrientation {
-			get { throw new Exception ("Not implemented yet!"); }
-		}
+		public PixbufOrientation PixbufOrientation { get; private set; }
 	}
 }
