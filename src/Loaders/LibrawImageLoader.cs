@@ -9,10 +9,11 @@
 // This is free software. See COPYING for details
 //
 
+using FSpot.Loaders.Native;
+using FSpot.Utils;
 using Gdk;
 using System;
-using FSpot.Utils;
-using FSpot.Loaders.Native;
+using System.Threading;
 
 namespace FSpot.Loaders {
 	public class LibrawImageLoader : IImageLoader {
@@ -20,6 +21,8 @@ namespace FSpot.Loaders {
 		Uri uri;
 		bool is_disposed = false;
 		bool is_loading = false;
+
+		Pixbuf thumb, full;
 
 		public void Load (Uri uri)
 		{
@@ -31,17 +34,41 @@ namespace FSpot.Loaders {
 				return;
 
 			loader = new NativeLibrawLoader (uri.AbsolutePath);
+			LoadThumbnail ();
+			ThreadPool.QueueUserWorkItem (delegate { LoadFull (); });
+		}
 
-			Pixbuf thumb = loader.LoadThumbnail ();
+		void LoadThumbnail ()
+		{
+			thumb = loader.LoadThumbnail ();
 			PixbufOrientation = PixbufOrientation.TopLeft;
-			Pixbuf = thumb;
-			EventHandler<AreaPreparedEventArgs> prep = AreaPrepared;
-			if (prep != null)
-				prep (this, new AreaPreparedEventArgs (true));
-			EventHandler<AreaUpdatedEventArgs> upd = AreaUpdated;
-			if (upd != null)
-				upd (this, new AreaUpdatedEventArgs (new Rectangle (0, 0, thumb.Width, thumb.Height)));
+			GLib.Idle.Add (delegate {
+				EventHandler<AreaPreparedEventArgs> prep = AreaPrepared;
+				if (prep != null)
+					prep (this, new AreaPreparedEventArgs (true));
+				EventHandler<AreaUpdatedEventArgs> upd = AreaUpdated;
+				if (upd != null)
+					upd (this, new AreaUpdatedEventArgs (new Rectangle (0, 0, thumb.Width, thumb.Height)));
+				return false;
+			});
+		}
 
+		void LoadFull ()
+		{
+			full = loader.LoadFull ();
+			PixbufOrientation = PixbufOrientation.TopLeft;
+			GLib.Idle.Add (delegate {
+				EventHandler<AreaPreparedEventArgs> prep = AreaPrepared;
+				if (prep != null)
+					prep (this, new AreaPreparedEventArgs (false));
+				EventHandler<AreaUpdatedEventArgs> upd = AreaUpdated;
+				if (upd != null)
+					upd (this, new AreaUpdatedEventArgs (new Rectangle (0, 0, full.Width, full.Height)));
+				EventHandler eh = Completed;
+				if (eh != null)
+					eh (this, EventArgs.Empty);
+				return false;
+			});
 		}
 
 		public event EventHandler<AreaPreparedEventArgs> AreaPrepared;
@@ -54,10 +81,16 @@ namespace FSpot.Loaders {
 
 		public void Dispose ()
 		{
-
+			// TODO: Abort the NativeLibrawLoader
+			thumb.Dispose ();
+			full.Dispose ();
 		}
 
-		public Pixbuf Pixbuf { get; private set; }
+		public Pixbuf Pixbuf {
+			get {
+				return full == null ? thumb : full;
+			}
+		}
 
 		public PixbufOrientation PixbufOrientation { get; private set; }
 	}
