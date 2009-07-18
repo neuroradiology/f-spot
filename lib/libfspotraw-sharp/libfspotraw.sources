@@ -3,6 +3,7 @@
 		<library name="libfspotraw.dll">
 			<namespace name="FSpot">
 				<file>../libfspotraw/fspot-librawloader.h</file>
+				<file>../libfspotraw/fspot-librawloader.c</file>
 			</namespace>
 		</library>
 	</api>

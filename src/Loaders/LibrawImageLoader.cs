@@ -55,6 +55,9 @@ namespace FSpot.Loaders {
 
 		void LoadFull ()
 		{
+			loader.ProgressUpdated += delegate (object o, ProgressUpdatedArgs args) {
+				Log.Debug ("Loading RAW: {0}/{1}", args.Done, args.Total);
+			};
 			full = loader.LoadFull ();
 			PixbufOrientation = PixbufOrientation.TopLeft;
 			GLib.Idle.Add (delegate {

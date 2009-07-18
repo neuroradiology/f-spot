@@ -2,4 +2,8 @@
 <metadata>
 	<attr path="/api/namespace" name="name">FSpot.Loaders.Native</attr>
 	<attr path="/api/namespace/object[@cname='FSpotLibrawLoader']" name="name">NativeLibrawLoader</attr>
+
+	<!-- Yes, it's here twice, for some reason it generates two bogus nodes -->
+	<remove-node path="/api/namespace/object/property[@type='class']" />
+	<remove-node path="/api/namespace/object/property[@type='class']" />
 </metadata>

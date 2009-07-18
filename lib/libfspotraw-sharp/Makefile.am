@@ -12,10 +12,15 @@ ASSEMBLIES =				\
 
 all: libfspotraw-sharp.dll
 
+
+
+# The stuff below is needed because gapi2-parser doesn't like .cpp files
 libfspotraw-api.raw: libfspotraw.sources
 	@echo -e "\n*** Extracting the API"
 	touch $@
+	cp $(srcdir)/../libfspotraw/fspot-librawloader.cpp $(srcdir)/../libfspotraw/fspot-librawloader.c
 	gapi2-parser $<
+	rm $(srcdir)/../libfspotraw/fspot-librawloader.c
 
 libfspotraw-api.xml: $(srcdir)/libfspotraw-api.raw $(srcdir)/libfspotraw.metadata
 	@echo -e "\n*** Massaging the raw api into $@"

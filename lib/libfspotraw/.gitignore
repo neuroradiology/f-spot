@@ -6,3 +6,5 @@
 /*.lo
 /*.la
 /LibRaw-*.tar.gz
+/fspot-librawloader-marshal.c
+/fspot-librawloader-marshal.h

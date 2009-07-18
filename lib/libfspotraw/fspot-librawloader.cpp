@@ -8,10 +8,24 @@
 //
 
 #include "fspot-librawloader.h"
+#include "fspot-librawloader-marshal.h"
 
 #include <libraw/libraw.h>
 
 G_DEFINE_TYPE (FSpotLibrawLoader, fspot_librawloader, G_TYPE_OBJECT);
+
+enum {
+	PROGRESS_UPDATED,
+	LAST_SIGNAL
+};
+
+enum {
+	PROP_0,
+	PROP_FILENAME,
+	PROP_PROGRESS
+};
+
+static guint signals[LAST_SIGNAL] = { 0 };
 
 static void
 fspot_librawloader_set_property (GObject	  *object,
@@ -27,6 +41,8 @@ static void fspot_librawloader_dispose (GObject *object);
 static void fspot_librawloader_finalize (GObject *object);
 
 static void open_if_needed (FSpotLibrawLoader *self);
+
+static int libraw_progress_callback (void *user_data, enum LibRaw_progress p, int iteration, int expected);
 
 #define FSPOT_LIBRAWLOADER_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), FSPOT_TYPE_LIBRAWLOADER, FSpotLibrawLoaderPriv))
 
@@ -49,6 +65,17 @@ fspot_librawloader_class_init (FSpotLibrawLoaderClass *klass)
 	gobject_class->get_property = fspot_librawloader_get_property;
 	gobject_class->dispose      = fspot_librawloader_dispose;
 	gobject_class->finalize     = fspot_librawloader_finalize;
+
+	signals[PROGRESS_UPDATED] =
+		g_signal_new ("progress-updated",
+				G_OBJECT_CLASS_TYPE (gobject_class),
+				G_SIGNAL_RUN_LAST,
+				G_STRUCT_OFFSET (FSpotLibrawLoaderClass, progress_updated),
+				NULL, NULL,
+				fspot_librawloader_marshal_VOID__UINT_UINT,
+				G_TYPE_NONE, 2,
+				G_TYPE_UINT,
+				G_TYPE_UINT);
 
 	pspec = g_param_spec_string ("filename",
 								 "The full path of the RAW files.",
@@ -81,6 +108,8 @@ fspot_librawloader_init (FSpotLibrawLoader *self)
 	self->priv->raw_proc = new LibRaw;
 	self->priv->opened = false;
 	self->priv->progress = 0;
+
+	self->priv->raw_proc->set_progress_handler (libraw_progress_callback, self);
 }
 
 static void
@@ -220,4 +249,14 @@ open_if_needed (FSpotLibrawLoader *self)
 
 		self->priv->opened = true;
 	}
+}
+
+static int
+libraw_progress_callback (void *user_data, enum LibRaw_progress p, int iteration, int expected)
+{
+	FSpotLibrawLoader *self = FSPOT_LIBRAWLOADER (user_data);
+
+	g_print ("Emitting %d/%d\n", iteration, expected);
+	g_signal_emit (self, signals[PROGRESS_UPDATED], 0, iteration, expected);
+	return 0;
 }

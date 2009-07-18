@@ -22,13 +22,6 @@ G_BEGIN_DECLS
 #define FSPOT_IS_LIBRAWLOADER_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE ((klass), FSPOT_TYPE_LIBRAWLOADER))
 #define FSPOT_LIBRAWLOADER_GET_CLASS(obj)	(G_TYPE_INSTANCE_GET_CLASS ((obj), FSPOT_TYPE_LIBRAWLOADER, FSpotLibrawLoaderClass))
 
-enum {
-	PROP_0,
-
-	PROP_FILENAME,
-	PROP_PROGRESS
-};
-
 typedef struct _FSpotLibrawLoader		FSpotLibrawLoader;
 typedef struct _FSpotLibrawLoaderClass	FSpotLibrawLoaderClass;
 typedef struct _FSpotLibrawLoaderPriv	FSpotLibrawLoaderPriv;
@@ -45,6 +38,7 @@ struct _FSpotLibrawLoaderClass
 {
 	GObjectClass parent_class;
 
+	void (* progress_updated) (FSpotLibrawLoader *loader, guint done, guint total);
 };
 
 GType fspot_librawloader_get_type (void);

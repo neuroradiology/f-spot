@@ -34,5 +34,24 @@ extract: $(LIBRAW).tar.gz
 	mv $(LIBRAW) LibRaw
 	git add LibRaw
 
-EXTRA_DIST = 	\
+EXTRA_DIST = 						\
+	fspot-librawloader-marshal.list	\
 	LibRaw/COPYRIGHT
+
+MPREFIX = fspot_librawloader_marshal
+TMPNAME = $(srcdir)/fspot-librawloader-marshal.tmp
+LIST = $(srcdir)/fspot-librawloader-marshal.list
+
+fspot-librawloader-marshal.h: $(LIST)
+	( @GLIB_GENMARSHAL@ --prefix=$(MPREFIX) $< --header > $(TMPNAME) \
+	&& mv $(TMPNAME) $@  ) || ( rm -f $(TMPNAME) && exit 1 )
+
+fspot-librawloader-marshal.c: fspot-librawloader-marshal.h
+	( @GLIB_GENMARSHAL@ --prefix=$(MPREFIX) $(LIST) --body > $(TMPNAME) \
+	&& mv $(TMPNAME) $@ ) || ( rm -f $(TMPNAME) && exit 1 )
+
+MARSHAL_GENERATED = fspot-librawloader-marshal.c fspot-librawloader-marshal.h
+
+BUILT_SOURCES = $(MARSHAL_GENERATED)
+
+CLEANFILES = $(MARSHAL_GENERATED)
