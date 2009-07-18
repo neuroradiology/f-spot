@@ -50,6 +50,7 @@ struct _FSpotLibrawLoaderClass
 GType fspot_librawloader_get_type (void);
 GdkPixbuf * fspot_librawloader_load_thumbnail (FSpotLibrawLoader *self);
 GdkPixbuf * fspot_librawloader_load_full (FSpotLibrawLoader *self);
+FSpotLibrawLoader * fspot_librawloader_new (const gchar *filename);
 
 G_END_DECLS
 

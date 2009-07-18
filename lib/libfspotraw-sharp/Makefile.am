@@ -37,13 +37,11 @@ assembly_DATA =			\
 	libfspotraw-sharp.dll.config
 
 CLEANFILES = 			\
+	generated/*.cs 		\
+	libfspotraw-api.raw	\
 	libfspotraw-sharp.dll 	\
 	libfspotraw-sharp.dll.mdb \
 	libfspotraw-api.xml
-
-DISTCLEANFILES =		\
-	libfspotraw-api.raw	\
-	generated/*.cs
 
 EXTRA_DIST =			\
 	$(SRCS)			\

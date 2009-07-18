@@ -199,6 +199,18 @@ fspot_librawloader_load_full (FSpotLibrawLoader *self)
 	return pixbuf;
 }
 
+FSpotLibrawLoader *
+fspot_librawloader_new (const gchar *filename)
+{
+	FSpotLibrawLoader *loader;
+
+	loader = (FSpotLibrawLoader *) g_object_new (FSPOT_TYPE_LIBRAWLOADER,
+												 "filename", filename,
+												 NULL);
+
+	return loader;
+}
+
 static void
 open_if_needed (FSpotLibrawLoader *self)
 {
