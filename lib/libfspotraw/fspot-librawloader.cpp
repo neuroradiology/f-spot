@@ -255,8 +255,6 @@ static int
 libraw_progress_callback (void *user_data, enum LibRaw_progress p, int iteration, int expected)
 {
 	FSpotLibrawLoader *self = FSPOT_LIBRAWLOADER (user_data);
-
-	g_print ("Emitting %d/%d\n", iteration, expected);
 	g_signal_emit (self, signals[PROGRESS_UPDATED], 0, iteration, expected);
 	return 0;
 }

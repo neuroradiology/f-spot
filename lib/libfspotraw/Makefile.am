@@ -25,7 +25,9 @@ libfspotraw_files = \
 	fspot-librawloader.cpp 							\
 	fspot-librawloader.h
 
-libfspotraw_la_SOURCES = \
+libfspotraw_la_SOURCES = 							\
+	fspot-librawloader-marshal.c					\
+	fspot-librawloader-marshal.h					\
 	$(libfspotraw_files)
 
 extract: $(LIBRAW).tar.gz
