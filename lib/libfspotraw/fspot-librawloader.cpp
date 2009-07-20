@@ -192,7 +192,7 @@ fspot_librawloader_finalize (GObject *object)
 }
 
 GdkPixbuf *
-fspot_librawloader_load_thumbnail (FSpotLibrawLoader *self)
+fspot_librawloader_load_thumbnail (FSpotLibrawLoader *self, int *orientation)
 {
 	int result;
 	libraw_processed_image_t *image = NULL;
@@ -213,6 +213,7 @@ fspot_librawloader_load_thumbnail (FSpotLibrawLoader *self)
 	g_assert (error == NULL);
 
 	pixbuf = gdk_pixbuf_copy (gdk_pixbuf_loader_get_pixbuf (loader));
+	*orientation = self->priv->raw_proc->imgdata.sizes.flip;
 
 	return pixbuf;
 }

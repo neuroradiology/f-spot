@@ -40,8 +40,30 @@ namespace FSpot.Loaders {
 
 		void LoadThumbnail ()
 		{
-			thumb = loader.LoadThumbnail ();
-			PixbufOrientation = PixbufOrientation.TopLeft;
+			int orientation;
+			thumb = loader.LoadThumbnail (out orientation);
+
+			switch (orientation) {
+				case 0:
+					PixbufOrientation = PixbufOrientation.TopLeft;
+					break;
+
+				case 3:
+					PixbufOrientation = PixbufOrientation.BottomRight;
+					break;
+
+				case 5:
+					PixbufOrientation = PixbufOrientation.LeftBottom;
+					break;
+
+				case 6:
+					PixbufOrientation = PixbufOrientation.RightBottom;
+					break;
+
+				default:
+					throw new Exception ("Unexpected orientation returned!");
+			}
+
 			GLib.Idle.Add (delegate {
 				EventHandler<AreaPreparedEventArgs> prep = AreaPrepared;
 				if (prep != null)
