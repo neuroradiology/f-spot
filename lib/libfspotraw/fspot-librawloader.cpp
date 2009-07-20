@@ -22,7 +22,8 @@ enum {
 enum {
 	PROP_0,
 	PROP_FILENAME,
-	PROP_PROGRESS
+	PROP_PROGRESS,
+	PROP_ABORTED
 };
 
 static guint signals[LAST_SIGNAL] = { 0 };
@@ -50,9 +51,9 @@ struct _FSpotLibrawLoaderPriv
 {
 	LibRaw *raw_proc;
 	gchar *filename;
-	double progress;
 
 	gboolean opened;
+	gboolean aborted;
 };
 
 static void
@@ -97,6 +98,15 @@ fspot_librawloader_class_init (FSpotLibrawLoaderClass *klass)
 									 PROP_PROGRESS,
 									 pspec);
 
+	pspec = g_param_spec_boolean ("aborted",
+								  "Whether the loading has been aborted.",
+								  "When switched to true, loading is stopped.",
+								  FALSE,
+								  (GParamFlags) G_PARAM_READWRITE);
+	g_object_class_install_property (gobject_class,
+									 PROP_ABORTED,
+									 pspec);
+
 	g_type_class_add_private (klass, sizeof (FSpotLibrawLoaderPriv));
 }
 
@@ -107,7 +117,7 @@ fspot_librawloader_init (FSpotLibrawLoader *self)
 
 	self->priv->raw_proc = new LibRaw;
 	self->priv->opened = false;
-	self->priv->progress = 0;
+	self->priv->aborted = false;
 
 	self->priv->raw_proc->set_progress_handler (libraw_progress_callback, self);
 }
@@ -125,6 +135,10 @@ fspot_librawloader_set_property (GObject	  *object,
 		case PROP_FILENAME:
 			g_free (self->priv->filename);
 			self->priv->filename = g_value_dup_string (value);
+			break;
+
+		case PROP_ABORTED:
+			fspot_librawloader_set_aborted (self, g_value_get_boolean (value));
 			break;
 
 		default:
@@ -146,6 +160,9 @@ fspot_librawloader_get_property (GObject	  *object,
 		case PROP_FILENAME:
 			g_value_set_string (value, self->priv->filename);
 			break;
+
+		case PROP_ABORTED:
+			g_value_set_boolean (value, self->priv->aborted);
 
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -212,7 +229,9 @@ fspot_librawloader_load_full (FSpotLibrawLoader *self)
 	self->priv->raw_proc->unpack ();
 	self->priv->raw_proc->dcraw_process ();
 	image = self->priv->raw_proc->dcraw_make_mem_image (&result);
-	g_assert (result == 0 && image != NULL);
+	if (result != 0 || image == NULL) {
+		return NULL;
+	}
 	g_assert (image->type == LIBRAW_IMAGE_BITMAP);
 
 	pixbuf = gdk_pixbuf_new_from_data (image->data,
@@ -256,5 +275,19 @@ libraw_progress_callback (void *user_data, enum LibRaw_progress p, int iteration
 {
 	FSpotLibrawLoader *self = FSPOT_LIBRAWLOADER (user_data);
 	g_signal_emit (self, signals[PROGRESS_UPDATED], 0, iteration, expected);
-	return 0;
+	return self->priv->aborted;
+}
+
+gboolean
+fspot_librawloader_get_aborted (FSpotLibrawLoader *self)
+{
+	g_return_val_if_fail (FSPOT_IS_LIBRAWLOADER (self), false);
+	return self->priv->aborted;
+}
+
+void
+fspot_librawloader_set_aborted (FSpotLibrawLoader *self, gboolean aborted)
+{
+	g_return_if_fail (FSPOT_IS_LIBRAWLOADER (self));
+	self->priv->aborted = aborted;
 }

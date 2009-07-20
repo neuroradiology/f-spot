@@ -45,6 +45,8 @@ GType fspot_librawloader_get_type (void);
 GdkPixbuf * fspot_librawloader_load_thumbnail (FSpotLibrawLoader *self);
 GdkPixbuf * fspot_librawloader_load_full (FSpotLibrawLoader *self);
 FSpotLibrawLoader * fspot_librawloader_new (const gchar *filename);
+gboolean fspot_librawloader_get_aborted (FSpotLibrawLoader *self);
+void fspot_librawloader_set_aborted (FSpotLibrawLoader *self, gboolean aborted);
 
 G_END_DECLS
 

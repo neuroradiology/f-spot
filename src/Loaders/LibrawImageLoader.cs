@@ -59,6 +59,10 @@ namespace FSpot.Loaders {
 				Log.Debug ("Loading RAW: {0}/{1}", args.Done, args.Total);
 			};
 			full = loader.LoadFull ();
+			if (full == null) {
+				return;
+			}
+
 			PixbufOrientation = PixbufOrientation.TopLeft;
 			GLib.Idle.Add (delegate {
 				EventHandler<AreaPreparedEventArgs> prep = AreaPrepared;
@@ -84,9 +88,14 @@ namespace FSpot.Loaders {
 
 		public void Dispose ()
 		{
-			// TODO: Abort the NativeLibrawLoader
-			thumb.Dispose ();
-			full.Dispose ();
+			if (loader != null) {
+				loader.Aborted = true;
+				loader = null;
+			}
+			if (thumb != null)
+				thumb.Dispose ();
+			if (full != null)
+				full.Dispose ();
 		}
 
 		public Pixbuf Pixbuf {
