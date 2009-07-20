@@ -263,6 +263,7 @@ static void
 open_if_needed (FSpotLibrawLoader *self)
 {
 	if (!self->priv->opened) {
+		self->priv->raw_proc->imgdata.params.use_camera_wb = 1;
 		int result = self->priv->raw_proc->open_file (self->priv->filename);
 		g_assert (result == 0);
 
