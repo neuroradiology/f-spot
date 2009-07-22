@@ -15,7 +15,7 @@ all: libfspotraw-sharp.dll
 
 
 # The stuff below is needed because gapi2-parser doesn't like .cpp files
-libfspotraw-api.raw: libfspotraw.sources
+libfspotraw-api.raw: libfspotraw.sources $(srcdir)/../libfspotraw/fspot-librawloader.cpp $(srcdir)/../libfspotraw/fspot-librawloader.h
 	@echo -e "\n*** Extracting the API"
 	touch $@
 	cp $(srcdir)/../libfspotraw/fspot-librawloader.cpp $(srcdir)/../libfspotraw/fspot-librawloader.c
