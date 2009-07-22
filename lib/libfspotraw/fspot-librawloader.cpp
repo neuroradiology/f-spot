@@ -22,7 +22,6 @@ enum {
 enum {
 	PROP_0,
 	PROP_FILENAME,
-	PROP_PROGRESS,
 	PROP_ABORTED
 };
 
@@ -85,17 +84,6 @@ fspot_librawloader_class_init (FSpotLibrawLoaderClass *klass)
 							     (GParamFlags) (G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 	g_object_class_install_property (gobject_class,
 									 PROP_FILENAME,
-									 pspec);
-
-	pspec = g_param_spec_double ("progress",
-								 "The progress of loading the full size.",
-								 "Loading progress",
-								 0.0,
-								 1.0,
-								 0.0,
-								 G_PARAM_READABLE);
-	g_object_class_install_property (gobject_class,
-									 PROP_PROGRESS,
 									 pspec);
 
 	pspec = g_param_spec_boolean ("aborted",
