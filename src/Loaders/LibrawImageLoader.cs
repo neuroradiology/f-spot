@@ -122,7 +122,7 @@ namespace FSpot.Loaders {
 
 		public Pixbuf Pixbuf {
 			get {
-				return full == null ? thumb : full;
+				return full == null ? PixbufUtils.ShallowCopy (thumb) : PixbufUtils.ShallowCopy (full);
 			}
 		}
 
