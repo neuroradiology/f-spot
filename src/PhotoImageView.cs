@@ -224,7 +224,7 @@ namespace FSpot.Widgets {
 
 		void HandleCompleted (object sender, ItemsCompletedEventArgs args)
 		{
-			Log.DebugTimerPrint (timer, "Loading image took {0}");
+			Log.DebugTimerPrint (timer, "Loading image took {0} (" + args.Items.ToString () + ")");
 			IImageLoader loader = sender as IImageLoader;
 			if (loader != this.loader)
 				return;
