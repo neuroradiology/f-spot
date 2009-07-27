@@ -143,16 +143,7 @@ namespace FSpot.Png {
 				}
 			}
 			
-			byte compression;
-			public byte Compression {
-			        get {
-					return compression;
-				}
-				set {
-					if (compression != 0)
-						throw new System.Exception ("Unknown compression method");
-				}
-			}
+			public byte Compression { get; protected set; }
 
 			public ZtxtChunk (string keyword, string text) : base ()
 			{
