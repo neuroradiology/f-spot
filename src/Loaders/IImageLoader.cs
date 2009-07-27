@@ -19,11 +19,15 @@ namespace FSpot.Loaders {
 
 		event EventHandler<AreaPreparedEventArgs> AreaPrepared;
 		event EventHandler<AreaUpdatedEventArgs> AreaUpdated;
-		event EventHandler Completed;
+		event EventHandler<ItemsCompletedEventArgs> Completed;
 
-		void Load (Uri uri);
+		ImageLoaderItem Load (ImageLoaderItem items, bool async);
 
-		Pixbuf Pixbuf { get; }
-		PixbufOrientation PixbufOrientation { get; }
+		Pixbuf Thumbnail { get; }
+		PixbufOrientation ThumbnailOrientation { get; }
+		Pixbuf Large { get; }
+		PixbufOrientation LargeOrientation { get; }
+		Pixbuf Full { get; }
+		PixbufOrientation FullOrientation { get; }
 	}
 }

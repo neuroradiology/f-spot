@@ -84,7 +84,7 @@ namespace FSpot.Loaders {
 					throw new Exception ("Loader requested for unknown file type: "+extension);
 			}
 
-			loader = (IImageLoader) System.Activator.CreateInstance (t);
+			loader = (IImageLoader) System.Activator.CreateInstance (t, new object[] { uri });
 
 			return loader;
 		}

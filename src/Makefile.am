@@ -189,7 +189,11 @@ F_SPOT_CSDISTFILES =				\
 	$(srcdir)/Loaders/AreaPreparedEventArgs.cs		\
 	$(srcdir)/Loaders/AreaUpdatedEventArgs.cs		\
 	$(srcdir)/Loaders/ImageLoader.cs		\
+	$(srcdir)/Loaders/ImageLoaderItem.cs		\
+	$(srcdir)/Loaders/ImageLoaderItemExtensions.cs		\
 	$(srcdir)/Loaders/IImageLoader.cs		\
+	$(srcdir)/Loaders/IImageLoaderExtensions.cs		\
+	$(srcdir)/Loaders/ItemCompletedEventArgs.cs		\
 	$(srcdir)/Loaders/GdkImageLoader.cs		\
 	$(srcdir)/Loaders/LibrawImageLoader.cs		\
 	$(srcdir)/ImageLoaderThread.cs		\

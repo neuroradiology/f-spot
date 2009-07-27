@@ -9,86 +9,69 @@
 // This is free software. See COPYING for details
 //
 
+using FSpot.Platform;
+using FSpot.Utils;
+using Gdk;
 using System;
 using System.Threading;
-using Gdk;
-using FSpot.Utils;
-using FSpot.Platform;
 
 namespace FSpot.Loaders {
 	public class GdkImageLoader : Gdk.PixbufLoader, IImageLoader
 	{
-		Uri uri = null;
+		Uri uri;
+		object sync_handle = new object ();
+		bool is_disposed = false;
+		Rectangle damage;
 
-#region public api
-		public GdkImageLoader () : base ()
-		{	
+		public ImageLoaderItem ItemsRequested { get; private set; }
+		public ImageLoaderItem ItemsCompleted { get; private set; }
+
+		Pixbuf thumbnail;
+		public Pixbuf Thumbnail {
+			get { return PixbufUtils.ShallowCopy (thumbnail); }
+			private set { thumbnail = value; }
 		}
+		public PixbufOrientation ThumbnailOrientation { get; private set; }
 
-		public void Load (Uri uri)
-		{
-			if (this.uri != null)
-				throw new Exception ("You should only request one image per loader!");
-			this.uri = uri;
-
-			if (is_disposed)
-				return;
-
-			//First, send a thumbnail if we have one
-			if ((thumb = ThumbnailFactory.LoadThumbnail (uri)) != null) {
-				pixbuf_orientation = PixbufOrientation.TopLeft;
-				EventHandler<AreaPreparedEventArgs> prep = AreaPrepared;
-				if (prep != null)
-					prep (this, new AreaPreparedEventArgs (true));
-				EventHandler<AreaUpdatedEventArgs> upd = AreaUpdated;
-				if (upd != null)
-					upd (this, new AreaUpdatedEventArgs (new Rectangle (0, 0, thumb.Width, thumb.Height)));
-			}
-
-			using (ImageFile image_file = ImageFile.Create (uri)) {
-				image_stream = image_file.PixbufStream ();
-				pixbuf_orientation = image_file.Orientation;
-			}
-
-			loading = true;
-			// The ThreadPool.QueueUserWorkItem hack is there cause, as the bytes to read are present in the stream,
-			// the Read is CompletedAsynchronously, blocking the mainloop
-			image_stream.BeginRead (buffer, 0, count, delegate (IAsyncResult r) {
-				ThreadPool.QueueUserWorkItem (delegate {HandleReadDone (r);});
-			}, null);
+		public Pixbuf Large {
+			get { return PixbufUtils.ShallowCopy (Pixbuf); }
 		}
+		public PixbufOrientation LargeOrientation { get; private set; }
+
+		public Pixbuf Full { get { return Large; } }
+		public PixbufOrientation FullOrientation { get { return LargeOrientation; } }
 
 		new public event EventHandler<AreaPreparedEventArgs> AreaPrepared;
 		new public event EventHandler<AreaUpdatedEventArgs> AreaUpdated;
-		public event EventHandler Completed;
+		public event EventHandler<ItemsCompletedEventArgs> Completed;
 
+		public bool Loading { get; private set; }
 
-		Pixbuf thumb;
-		new public Pixbuf Pixbuf {
-			get {
-				if (thumb != null)
-					return thumb;
-				return base.Pixbuf;
-			}
+#region public api
+		public GdkImageLoader (Uri uri) : base ()
+		{
+			this.uri = uri;
+			Loading = false;
+
+			ItemsRequested = ImageLoaderItem.None;
+			ItemsCompleted = ImageLoaderItem.None;
 		}
 
-		bool loading = false;
-		public bool Loading {
-			get { return loading; }
+		public ImageLoaderItem Load (ImageLoaderItem items, bool async)
+		{
+			if (is_disposed)
+				return ImageLoaderItem.None;
+
+			ItemsRequested |= items;
+
+			StartLoading ();
+
+			if (!async)
+				WaitForCompletion (items);
+
+			return ItemsCompleted & items;
 		}
 
-		bool notify_prepared = false;
-		bool prepared = false;
-		public bool Prepared {
-			get { return prepared; }
-		}
-
-		PixbufOrientation pixbuf_orientation = PixbufOrientation.TopLeft;
-		public PixbufOrientation PixbufOrientation {
-			get { return pixbuf_orientation; }
-		}
-
-		bool is_disposed = false;
 		public override void Dispose ()
 		{
 			is_disposed = true;
@@ -99,9 +82,9 @@ namespace FSpot.Loaders {
 				{
 				}
 			Close ();
-			if (thumb != null) {
-				thumb.Dispose ();
-				thumb = null;
+			if (thumbnail != null) {
+				thumbnail.Dispose ();
+				thumbnail = null;
 			}
 			base.Dispose ();
 		}
@@ -120,9 +103,8 @@ namespace FSpot.Loaders {
 			if (is_disposed)
 				return;
 
-			prepared = notify_prepared = true;
-			damage = Rectangle.Zero;
 			base.OnAreaPrepared ();
+			SignalAreaPrepared (ImageLoaderItem.Large | ImageLoaderItem.Full);
 		}
 
 		protected override void OnAreaUpdated (int x, int y, int width, int height)
@@ -131,8 +113,8 @@ namespace FSpot.Loaders {
 				return;
 
 			Rectangle area = new Rectangle (x, y, width, height);
-			damage = damage == Rectangle.Zero ? area : damage.Union (area);
 			base.OnAreaUpdated (x, y, width, height);
+			SignalAreaUpdated (ImageLoaderItem.Large | ImageLoaderItem.Full, area);
 		}
 
 		protected virtual void OnCompleted ()
@@ -140,10 +122,7 @@ namespace FSpot.Loaders {
 			if (is_disposed)
 				return;
 
-			EventHandler eh = Completed;
-			if (eh != null)
-				eh (this, EventArgs.Empty);
-			Close ();
+			SignalItemCompleted (ImageLoaderItem.Large | ImageLoaderItem.Full);
 		}
 #endregion
 
@@ -151,62 +130,163 @@ namespace FSpot.Loaders {
 		System.IO.Stream image_stream;
 		const int count = 1 << 16;
 		byte [] buffer = new byte [count];
-		bool notify_completed = false;
-		Rectangle damage;
-		object sync_handle = new object ();
 
-		void HandleReadDone (IAsyncResult ar)
+		void StartLoading ()
+		{
+			lock (sync_handle) {
+				if (Loading)
+					return;
+				Loading = true;
+			}
+
+			// Load thumbnail immediately, if required
+			if (!ItemsCompleted.Contains (ImageLoaderItem.Thumbnail) &&
+				 ItemsRequested.Contains (ImageLoaderItem.Thumbnail)) {
+				LoadThumbnail ();
+			}
+
+			ThreadPool.QueueUserWorkItem (delegate {
+					try {
+						DoLoad ();
+					} catch (Exception e) {
+						Log.Debug (e.ToString ());
+						Log.Debug ("Requested: {0}, Done: {1}", ItemsRequested, ItemsCompleted);
+						Gtk.Application.Invoke (delegate { throw e; });
+					}
+				});
+		}
+
+		void DoLoad ()
+		{
+			while (!is_disposed && !ItemsCompleted.Contains (ItemsRequested)) {
+				if (ItemsRequested.Contains (ImageLoaderItem.Thumbnail))
+					LoadThumbnail ();
+
+				if (ItemsRequested.Contains (ImageLoaderItem.Large))
+					LoadLarge ();
+			}
+
+			lock (sync_handle) {
+				Loading = false;
+			}
+		}
+
+		void LoadThumbnail ()
 		{
 			if (is_disposed)
 				return;
 
-			int byte_read = image_stream.EndRead (ar);
-			lock (sync_handle) {
+			// Check if the thumbnail exists, if not: try to create it from the
+			// Large image. Will request Large if it is not present and wait
+			// for the next call to generate it (see the loop in DoLoad).
+			if (!ThumbnailFactory.ThumbnailExists (uri)) {
+				if (ItemsCompleted.Contains (ImageLoaderItem.Large)) {
+					ThumbnailFactory.SaveThumbnail (Pixbuf, uri);
+				} else {
+					ItemsRequested |= ImageLoaderItem.Large;
+					return;
+				}
+			}
+
+			Thumbnail = ThumbnailFactory.LoadThumbnail (uri);
+			ThumbnailOrientation = PixbufOrientation.TopLeft;
+			if (Thumbnail == null)
+				throw new Exception ("Null thumbnail returned");
+
+			SignalAreaPrepared (ImageLoaderItem.Thumbnail);
+			SignalAreaUpdated (ImageLoaderItem.Thumbnail, new Rectangle (0, 0, thumbnail.Width, thumbnail.Height));
+			SignalItemCompleted (ImageLoaderItem.Thumbnail);
+		}
+
+		void LoadLarge ()
+		{
+			if (is_disposed)
+				return;
+
+			using (ImageFile image_file = ImageFile.Create (uri)) {
+				image_stream = image_file.PixbufStream ();
+				LargeOrientation = image_file.Orientation;
+			}
+
+			while (Loading && !is_disposed) {
+				int byte_read = image_stream.Read (buffer, 0, count);
+
 				if (byte_read == 0) {
 					image_stream.Close ();
-					Close ();
-					loading = false;
-					notify_completed = true;
+                    Close ();
+					Loading = false;
+					SignalItemCompleted (ImageLoaderItem.Large | ImageLoaderItem.Full);
 				} else {
 					try {
-						if (!is_disposed && Write (buffer, (ulong)byte_read))
-							image_stream.BeginRead (buffer, 0, count, HandleReadDone, null);
+						Write (buffer, (ulong)byte_read);
 					} catch (System.ObjectDisposedException) {
 					} catch (GLib.GException) {
 					}
 				}
 			}
+		}
 
-			GLib.Idle.Add (delegate {
-				//Send the AreaPrepared event
-				if (notify_prepared) {
-					notify_prepared = false;
-					if (thumb != null) {
-						thumb.Dispose ();
-						thumb = null;
-					}
+		void WaitForCompletion (ImageLoaderItem items)
+		{
+			while (!ItemsCompleted.Contains(items)) {
+				Log.Debug ("Waiting for completion of {0} (done: {1})", ItemsRequested, ItemsCompleted);
+				Monitor.Enter (sync_handle);
+				Monitor.Wait (sync_handle);
+				Monitor.Exit (sync_handle);
+				Log.Debug ("Woke up after waiting for {0} (done: {1})", ItemsRequested, ItemsCompleted);
+			}
+		}
 
-					EventHandler<AreaPreparedEventArgs> eh = AreaPrepared;
-					if (eh != null)
-						eh (this, new AreaPreparedEventArgs (false));
+		void SignalAreaPrepared (ImageLoaderItem item) {
+			damage = Rectangle.Zero;
+			EventHandler<AreaPreparedEventArgs> eh = AreaPrepared;
+			if (eh != null)
+				GLib.Idle.Add (delegate {
+					eh (this, new AreaPreparedEventArgs (item));
+					return false;
+				});
+		}
+
+		void SignalAreaUpdated (ImageLoaderItem item, Rectangle area) {
+			EventHandler<AreaUpdatedEventArgs> eh = AreaUpdated;
+			if (eh == null)
+				return;
+
+			lock (sync_handle) {
+				if (damage == Rectangle.Zero) {
+					damage = area;
+					GLib.Idle.Add (delegate {
+						Rectangle to_signal;
+						lock (sync_handle) {
+							to_signal = damage;
+							damage = Rectangle.Zero;
+						}
+						eh (this, new AreaUpdatedEventArgs (item, to_signal));
+						return false;
+					});
+				} else {
+					damage = damage.Union (area);
 				}
+			}
+		}
 
-				//Send the AreaUpdated events
-				if (damage != Rectangle.Zero) {
-					EventHandler<AreaUpdatedEventArgs> eh = AreaUpdated;
-					if (eh != null)
-						eh (this, new AreaUpdatedEventArgs (damage));
-					damage = Rectangle.Zero;
-				}
+		void SignalItemCompleted (ImageLoaderItem item)
+		{
+			ItemsCompleted |= item;
+			Log.Debug ("Notifying completion of {0} (done: {1}, requested: {2})", item, ItemsCompleted, ItemsRequested);
 
-				//Send the Completed event
-				if (notify_completed) {
-					notify_completed = false;
-					OnCompleted ();
-				}
+			Monitor.Enter (sync_handle);
+			Monitor.PulseAll (sync_handle);
+			Monitor.Exit (sync_handle);
 
-				return false;
-			});
+			Log.Debug ("Signalled!");
+
+			EventHandler<ItemsCompletedEventArgs> eh = Completed;
+			if (eh != null)
+				GLib.Idle.Add (delegate {
+					eh (this, new ItemsCompletedEventArgs (item));
+					return false;
+				});
 		}
 #endregion
 	}

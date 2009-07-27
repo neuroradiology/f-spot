@@ -1,29 +1,22 @@
 //
-// Fspot.Loaders.AreaPreparedEventArgs.cs
-//
-// Copyright (c) 2009 Novell, Inc.
+// Fspot/Loaders/AreaPreparedEventArgs.cs
 //
 // Author(s)
-//	Stephane Delcroix  <sdelcroix@novell.com>
+//	Ruben Vermeersch  <ruben@savanne.be>
 //
 // This is free software. See COPYING for details
 //
 
 using System;
-using Gdk;
 
 namespace FSpot.Loaders {
 	public class AreaPreparedEventArgs : EventArgs
 	{
-		bool reduced_resolution;
+		public ImageLoaderItem Item { get; private set; }
 
-		public bool ReducedResolution {
-			get { return reduced_resolution; }
-		}
-	
-		public AreaPreparedEventArgs (bool reduced_resolution) : base ()
+		public AreaPreparedEventArgs (ImageLoaderItem item) : base ()
 		{
-			this.reduced_resolution = reduced_resolution;
+			this.Item = item;
 		}
 	}
 }

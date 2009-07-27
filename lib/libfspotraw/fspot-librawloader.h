@@ -42,7 +42,7 @@ struct _FSpotLibrawLoaderClass
 };
 
 GType fspot_librawloader_get_type (void);
-GdkPixbuf * fspot_librawloader_load_thumbnail (FSpotLibrawLoader *self, int *orientation);
+GdkPixbuf * fspot_librawloader_load_embedded (FSpotLibrawLoader *self, int *orientation);
 GdkPixbuf * fspot_librawloader_load_full (FSpotLibrawLoader *self);
 FSpotLibrawLoader * fspot_librawloader_new (const gchar *filename);
 gboolean fspot_librawloader_get_aborted (FSpotLibrawLoader *self);

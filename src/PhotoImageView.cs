@@ -166,17 +166,22 @@ namespace FSpot.Widgets {
 #region loader		
 		uint timer;
 		IImageLoader loader;
+		bool prepared_is_new;
+		ImageLoaderItem current_item;
+
 		void Load (Uri uri)
 		{
 			timer = Log.DebugTimerStart ();
 			if (loader != null)
 				loader.Dispose ();
 
+			current_item = ImageLoaderItem.None;
+
+			prepared_is_new = true;
 			loader = ImageLoader.Create (uri);
 			loader.AreaPrepared += HandlePixbufPrepared;
 			loader.AreaUpdated += HandlePixbufAreaUpdated;
-			loader.Completed += HandleDone;
-			loader.Load (uri);
+			loader.Load (ImageLoaderItem.Thumbnail | ImageLoaderItem.Large | ImageLoaderItem.Full, HandleCompleted);
 		}
 
 		void HandlePixbufPrepared (object sender, AreaPreparedEventArgs args)
@@ -188,9 +193,16 @@ namespace FSpot.Widgets {
 			if (!ShowProgress)
 				return;
 
-			Gdk.Pixbuf prev = this.Pixbuf;
-			this.Pixbuf = loader.Pixbuf;
-			PixbufOrientation = Accelerometer.GetViewOrientation (loader.PixbufOrientation);
+			if (args.Item < current_item)
+				return;
+
+			current_item = args.Item.Largest ();
+
+			Gdk.Pixbuf prev = Pixbuf;
+			PixbufOrientation orientation = Accelerometer.GetViewOrientation (loader.PixbufOrientation (current_item));
+			ChangeImage (loader.Pixbuf (current_item), orientation, prepared_is_new, current_item != ImageLoaderItem.Full);
+			prepared_is_new = false;
+
 			if (prev != null)
 				prev.Dispose ();
 
@@ -210,7 +222,7 @@ namespace FSpot.Widgets {
 			this.QueueDrawArea (area.X, area.Y, area.Width, area.Height);
 		}
 
-		void HandleDone (object sender, System.EventArgs args)
+		void HandleCompleted (object sender, ItemsCompletedEventArgs args)
 		{
 			Log.DebugTimerPrint (timer, "Loading image took {0}");
 			IImageLoader loader = sender as IImageLoader;
@@ -218,8 +230,10 @@ namespace FSpot.Widgets {
 				return;
 
 			Pixbuf prev = this.Pixbuf;
-			if (Pixbuf != loader.Pixbuf)
-				Pixbuf = loader.Pixbuf;
+			if (current_item != args.Items.Largest ()) {
+				current_item = args.Items.Largest ();
+				ChangeImage (loader.Pixbuf (current_item), Accelerometer.GetViewOrientation (loader.PixbufOrientation (current_item)), false, false);
+			}
 
 			if (Pixbuf == null) {
 				// FIXME: Do we have test cases for this ???

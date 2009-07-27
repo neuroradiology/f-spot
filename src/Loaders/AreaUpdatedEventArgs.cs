@@ -1,28 +1,27 @@
 //
-// Fspot.Loaders.AreaUpdatedEventArgs.cs
-//
-// Copyright (c) 2009 Novell, Inc.
+// Fspot/Loaders/AreaUpdatedEventArgs.cs
 //
 // Author(s)
+//	Ruben Vermeersch  <ruben@savanne.be>
 //	Stephane Delcroix  <sdelcroix@novell.com>
+//
 //
 // This is free software. See COPYING for details
 //
 
-using System;
 using Gdk;
+using System;
 
 namespace FSpot.Loaders {
 	public class AreaUpdatedEventArgs : EventArgs
 	{
-		Gdk.Rectangle area;
-		public Gdk.Rectangle Area { 
-			get { return area; }
-		}
+		public ImageLoaderItem Item { get; private set; }
+		public Rectangle Area { get; private set; }
 
-		public AreaUpdatedEventArgs (Gdk.Rectangle area) : base ()
+		public AreaUpdatedEventArgs (ImageLoaderItem item, Rectangle area) : base ()
 		{
-			this.area = area;
+			this.Item = item;
+			this.Area = area;
 		}
 	}
 }

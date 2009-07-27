@@ -180,7 +180,7 @@ fspot_librawloader_finalize (GObject *object)
 }
 
 GdkPixbuf *
-fspot_librawloader_load_thumbnail (FSpotLibrawLoader *self, int *orientation)
+fspot_librawloader_load_embedded (FSpotLibrawLoader *self, int *orientation)
 {
 	int result;
 	libraw_processed_image_t *image = NULL;
