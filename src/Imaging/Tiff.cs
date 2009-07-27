@@ -1,6 +1,7 @@
 //#define DEBUG_LOADER
 using FSpot;
 using FSpot.Utils;
+using FSpot.Imaging;
 using SemWeb;
 using System;
 using System.IO;
@@ -2129,7 +2130,7 @@ namespace FSpot.Tiff {
 		}
 	}
 
-	public class DngFile : TiffFile {
+	public class DngFile : TiffFile, IRawFile {
 		public DngFile (string path) : base (path) 
 		{
 		}
@@ -2213,7 +2214,7 @@ namespace FSpot.Tiff {
 		}
 	}	
 	
-	public class NefFile : TiffFile, IThumbnailContainer {
+	public class NefFile : TiffFile, IThumbnailContainer, IRawFile {
 		public NefFile (string path) : base (path) 
 		{
 		}
@@ -2277,7 +2278,7 @@ namespace FSpot.Tiff {
 	}
 		
 
-	public class Cr2File : TiffFile, IThumbnailContainer {
+	public class Cr2File : TiffFile, IThumbnailContainer, IRawFile {
 		public Cr2File (string path) : base (path) 
 		{
 		}

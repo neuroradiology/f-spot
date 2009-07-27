@@ -3,6 +3,7 @@ using System.IO;
 using System.Collections;
 
 using FSpot.Utils;
+using FSpot.Imaging;
 using Mono.Unix;
 using Mono.Unix.Native;
 using Gdk;
@@ -265,34 +266,24 @@ namespace FSpot {
 		{
 		}
 
-		public static bool IsRaw (string name)
+		public static bool IsJpeg (ImageFile image)
 		{
-			string [] raw_extensions = {
-				".arw",
-				".crw",
-				".cr2",
-				".dng",
-				".mrw",
-				".nef",
-				".orf", 
-				".pef", 
-				".raw",
-				".raf",
-				".rw2",
-			};
-			foreach (string ext in raw_extensions)
-				if (ext == System.IO.Path.GetExtension (name).ToLower ())
-					return true;
-			return false;
+			return image is JpegFile;
 		}
 
-		public static bool IsJpeg (string name)
+		public static bool IsJpeg (Uri uri)
 		{
-			string [] jpg_extensions = {".jpg", ".jpeg"};
-			foreach (string ext in jpg_extensions)
-				if (ext == System.IO.Path.GetExtension (name).ToLower ())
-					return true;
-			return false;
+			return IsJpeg (ImageFile.Create (uri));
+		}
+
+		public static bool IsRaw (ImageFile image)
+		{
+			return image is IRawFile;
+		}
+
+		public static bool IsRaw (Uri uri)
+		{
+			return IsRaw (ImageFile.Create (uri));
 		}
 	} 
 }

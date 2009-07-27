@@ -205,6 +205,7 @@ F_SPOT_CSDISTFILES =				\
 	$(srcdir)/Imaging/Exif.cs		\
 	$(srcdir)/Imaging/ImageFile.cs		\
 	$(srcdir)/Imaging/IptcFile.cs		\
+	$(srcdir)/Imaging/IRawFile.cs		\
 	$(srcdir)/Imaging/JpegFile.cs		\
 	$(srcdir)/Imaging/JpegHeader.cs		\
 	$(srcdir)/Imaging/JpegUtils.cs		\

@@ -1,4 +1,5 @@
 using FSpot.Utils;
+using FSpot.Imaging;
 
 namespace FSpot.Raf {
 	// This is reverse engineered from looking at the sample files I have
@@ -21,7 +22,7 @@ namespace FSpot.Raf {
 		}
 	}
 	
-	public class RafFile : ImageFile, SemWeb.StatementSource {
+	public class RafFile : ImageFile, SemWeb.StatementSource, IRawFile {
 
                 // false seems a safe default
                 public bool Distinct {

@@ -1,4 +1,5 @@
 using FSpot.Tiff;
+using FSpot.Imaging;
 
 namespace FSpot.Mrw {
 	// Minolta raw format
@@ -169,7 +170,7 @@ namespace FSpot.Mrw {
 		
 	}
 	
-	public class MrwFile : ImageFile, SemWeb.StatementSource {
+	public class MrwFile : ImageFile, SemWeb.StatementSource, IRawFile {
 		MrmBlock mrm;
 		FSpot.Tiff.Header header;
 

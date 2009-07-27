@@ -1,5 +1,6 @@
 using System;
 using FSpot.Utils;
+using FSpot.Imaging;
 
 namespace FSpot.Ciff {
 	public enum Tag {
@@ -312,7 +313,7 @@ namespace FSpot.Ciff {
 		}
 	}
 	
-	public class CiffFile : FSpot.ImageFile , SemWeb.StatementSource {
+	public class CiffFile : FSpot.ImageFile , SemWeb.StatementSource, IRawFile {
 		public ImageDirectory root;
 		private uint version;
 		bool little;
