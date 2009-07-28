@@ -16,6 +16,7 @@ using FSpot.Utils;
 using FSpot.Loaders;
 
 using Gdk;
+using Gtk;
 
 namespace FSpot.Widgets {
 	public class PhotoImageView : ImageView {
@@ -31,6 +32,11 @@ namespace FSpot.Widgets {
 
 			this.item = item;
 			item.Changed += HandlePhotoItemChanged;
+		}
+
+		~PhotoImageView () {
+			if (progress_bar_container != null && progress_bar != null)
+				progress_bar_container.Remove (progress_bar);
 		}
 
 		public BrowsablePointer Item {
@@ -163,6 +169,55 @@ namespace FSpot.Widgets {
 		}
 #endregion
 
+#region progress bar
+		Container progress_bar_container;
+		ProgressBar progress_bar;
+		bool? progress_bar_present = null;
+
+		void UpdateStatus (string text, double fraction)
+		{
+			if (!CheckProgressBar ())
+				return;
+
+			progress_bar.Visible = true;
+			progress_bar.Fraction = fraction;
+			progress_bar.Text = text;
+		}
+
+		bool CheckProgressBar ()
+		{
+			if (progress_bar_present != null)
+				return (bool) progress_bar_present;
+
+			// I do not like the trip through MainWindow here, can this be
+			// done better?
+			if (MainWindow.Toplevel == null) {
+				progress_bar_present = false;
+				return false;
+			}
+
+			progress_bar = new ProgressBar ();
+			progress_bar.Visible = false;
+			progress_bar_container = MainWindow.Toplevel.StatusContainer;
+			progress_bar_container.Add (progress_bar);
+			progress_bar_present = true;
+
+			return true;
+		}
+
+		void HideStatus () {
+			if (!CheckProgressBar ())
+				return;
+
+			progress_bar.Visible = false;
+		}
+
+		void HandleProgressHint (object sender, ProgressHintEventArgs args)
+		{
+			UpdateStatus (args.Text, args.Fraction);
+		}
+#endregion
+
 #region loader		
 		uint timer;
 		IImageLoader loader;
@@ -174,6 +229,7 @@ namespace FSpot.Widgets {
 			timer = Log.DebugTimerStart ();
 			if (loader != null)
 				loader.Dispose ();
+			HideStatus ();
 
 			current_item = ImageLoaderItem.None;
 
@@ -181,6 +237,7 @@ namespace FSpot.Widgets {
 			loader = ImageLoader.Create (uri);
 			loader.AreaPrepared += HandlePixbufPrepared;
 			loader.AreaUpdated += HandlePixbufAreaUpdated;
+			loader.ProgressHint += HandleProgressHint;
 			loader.Load (ImageLoaderItem.Thumbnail | ImageLoaderItem.Large | ImageLoaderItem.Full, HandleCompleted);
 		}
 
@@ -197,6 +254,8 @@ namespace FSpot.Widgets {
 				return;
 
 			current_item = args.Item.Largest ();
+			Log.Debug ("Switched to new item: {0}", current_item);
+			Log.Debug ("Prepared is new: {0}", prepared_is_new);
 
 			Gdk.Pixbuf prev = Pixbuf;
 			PixbufOrientation orientation = Accelerometer.GetViewOrientation (loader.PixbufOrientation (current_item));
@@ -225,6 +284,7 @@ namespace FSpot.Widgets {
 		void HandleCompleted (object sender, ItemsCompletedEventArgs args)
 		{
 			Log.DebugTimerPrint (timer, "Loading image took {0} (" + args.Items.ToString () + ")");
+			HideStatus ();
 			IImageLoader loader = sender as IImageLoader;
 			if (loader != this.loader)
 				return;

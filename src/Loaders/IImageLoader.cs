@@ -20,6 +20,7 @@ namespace FSpot.Loaders {
 		event EventHandler<AreaPreparedEventArgs> AreaPrepared;
 		event EventHandler<AreaUpdatedEventArgs> AreaUpdated;
 		event EventHandler<ItemsCompletedEventArgs> Completed;
+		event EventHandler<ProgressHintEventArgs> ProgressHint;
 
 		ImageLoaderItem Load (ImageLoaderItem items, bool async);
 

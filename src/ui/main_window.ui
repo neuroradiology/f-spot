@@ -867,12 +867,9 @@
           <object class="GtkHBox" id="hbox61">
             <property name="visible">True</property>
             <child>
-              <object class="GtkHBox" id="hbox62">
+              <object class="GtkHBox" id="status_container">
                 <property name="width_request">142</property>
                 <property name="visible">True</property>
-                <child>
-                  <placeholder/>
-                </child>
                 <child>
                   <placeholder/>
                 </child>

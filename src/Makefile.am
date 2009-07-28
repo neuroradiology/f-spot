@@ -188,14 +188,15 @@ F_SPOT_CSDISTFILES =				\
 	$(srcdir)/Histogram.cs			\
 	$(srcdir)/Loaders/AreaPreparedEventArgs.cs		\
 	$(srcdir)/Loaders/AreaUpdatedEventArgs.cs		\
+	$(srcdir)/Loaders/GdkImageLoader.cs		\
+	$(srcdir)/Loaders/IImageLoader.cs		\
+	$(srcdir)/Loaders/IImageLoaderExtensions.cs		\
 	$(srcdir)/Loaders/ImageLoader.cs		\
 	$(srcdir)/Loaders/ImageLoaderItem.cs		\
 	$(srcdir)/Loaders/ImageLoaderItemExtensions.cs		\
-	$(srcdir)/Loaders/IImageLoader.cs		\
-	$(srcdir)/Loaders/IImageLoaderExtensions.cs		\
 	$(srcdir)/Loaders/ItemCompletedEventArgs.cs		\
-	$(srcdir)/Loaders/GdkImageLoader.cs		\
 	$(srcdir)/Loaders/LibrawImageLoader.cs		\
+	$(srcdir)/Loaders/ProgressHintEventArgs.cs		\
 	$(srcdir)/ImageLoaderThread.cs		\
 	$(srcdir)/ImportBackend.cs		\
 	$(srcdir)/ImportCommand.cs		\

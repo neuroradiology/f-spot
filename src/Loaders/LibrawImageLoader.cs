@@ -13,6 +13,7 @@ using FSpot.Loaders.Native;
 using FSpot.Platform;
 using FSpot.Utils;
 using Gdk;
+using Mono.Unix;
 using System;
 using System.Threading;
 
@@ -49,6 +50,7 @@ namespace FSpot.Loaders {
 		public event EventHandler<AreaPreparedEventArgs> AreaPrepared;
 		public event EventHandler<AreaUpdatedEventArgs> AreaUpdated;
 		public event EventHandler<ItemsCompletedEventArgs> Completed;
+		public event EventHandler<ProgressHintEventArgs> ProgressHint;
 
 		public bool Loading { get; private set; }
 
@@ -126,13 +128,13 @@ namespace FSpot.Loaders {
 		void DoLoad ()
 		{
 			while (!is_disposed && !ItemsCompleted.Contains (ItemsRequested)) {
-				if (ItemsRequested.Contains (ImageLoaderItem.Thumbnail))
+				if (ItemsRequested.Contains (ImageLoaderItem.Thumbnail) && !ItemsCompleted.Contains (ImageLoaderItem.Thumbnail))
 					LoadThumbnail ();
 
-				if (ItemsRequested.Contains (ImageLoaderItem.Large))
+				if (ItemsRequested.Contains (ImageLoaderItem.Large) && !ItemsCompleted.Contains (ImageLoaderItem.Large))
 					LoadLarge ();
 
-				if (ItemsRequested.Contains (ImageLoaderItem.Full))
+				if (ItemsRequested.Contains (ImageLoaderItem.Full) && !ItemsCompleted.Contains (ImageLoaderItem.Full))
 					LoadFull ();
 			}
 
@@ -209,8 +211,13 @@ namespace FSpot.Loaders {
 				return;
 
 			loader.ProgressUpdated += delegate (object o, ProgressUpdatedArgs args) {
-				Log.Debug ("Loading RAW: {0}/{1}", args.Done, args.Total);
+				if (args.Total <= 2)
+					return;
+
+				SignalProgressHint ((double) (args.Done + 1) / (double) (args.Total + 1));
 			};
+
+			SignalProgressHint (0.0);
 			full = loader.LoadFull ();
 			FullOrientation = PixbufOrientation.TopLeft;
 			if (full == null) {
@@ -220,6 +227,17 @@ namespace FSpot.Loaders {
 			SignalAreaPrepared (ImageLoaderItem.Full);
 			SignalAreaUpdated (ImageLoaderItem.Full, new Rectangle (0, 0, full.Width, full.Height));
 			SignalItemCompleted (ImageLoaderItem.Full);
+		}
+
+		void SignalProgressHint (double fraction)
+		{
+			EventHandler<ProgressHintEventArgs> eh = ProgressHint;
+			if (eh != null) {
+				GLib.Idle.Add (delegate {
+					eh (this, new ProgressHintEventArgs (Catalog.GetString ("Loading full size..."), fraction));
+					return false;
+				});
+			}
 		}
 
 		void WaitForCompletion (ImageLoaderItem items)

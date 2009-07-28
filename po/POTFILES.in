@@ -75,6 +75,7 @@ src/Imaging/ImageFile.cs
 src/Imaging/IptcFile.cs
 src/ImportCommand.cs
 src/ItemAction.cs
+src/Loaders/LibrawImageLoader.cs
 src/Loupe.cs
 src/MainWindow.cs
 src/MetadataStore.cs

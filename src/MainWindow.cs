@@ -131,6 +131,12 @@ namespace FSpot
 		[GtkBeans.Builder.Object] Gtk.HBox tagbar;
 		[GtkBeans.Builder.Object] Gtk.VBox tag_entry_container;
 		[GtkBeans.Builder.Object] Gtk.VBox sidebar_vbox;
+
+		[GtkBeans.Builder.Object] Gtk.Container status_container;
+		public Gtk.Container StatusContainer {
+			get { return status_container; }
+		}
+
 		TagEntry tag_entry;
 	
 		Gtk.Toolbar toolbar;

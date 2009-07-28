@@ -44,6 +44,7 @@ namespace FSpot.Loaders {
 		new public event EventHandler<AreaPreparedEventArgs> AreaPrepared;
 		new public event EventHandler<AreaUpdatedEventArgs> AreaUpdated;
 		public event EventHandler<ItemsCompletedEventArgs> Completed;
+		public event EventHandler<ProgressHintEventArgs> ProgressHint;
 
 		public bool Loading { get; private set; }
 
@@ -159,10 +160,10 @@ namespace FSpot.Loaders {
 		void DoLoad ()
 		{
 			while (!is_disposed && !ItemsCompleted.Contains (ItemsRequested)) {
-				if (ItemsRequested.Contains (ImageLoaderItem.Thumbnail))
+				if (ItemsRequested.Contains (ImageLoaderItem.Thumbnail) && !ItemsCompleted.Contains (ImageLoaderItem.Thumbnail))
 					LoadThumbnail ();
 
-				if (ItemsRequested.Contains (ImageLoaderItem.Large))
+				if (ItemsRequested.Contains (ImageLoaderItem.Large) && !ItemsCompleted.Contains (ImageLoaderItem.Large))
 					LoadLarge ();
 			}
 
