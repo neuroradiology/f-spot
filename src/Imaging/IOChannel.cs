@@ -232,9 +232,6 @@ namespace FSpot {
 			End
 		}
 
-		[DllImport("libglib-2.0-0.dll")]
-		static extern IOStatus g_io_channel_seek_position (HandleRef handle, long offset, SeekType type, out IntPtr error);
-
 		public override long Seek (long position, SeekOrigin origin)
 		{
 #if false

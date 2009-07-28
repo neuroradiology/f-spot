@@ -869,20 +869,6 @@ namespace FSpot.Png {
 				}
 			}
 			
-			private static byte PaethPredict (byte a, byte b, byte c)
-			{
-				int p = a + b - c;
-				int pa = System.Math.Abs (p - a);
-				int pb = System.Math.Abs (p - b);
-				int pc = System.Math.Abs (p - c);
-				if (pa <= pb && pa <= pc)
-					return a;
-				else if (pb <= pc)
-					return b;
-				else 
-					return c;
-			}
-
 			public void ReconstructRow (int row, int channels)
 			{
 				int offset = row * width;

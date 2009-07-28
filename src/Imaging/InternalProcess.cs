@@ -18,7 +18,6 @@ namespace FSpot {
 	internal class InternalProcess {
 		int stdin;
 		int stdout;
-		int stderr;
 		IOChannel input;
 		IOChannel output;
 		IOChannel errorput;
@@ -52,7 +51,6 @@ namespace FSpot {
 							     ref int stdin,
 							     ref int stdout,
 							     IntPtr err,
-							     //ref int stderr,
 							     out IntPtr error);
 
 		public InternalProcess (string path, string [] args)
@@ -74,7 +72,6 @@ namespace FSpot {
 
 			input = new IOChannel (stdin);
 			output = new IOChannel (stdout);
-			//errorput = new IOChannel (stderr);
 		}
 	}
 }
