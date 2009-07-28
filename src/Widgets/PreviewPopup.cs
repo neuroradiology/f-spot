@@ -108,7 +108,7 @@ namespace FSpot {
 			
 			string orig_path = item.DefaultVersion.Uri.LocalPath;
 
-			Gdk.Pixbuf pixbuf = PixbufUtils.ShallowCopy (preview_cache.Get (orig_path + show_histogram.ToString ()));
+			Gdk.Pixbuf pixbuf = preview_cache.Get (orig_path + show_histogram.ToString ()).ShallowCopy ();
 			if (pixbuf == null) {
 				// A bizarre pixbuf = hack to try to deal with cinematic displays, etc.
 				int preview_size = ((this.Screen.Width + this.Screen.Height)/2)/3;

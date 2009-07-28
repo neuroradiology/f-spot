@@ -11,6 +11,7 @@ using System;
 using System.Collections;
 using System.Threading;
 
+using FSpot.Utils;
 using FSpot.Platform;
 
 namespace FSpot {
@@ -353,7 +354,7 @@ namespace FSpot {
 					if (pixbuf == null)
 						return null;
 					
-					return PixbufUtils.ShallowCopy (pixbuf);
+					return pixbuf.ShallowCopy ();
 				}
 			}
 			

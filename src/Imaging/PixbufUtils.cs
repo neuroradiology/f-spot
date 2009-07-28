@@ -131,14 +131,6 @@ public class PixbufUtils {
 		}
 	}
 
-	[Obsolete ("Use the extension method instead!")]
-	public static Pixbuf ShallowCopy (Pixbuf pixbuf)
-	{
-		if (pixbuf == null)
-			return null;
-		return pixbuf.ShallowCopy ();
-	}
-
 	public static Pixbuf ScaleToMaxSize (Pixbuf pixbuf, int width, int height)
 	{
 		return ScaleToMaxSize (pixbuf, width, height, true);

@@ -236,7 +236,7 @@ namespace FSpot {
 					
 					next = GetScaled (photos [idx]);
 					if (next == null)
-						next = GetScaled (PixbufUtils.ShallowCopy (FSpotPixbufUtils.ErrorPixbuf));
+						next = GetScaled (FSpotPixbufUtils.ErrorPixbuf.ShallowCopy ());
 					
 					next_idx = idx;
 					StartTweenIdle ();
@@ -248,7 +248,7 @@ namespace FSpot {
 
 					next = GetScaled (photos [0]);
 					if (next == null)
-						next = GetScaled (PixbufUtils.ShallowCopy (FSpotPixbufUtils.ErrorPixbuf));
+						next = GetScaled (FSpotPixbufUtils.ErrorPixbuf.ShallowCopy ());
 					next_idx = 0;
 					StartTweenIdle ();
 					

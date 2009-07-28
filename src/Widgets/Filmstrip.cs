@@ -614,7 +614,7 @@ namespace FSpot.Widgets
 			Pixbuf current;
 			Uri uri = (selection.Collection [i]).DefaultVersion.Uri;
 			try {
-				current = PixbufUtils.ShallowCopy (thumb_cache.Get (uri));
+				current = thumb_cache.Get (uri).ShallowCopy ();
 			} catch (IndexOutOfRangeException) {
 				current = null;
 			}

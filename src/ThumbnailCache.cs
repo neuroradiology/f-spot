@@ -80,7 +80,7 @@ public class ThumbnailCache : IDisposable {
 		pixbuf_mru.Remove (item);
 		pixbuf_mru.Insert (0, item);
 
-		return PixbufUtils.ShallowCopy (item.pixbuf);
+		return item.pixbuf.ShallowCopy ();
 	}
 
 	public void RemoveThumbnailForUri (Uri uri)
