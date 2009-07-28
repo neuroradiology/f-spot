@@ -643,7 +643,7 @@ namespace FSpotGoogleExport {
 			filters.Add (new JpegFilter ());
 
 			if (scale)
-				filters.Add (new ResizeFilter ((uint)size));
+				filters.Add (new ResizeFilter (size));
 
 			if (rotate)
 				filters.Add (new OrientationFilter ());

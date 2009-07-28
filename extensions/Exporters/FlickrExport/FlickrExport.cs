@@ -352,7 +352,7 @@ namespace FSpotFlickrExport {
 					info = new FileInfo (photo.DefaultVersion.Uri.LocalPath);
 					FilterSet stack = new FilterSet ();
 					if (scale)
-						stack.Add (new ResizeFilter ((uint)size));
+						stack.Add (new ResizeFilter (size));
 
 					string id = fr.Upload (photo, stack, is_public, is_family, is_friend);
 					ids.Add (id);

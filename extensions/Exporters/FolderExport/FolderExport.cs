@@ -206,7 +206,7 @@ namespace FSpotFolderExport {
 				
 				FilterSet filter_set = new FilterSet ();
 				if (scale)
-					filter_set.Add (new ResizeFilter ((uint) size));
+					filter_set.Add (new ResizeFilter (size));
 				else if (rotate)
 					filter_set.Add (new OrientationFilter ());
 				filter_set.Add (new ChmodFilter ());
@@ -481,7 +481,7 @@ namespace FSpotFolderExport {
 							continue;
 
 						FilterSet req_set = new FilterSet ();
-						req_set.Add (new ResizeFilter ((uint)Math.Max (req.Width, req.Height)));
+						req_set.Add (new ResizeFilter (Math.Max (req.Width, req.Height)));
 
 						bool sharpen;
 						try {

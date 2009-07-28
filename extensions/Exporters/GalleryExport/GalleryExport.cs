@@ -764,7 +764,7 @@ namespace G2Export {
 				if (account.Version == GalleryVersion.Version1)
 					filters.Add (new WhiteListFilter (new string []{".jpg", ".jpeg", ".png", ".gif"}));
 				if (scale)
-					filters.Add (new ResizeFilter ((uint) size));
+					filters.Add (new ResizeFilter (size));
 				else if (rotate)
 					filters.Add (new OrientationFilter ());
 

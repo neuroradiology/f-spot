@@ -7,7 +7,9 @@
  * This is free software. See COPYING for details.
  *
  */
+using Gdk;
 using System;
+using FSpot.Loaders;
 
 namespace FSpot.Filters {
 	public class JpegFilter : IFilter {
@@ -46,7 +48,11 @@ namespace FSpot.Filters {
 					exif_data = new Exif.ExifData();
 				}
 
-				PixbufUtils.SaveJpeg (img.Load(), dest, (int) quality, exif_data);
+				using (IImageLoader loader = ImageLoader.Create (req.Current)) {
+					loader.Load (ImageLoaderItem.Full);
+					using (Pixbuf full = loader.Full)
+						PixbufUtils.SaveJpeg (full, dest, (int) quality, exif_data);
+				}
 			}
 
 			return true;

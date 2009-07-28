@@ -13,6 +13,7 @@ using System;
 using System.IO;
 
 using FSpot;
+using FSpot.Loaders;
 
 using Mono.Unix;
 
@@ -21,21 +22,16 @@ using Gdk;
 namespace FSpot.Filters {
 	public class ResizeFilter : IFilter
 	{
-		public ResizeFilter ()
+		public ResizeFilter () : this (600)
 		{
 		}
 
-		public ResizeFilter (uint size)
+		public ResizeFilter (int size)
 		{
-			this.size = size;
+			Size = size;
 		}
 
-		private uint size = 600;
-
-		public uint Size {
-			get { return size; }
-			set { size = value; }
-		}
+		public int Size { get; set; }
 
 		public bool Convert (FilterRequest req)
 		{
@@ -44,18 +40,24 @@ namespace FSpot.Filters {
 			string dest = dest_uri.LocalPath;
 
 			using (ImageFile img = ImageFile.Create (req.Current)) {
+				Pixbuf scaled;
+				using (IImageLoader loader = ImageLoader.Create (req.Current)) {
+					loader.Load (ImageLoaderItem.Full);
 
-				using (Pixbuf pixbuf = img.Load ()) {
-					if (pixbuf.Width < size && pixbuf.Height < size)
-						return false;
+					using (Pixbuf pixbuf = loader.Full) {
+						if (pixbuf.Width < Size && pixbuf.Height < Size)
+							return false;
+
+						scaled = PixbufUtils.ScaleToMaxSize (pixbuf, Size, Size, false);
+					}
 				}
-	
-				using (Pixbuf pixbuf = img.Load ((int)size, (int)size)) {
+
+				using (scaled) {
 					string destination_extension = Path.GetExtension (dest);
-	
+
 					if (Path.GetExtension (source).ToLower () == Path.GetExtension (dest).ToLower ()) {
 						using (Stream output = File.OpenWrite (dest)) {
-							img.Save (pixbuf, output);
+							img.Save (scaled, output);
 						}
 					} else if (destination_extension == ".jpg") {
 						// FIXME this is a bit of a nasty hack to work around
@@ -65,7 +67,7 @@ namespace FSpot.Filters {
 	
 						exif_data = new Exif.ExifData (source);
 						
-						PixbufUtils.SaveJpeg (pixbuf, dest, 95, exif_data);
+						PixbufUtils.SaveJpeg (scaled, dest, 95, exif_data);
 					} else 
 						throw new NotImplementedException (String.Format (Catalog.GetString ("No way to save files of type \"{0}\""), destination_extension));
 				}

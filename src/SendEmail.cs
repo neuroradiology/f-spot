@@ -106,7 +106,7 @@ namespace FSpot {
 				long orig_size = FileFactory.NewForUri (scalephoto.DefaultVersion.Uri).QueryInfo ("standard::size", FileQueryInfoFlags.None, null).Size;
 				
 				FilterSet filters = new FilterSet ();
-				filters.Add (new ResizeFilter ((uint)(sizes [3])));
+				filters.Add (new ResizeFilter (sizes [3]));
 				long new_size;
 				using (FilterRequest request = new FilterRequest (scalephoto.DefaultVersion.Uri)) {
 					filters.Convert (request);
@@ -255,7 +255,7 @@ namespace FSpot {
 			FilterSet filters = new FilterSet ();
 
 			if (size != 0)
-				filters.Add (new ResizeFilter ((uint) size));
+				filters.Add (new ResizeFilter (size));
 			else if (rotate)
 				filters.Add (new OrientationFilter ());
 			filters.Add (new UniqueNameFilter (tmp_mail_dir));
