@@ -126,7 +126,7 @@ namespace FSpot {
 					AddHistogram (pixbuf);
 					image.Pixbuf = pixbuf;
 				} else {
-					image.Pixbuf = PixbufUtils.ErrorPixbuf;
+					image.Pixbuf = FSpotPixbufUtils.ErrorPixbuf;
 				}
 			} else {
 				image.Pixbuf = pixbuf;

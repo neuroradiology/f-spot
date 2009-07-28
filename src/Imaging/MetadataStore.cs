@@ -5,12 +5,12 @@ using FSpot.Xmp;
 using FSpot.Utils;
 
 namespace FSpot {
-        internal class Description {
+        public class Description {
 		string predicate;
 		string description;
 		string title;
 		ValueFormat formater;
-		
+
 		static System.Collections.Hashtable table;
 
 		static Description ()
@@ -20,7 +20,7 @@ namespace FSpot {
 				new Description ("dc:title", Catalog.GetString ("Title")),
 				new Description ("dc:rights", Catalog.GetString ("Copyright")),
 				new Description ("dc:subject", Catalog.GetString ("Subject and Keywords")),
-				new Description ("tiff:Compression", Catalog.GetString ("Compression"), 
+				new Description ("tiff:Compression", Catalog.GetString ("Compression"),
 						 typeof (FSpot.Tiff.Compression)),
 						 /* Translators: Planar Configuration is the label for the tiff:PlanarConfiguration tag
 						    "when Planar Configuration=1, this implies that all components must have
@@ -28,19 +28,19 @@ namespace FSpot {
 						    components could have different bit depths." */
 				new Description ("tiff:PlanarConfiguration", Catalog.GetString ("Planar Configuration"), 
 						 typeof (FSpot.Tiff.PlanarConfiguration)),
-				new Description ("tiff:Orientation", Catalog.GetString ("Orientation"), 
+				new Description ("tiff:Orientation", Catalog.GetString ("Orientation"),
 						 typeof (PixbufOrientation)),
-				new Description ("tiff:PhotometricInterpretation", Catalog.GetString ("Photometric Interpretation"), 
+				new Description ("tiff:PhotometricInterpretation", Catalog.GetString ("Photometric Interpretation"),
 						 typeof (FSpot.Tiff.PhotometricInterpretation)),
 				new Description ("tiff:ResolutionUnit", Catalog.GetString ("Resolution Unit"),
 						 typeof (FSpot.Tiff.ResolutionUnit)),
-				new Description ("exif:ExposureProgram", Catalog.GetString ("Exposure Program"), 
+				new Description ("exif:ExposureProgram", Catalog.GetString ("Exposure Program"),
 						 typeof (FSpot.Tiff.ExposureProgram)),
-				new Description ("exif:MeteringMode", Catalog.GetString ("Metering Mode"), 
+				new Description ("exif:MeteringMode", Catalog.GetString ("Metering Mode"),
 						 typeof (FSpot.Tiff.MeteringMode)),
-				new Description ("exif:ExposureMode", Catalog.GetString ("Exposure Mode"), 
+				new Description ("exif:ExposureMode", Catalog.GetString ("Exposure Mode"),
 						 typeof (FSpot.Tiff.ExposureMode)),
-				new Description ("exif:CustomRendered", Catalog.GetString ("Custom Rendered"), 
+				new Description ("exif:CustomRendered", Catalog.GetString ("Custom Rendered"),
 						 typeof (FSpot.Tiff.CustomRendered)),
 				new Description ("exif:ComponentsConfiguration", Catalog.GetString ("Components Configuration"),
 						 typeof (FSpot.Tiff.ComponentsConfiguration)),
@@ -74,18 +74,18 @@ namespace FSpot {
 
 
 			};
-			
+
 			table = new System.Collections.Hashtable ();
 
 			foreach (Description d in preset) {
 				table [MetadataStore.Namespaces.Resolve (d.predicate)] = d;
 			}
 		}
-		
+
 		public Description (string predicate, string title) : this (predicate, title, null, null) {}
 
 		public Description (string predicate, string title, string description) : this (predicate, title, description, null) {}
-		
+
 		public Description (string predicate, string title, System.Type type) : this (predicate, title)
 		{
 			formater = new ValueFormat (type);
@@ -97,7 +97,7 @@ namespace FSpot {
 			this.title = title;
 			this.formater = formater;
 		}
-		
+
 		public static void GetDescription (MemoryStore store, Statement stmt, out string label, out string value)
 		{
 			string predicate = stmt.Predicate.Uri;
@@ -119,7 +119,7 @@ namespace FSpot {
 				Statement sstmt = new Statement (stmt.Predicate,
 								 (Entity)MetadataStore.Namespaces.Resolve ("rdfs:label"),
 								 null);
-				
+
 				foreach (Statement tstmt in MetadataStore.Descriptions.Select (sstmt))
 					if (tstmt.Object is SemWeb.Literal)
 						label = ((SemWeb.Literal)(tstmt.Object)).Value;
@@ -127,11 +127,11 @@ namespace FSpot {
 			return;
 		}
 	}
-	
-        internal class ValueFormat 
+
+    public class ValueFormat
 	{
 		System.Type type;
-		
+
 		public ValueFormat (System.Type type)
 		{
 			this.type = type;
@@ -152,17 +152,17 @@ namespace FSpot {
 			/*
 			else if (type == typeof (Rational)) {
 				object o = FSpot.Tiff.Rational.Parse (obj.Value);
-			} 
+			}
 			*/
 			return result;
 		}
 	}
-	
+
 	public class MetadataStore : MemoryStore
 	{
 		public static NamespaceManager Namespaces;
 		private static MetadataStore descriptions;
-		
+
 		public const string PhotoshopNS = "http://ns.adobe.com/photoshop/1.0/";
 		public const string Iptc4xmpCoreNS = "http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/";
 		public const string DcNS = "http://purl.org/dc/elements/1.1/";
@@ -184,7 +184,7 @@ namespace FSpot {
 		static MetadataStore ()
 		{
 			Namespaces = new NamespaceManager ();
-			
+
 			Namespaces.AddNamespace (PhotoshopNS, "photoshop");
 			Namespaces.AddNamespace (Iptc4xmpCoreNS, "Iptc4xmpCore");
 			Namespaces.AddNamespace (DcNS, "dc");
@@ -211,7 +211,7 @@ namespace FSpot {
 						System.Console.WriteLine ("Can't find resource");
 					}
 				}
-				
+
 				return descriptions;
 			}
 		}
@@ -229,8 +229,8 @@ namespace FSpot {
 		{
 			Entity empty = new BNode ();
 			Statement top = new Statement (FSpotXMPBase, (Entity)MetadataStore.Namespaces.Resolve (predicate), empty);
-			Statement desc = new Statement (empty, 
-							(Entity)MetadataStore.Namespaces.Resolve ("rdf:type"), 
+			Statement desc = new Statement (empty,
+							(Entity)MetadataStore.Namespaces.Resolve ("rdf:type"),
 							(Entity)MetadataStore.Namespaces.Resolve (type));
 			sink.Add (desc);
 			Statement literal = new Statement (empty,
@@ -243,7 +243,7 @@ namespace FSpot {
 		public static void AddLiteral (StatementSink sink, string predicate, string value)
 		{
 			Statement stmt = new Statement (FSpotXMPBase,
-							(Entity)MetadataStore.Namespaces.Resolve (predicate), 
+							(Entity)MetadataStore.Namespaces.Resolve (predicate),
 							new SemWeb.Literal (value));
 			sink.Add (stmt);
 		}
@@ -304,7 +304,7 @@ namespace FSpot {
 				Add (this, predicate, type, values);
                         }
 		}
-		
+
 		public static void Add (StatementSink sink, Entity subject, string predicate, string type, string [] values)
 		{
 			if (values == null) {
@@ -314,8 +314,8 @@ namespace FSpot {
 
                         Entity empty = new SemWeb.BNode();
 			Statement top = new Statement (subject, (Entity)MetadataStore.Namespaces.Resolve (predicate), empty);
-			Statement desc = new Statement (empty, 
-							(Entity)MetadataStore.Namespaces.Resolve ("rdf:type"), 
+			Statement desc = new Statement (empty,
+							(Entity)MetadataStore.Namespaces.Resolve ("rdf:type"),
 							(Entity)MetadataStore.Namespaces.Resolve (type));
 			sink.Add (desc);
 			foreach (string value in values) {
@@ -327,7 +327,7 @@ namespace FSpot {
 			sink.Add (top);
 		}
 
-		private class StatementWriter : StatementSink 
+		private class StatementWriter : StatementSink
 		{
 			string name;
 			public StatementWriter (string name)
@@ -355,14 +355,14 @@ namespace FSpot {
 				this.Statement = stmt;
 				return false;
 			}
-		}			
+		}
 
 		public void DumpNode (XPathSemWebNavigator navi, int depth)
 		{
-			do { 
+			do {
 				System.Console.WriteLine ("node [{0}] {1} {2}", depth, navi.Name, navi.Value);
 			} while (navi.MoveToNext ());
 		}
-	       
-	}	       
+
+	}
 }

@@ -51,6 +51,11 @@ namespace FSpot {
 			return Open ();
 		}
 
+		public static void AddExtension (string extension, Type type)
+		{
+			name_table [extension] = type;
+		}
+
 		static ImageFile ()
 		{
 			name_table = new Hashtable ();

@@ -30,6 +30,7 @@ REFS =							\
 	-r:$(top_builddir)/src/FSpot.Query.dll		\
 	-r:$(top_builddir)/src/FSpot.Utils.dll		\
 	-r:$(top_builddir)/src/FSpot.Platform.dll	\
+	-r:$(top_builddir)/src/FSpot.Imaging.dll	\
 	-r:$(top_builddir)/src/Cms.dll			\
 	-r:$(top_builddir)/lib/semweb/SemWeb.dll
 

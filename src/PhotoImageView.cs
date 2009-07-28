@@ -346,9 +346,10 @@ namespace FSpot.Widgets {
 			// like offer the user a chance to locate the moved file and
 			// update the db entry, but for now just set the error pixbuf	
 			Pixbuf old = Pixbuf;
-			Pixbuf = new Pixbuf (PixbufUtils.ErrorPixbuf, 0, 0, 
-					     PixbufUtils.ErrorPixbuf.Width, 
-					     PixbufUtils.ErrorPixbuf.Height);
+			Pixbuf err = new Pixbuf (FSpotPixbufUtils.ErrorPixbuf, 0, 0,
+									 FSpotPixbufUtils.ErrorPixbuf.Width,
+									 FSpotPixbufUtils.ErrorPixbuf.Height);
+			ChangeImage (err, PixbufOrientation.TopLeft, true, false);
 			if (old != null)
 				old.Dispose ();
 

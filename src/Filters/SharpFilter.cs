@@ -47,7 +47,7 @@ namespace FSpot.Filters {
 		
 							exif_data = new Exif.ExifData (req.Current.LocalPath);
 							
-							PixbufUtils.SaveJpeg (out_pixbuf, dest_uri.LocalPath, 90, exif_data);
+							FSpotPixbufUtils.SaveJpeg (out_pixbuf, dest_uri.LocalPath, 90, exif_data);
 						} else 
 							throw new NotImplementedException (String.Format (Catalog.GetString ("No way to save files of type \"{0}\""), destination_extension));
 						

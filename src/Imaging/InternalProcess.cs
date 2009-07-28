@@ -54,7 +54,7 @@ namespace FSpot {
 							     IntPtr err,
 							     //ref int stderr,
 							     out IntPtr error);
-		
+
 		public InternalProcess (string path, string [] args)
 		{
 			IntPtr error;
@@ -64,8 +64,8 @@ namespace FSpot {
 				Array.Copy (args, nargs, args.Length);
 				args = nargs;
 			}
-			
-			g_spawn_async_with_pipes (path, args, null, InternalProcessFlags.SearchPath, 
+
+			g_spawn_async_with_pipes (path, args, null, InternalProcessFlags.SearchPath,
 						  IntPtr.Zero, IntPtr.Zero, IntPtr.Zero,
 						  ref stdin, ref stdout, IntPtr.Zero, out error);
 

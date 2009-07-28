@@ -34,8 +34,9 @@ PLUGIN_SOURCES =			\
 
 REFS =							\
 	-r:$(top_builddir)/src/f-spot.exe		\
-	-r:$(top_builddir)/src/FSpot.Core.dll		\
-	-r:$(top_builddir)/src/FSpot.Utils.dll		\
+	-r:$(top_builddir)/src/FSpot.Core.dll	\
+	-r:$(top_builddir)/src/FSpot.Utils.dll	\
+	-r:$(top_builddir)/src/FSpot.Imaging.dll	\
 	-r:$(top_builddir)/src/FSpot.Platform.dll	\
 	-r:$(top_builddir)/src/FSpot.Widgets.dll	\
 	$(LINK_GTKSHARPBEANS)				\

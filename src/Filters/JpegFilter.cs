@@ -51,7 +51,7 @@ namespace FSpot.Filters {
 				using (IImageLoader loader = ImageLoader.Create (req.Current)) {
 					loader.Load (ImageLoaderItem.Full);
 					using (Pixbuf full = loader.Full)
-						PixbufUtils.SaveJpeg (full, dest, (int) quality, exif_data);
+						FSpotPixbufUtils.SaveJpeg (full, dest, (int) quality, exif_data);
 				}
 			}
 

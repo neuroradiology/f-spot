@@ -28,13 +28,13 @@ namespace FSpot.Loaders {
 
 		Pixbuf thumbnail;
 		public Pixbuf Thumbnail {
-			get { return PixbufUtils.ShallowCopy (thumbnail); }
+			get { return thumbnail.ShallowCopy (); }
 			private set { thumbnail = value; }
 		}
 		public PixbufOrientation ThumbnailOrientation { get; private set; }
 
 		public Pixbuf Large {
-			get { return PixbufUtils.ShallowCopy (Pixbuf); }
+			get { return Pixbuf.ShallowCopy (); }
 		}
 		public PixbufOrientation LargeOrientation { get; private set; }
 
@@ -204,8 +204,8 @@ namespace FSpot.Loaders {
 			if (is_disposed)
 				return;
 
+			image_stream = new GLib.GioStream (GLib.FileFactory.NewForUri (uri).Read (null));
 			using (ImageFile image_file = ImageFile.Create (uri)) {
-				image_stream = image_file.PixbufStream ();
 				LargeOrientation = image_file.Orientation;
 			}
 

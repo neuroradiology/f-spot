@@ -7,6 +7,11 @@
 /FSpot.Core.dll.mdb
 /FSpot.JobScheduler.dll
 /FSpot.JobScheduler.dll.mdb
+/FSpot.Imaging.dll
+/FSpot.Imaging.dll.mdb
+/FSpot.Loaders.dll
+/FSpot.Loaders.dll.mdb
+/FSpot.Loaders.dll.config
 /FSpot.Query.dll
 /FSpot.Query.dll.mdb
 /FSpot.Utils.dll

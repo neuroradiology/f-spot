@@ -128,7 +128,7 @@ namespace FSpot.Widgets
 							FSpot.ColorManagement.ApplyProfile (next, screen_profile);
 						loadRetries = 0;
 					} catch (Exception) {
-						next = PixbufUtils.ErrorPixbuf;
+						next = FSpotPixbufUtils.ErrorPixbuf;
 						if (++loadRetries < 10)
 							item.MoveNext (true);
 						else

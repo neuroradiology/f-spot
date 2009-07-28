@@ -121,9 +121,9 @@ namespace FSpot
 						} catch (Exception e) {
 							Log.Exception ("Unable to load image " + selected_photos[p_index].DefaultVersion.Uri + "\n", e);
 							// If the image is not found load error pixbuf
-							pixbuf = new Gdk.Pixbuf (PixbufUtils.ErrorPixbuf, 0, 0, 
-										      PixbufUtils.ErrorPixbuf.Width, 
-										      PixbufUtils.ErrorPixbuf.Height);
+							pixbuf = new Gdk.Pixbuf (FSpotPixbufUtils.ErrorPixbuf, 0, 0,
+										      FSpotPixbufUtils.ErrorPixbuf.Width,
+										      FSpotPixbufUtils.ErrorPixbuf.Height);
 						}
 						//Gdk.Pixbuf pixbuf = img.Load (100, 100);
 						bool rotated = false;

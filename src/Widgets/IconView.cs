@@ -16,6 +16,7 @@ using System.Reflection;
 using System.Collections;
 using System.IO;
 using FSpot.Platform;
+using FSpot.Utils;
 
 namespace FSpot.Widgets
 {
@@ -928,7 +929,7 @@ namespace FSpot.Widgets
 								InterpType.Bilinear);
 					}
 
-					FSpot.Utils.PixbufUtils.CopyThumbnailOptions (thumbnail, temp_thumbnail);
+					temp_thumbnail.CopyThumbnailOptionsFrom (thumbnail);
 				} else
 					temp_thumbnail = thumbnail;
 

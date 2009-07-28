@@ -943,7 +943,7 @@ namespace FSpot
 				Pixbuf icon = null;
 				try {
 					Pixbuf tmp = FSpot.PhotoLoader.LoadAtMaxSize (query [nums[0]], 128, 128);
-					icon = PixbufUtils.TagIconFromPixbuf (tmp);
+					icon = FSpotPixbufUtils.TagIconFromPixbuf (tmp);
 					tmp.Dispose ();
 				} catch {
 					icon = null;

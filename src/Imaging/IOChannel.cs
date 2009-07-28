@@ -37,7 +37,7 @@ namespace FSpot {
 	public class DataReadEventArgs : EventArgs {
 		public bool Continue;
 		IOCondition condition;
-		
+
 		public IOCondition Condition {
 			get { return condition; }
 		}
@@ -48,29 +48,29 @@ namespace FSpot {
 			Continue = true;
 		}
 	}
-	
+
 	public class IOChannel : System.IO.Stream {
 		private HandleRef handle;
-		
+
 		private delegate bool IOFunc (IntPtr source_channel, IOCondition cond, IntPtr data);
 
 		[DllImport("libglib-2.0-0.dll")]
 		static extern IOFlags g_io_channel_get_flags (HandleRef channel);
 
 		public override bool CanRead {
-			get { 
+			get {
 				IOFlags flags = g_io_channel_get_flags (handle);
 
-				return (flags & IOFlags.Readable) == IOFlags.Readable; 
+				return (flags & IOFlags.Readable) == IOFlags.Readable;
 			}
 		}
 
 		public override bool CanSeek {
 			get {
-#if NOTDONE				
+#if NOTDONE
 				IOFlags flags = g_io_channel_get_flags (handle);
 
-				return (flags & IOFlags.Seekable) == IOFlags.Seekable; 
+				return (flags & IOFlags.Seekable) == IOFlags.Seekable;
 #else
 				return false;
 #endif
@@ -81,16 +81,16 @@ namespace FSpot {
 			get {
 				IOFlags flags = g_io_channel_get_flags (handle);
 
-				return (flags & IOFlags.Writable) == IOFlags.Writable; 
+				return (flags & IOFlags.Writable) == IOFlags.Writable;
 			}
 		}
 
 		public override long Length {
-			get { 
+			get {
 				throw new NotSupportedException ("IOChannel doesn't support seeking");
 			}
 		}
-		
+
 		public override long Position {
 			get {
 				throw new NotSupportedException ("IOChannel doesn't support seeking");
@@ -125,7 +125,7 @@ namespace FSpot {
 		{
 			IOStatus status;
 			IntPtr error;
-			
+
 			status = g_io_channel_flush (handle, out error);
 
 			if (status != IOStatus.Normal && status != IOStatus.Eof)
@@ -137,7 +137,7 @@ namespace FSpot {
 
 		[DllImport("libglib-2.0-0.dll")]
 		static extern unsafe IOStatus g_io_channel_write_chars (HandleRef channel, byte *data, int count, out int bytes_written, out IntPtr error);
-		
+
 		public override void Write (byte [] buffer, int offset, int count)
 		{
 			IOStatus status = IOStatus.Again;
@@ -146,7 +146,7 @@ namespace FSpot {
 
 			if (buffer == null)
 				throw new ArgumentNullException ();
-			
+
 			unsafe {
 				while (status == IOStatus.Again && count > 0) {
 					fixed (byte *data = &buffer [offset]) {
@@ -155,13 +155,13 @@ namespace FSpot {
 
 					if (error != IntPtr.Zero)
 						throw new GException (error);
-					
+
 					offset += written;
 					count -= written;
 				}
 			}
 		}
-		
+
 		[DllImport("libglib-2.0-0.dll")]
 		static unsafe extern IOStatus g_io_channel_read_chars (HandleRef channel, byte *data, int count, out int bytes_read, out IntPtr error);
 
@@ -193,7 +193,7 @@ namespace FSpot {
 		{
 			return g_io_add_watch (handle, condition, func, IntPtr.Zero);
 		}
-		
+
 		// FIXME this should hold more than one source in a table
 		// but I am lazy
 		uint data_ready_source;
@@ -215,9 +215,9 @@ namespace FSpot {
 		private bool DataReadyHandler (IntPtr channel, IOCondition condition, IntPtr data)
 		{
 			DataReadEventArgs args = new DataReadEventArgs (condition);
-			if (data_ready != null) 
+			if (data_ready != null)
 				data_ready (this, args);
-			
+
 			return args.Continue;
 		}
 
@@ -225,7 +225,7 @@ namespace FSpot {
 		{
 			throw new NotSupportedException ();
 		}
-		
+
 		private enum SeekType {
 			Current,
 			Set,
@@ -237,7 +237,7 @@ namespace FSpot {
 
 		public override long Seek (long position, SeekOrigin origin)
 		{
-#if false			
+#if false
 			// GIOChannels have the interesting property of having a seek interface
 			// but no method to retrieve the current position or length.
 			// we could support these actions for unix iochannels with extra work
@@ -246,13 +246,13 @@ namespace FSpot {
 			SeekType type;
 			IntPtr error;
 			long final;
-			
+
 			switch (origin) {
 			case SeekOrigin.Begin:
 				type = SeekType.Set;
 				break;
 			case SeekOrigin.Current:
-				
+
 				break;
 			}
 
@@ -260,7 +260,7 @@ namespace FSpot {
 
 			if (error != IntPtr.Zero)
 				throw new GException (error);
-			
+
 			if (SeekOrigin == SeekOrigin.Begin)
 				return position;
 			else
@@ -284,7 +284,7 @@ namespace FSpot {
 			data_ready_source = 0;
 
 			g_io_channel_shutdown (handle, false, out error);
-			
+
 			base.Close ();
 
 			if (error != IntPtr.Zero)

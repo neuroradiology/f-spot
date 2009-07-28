@@ -13,9 +13,9 @@ REFS =						\
 	-r:$(top_builddir)/src/f-spot.exe	\
 	-r:$(top_builddir)/src/FSpot.Core.dll	\
 	-r:$(top_builddir)/src/FSpot.Utils.dll	\
+	-r:$(top_builddir)/src/FSpot.Imaging.dll	\
 	$(LINK_SEMWEB)				\
 	-r:google-sharp/Mono.Google.dll		\
-	$(LINK_KEYRING)				\
 	$(LINK_GIOSHARP)			\
 	$(LINK_GPHOTO2)				\
 	$(LINK_UNIQUESHARP)			\

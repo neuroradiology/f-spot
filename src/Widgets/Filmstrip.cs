@@ -625,7 +625,7 @@ namespace FSpot.Widgets
 
 					if (SquaredThumbs) {
 						using (Pixbuf p = ThumbnailFactory.LoadThumbnail (uri)) {
-							current = PixbufUtils.IconFromPixbuf (p, ThumbSize);
+							current = FSpotPixbufUtils.IconFromPixbuf (p, ThumbSize);
 						}
 					} else 
 						current = ThumbnailFactory.LoadThumbnail (uri, -1, ThumbSize);

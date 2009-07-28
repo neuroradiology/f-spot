@@ -40,6 +40,46 @@ CORE_CSDISTFILES =				\
 	$(srcdir)/Core/PhotosChanges.cs		\
 	$(srcdir)/Core/Roll.cs
 
+IMAGING_CSDISTFILES =						\
+	$(srcdir)/Imaging/PixbufUtils.cs		\
+	$(srcdir)/Imaging/DCRawFile.cs			\
+	$(srcdir)/Imaging/BitConverter.cs		\
+	$(srcdir)/Imaging/Bim.cs				\
+	$(srcdir)/Imaging/Ciff.cs				\
+	$(srcdir)/Imaging/Exif.cs				\
+	$(srcdir)/Imaging/ImageFile.cs			\
+	$(srcdir)/Imaging/IptcFile.cs			\
+	$(srcdir)/Imaging/InternalProcess.cs	\
+	$(srcdir)/Imaging/IOChannel.cs			\
+	$(srcdir)/Imaging/IRawFile.cs			\
+	$(srcdir)/Imaging/JpegFile.cs			\
+	$(srcdir)/Imaging/JpegHeader.cs			\
+	$(srcdir)/Imaging/JpegUtils.cs			\
+	$(srcdir)/Imaging/MetadataStore.cs		\
+	$(srcdir)/Imaging/MrwFile.cs			\
+	$(srcdir)/Imaging/OrderedWriter.cs		\
+	$(srcdir)/Imaging/PixelBuffer.cs		\
+	$(srcdir)/Imaging/PngFile.cs			\
+	$(srcdir)/Imaging/PnmFile.cs			\
+	$(srcdir)/Imaging/RafFile.cs			\
+	$(srcdir)/Imaging/SvgFile.cs			\
+	$(srcdir)/Imaging/X3fFile.cs			\
+	$(srcdir)/Imaging/XmpFile.cs			\
+	$(srcdir)/Imaging/Tiff.cs
+
+LOADERS_CSDISTFILES =								\
+	$(srcdir)/Loaders/AreaPreparedEventArgs.cs		\
+	$(srcdir)/Loaders/AreaUpdatedEventArgs.cs		\
+	$(srcdir)/Loaders/GdkImageLoader.cs				\
+	$(srcdir)/Loaders/IImageLoader.cs				\
+	$(srcdir)/Loaders/IImageLoaderExtensions.cs		\
+	$(srcdir)/Loaders/ImageLoader.cs				\
+	$(srcdir)/Loaders/ImageLoaderItem.cs			\
+	$(srcdir)/Loaders/ImageLoaderItemExtensions.cs	\
+	$(srcdir)/Loaders/ItemCompletedEventArgs.cs		\
+	$(srcdir)/Loaders/LibrawImageLoader.cs			\
+	$(srcdir)/Loaders/ProgressHintEventArgs.cs
+
 QUERY_CSDISTFILES =				\
 	$(srcdir)/Query/DateRange.cs		\
 	$(srcdir)/Query/FolderSet.cs		\
@@ -61,6 +101,7 @@ UTILS_CSDISTFILES =				\
 	$(srcdir)/Utils/GdkUtils.cs		\
 	$(srcdir)/Utils/GtkUtil.cs		\
 	$(srcdir)/Utils/Log.cs			\
+	$(srcdir)/Utils/PixbufExtensions.cs		\
 	$(srcdir)/Utils/PixbufOrientation.cs	\
 	$(srcdir)/Utils/PixbufUtils.cs		\
 	$(srcdir)/Utils/RecursiveFileEnumerator.cs		\
@@ -127,7 +168,6 @@ NULL_PLATFORM_CSDISTFILES =				\
 
 F_SPOT_CSDISTFILES =				\
 	$(srcdir)/BlockProcessor.cs		\
-	$(srcdir)/BitConverter.cs		\
 	$(srcdir)/PhotoList.cs 		\
 	$(srcdir)/ColorAdjustment/Adjustment.cs		\
 	$(srcdir)/ColorAdjustment/AutoStretch.cs		\
@@ -186,43 +226,11 @@ F_SPOT_CSDISTFILES =				\
 	$(srcdir)/GroupSelector.cs		\
 	$(srcdir)/Accelerometer.cs		\
 	$(srcdir)/Histogram.cs			\
-	$(srcdir)/Loaders/AreaPreparedEventArgs.cs		\
-	$(srcdir)/Loaders/AreaUpdatedEventArgs.cs		\
-	$(srcdir)/Loaders/GdkImageLoader.cs		\
-	$(srcdir)/Loaders/IImageLoader.cs		\
-	$(srcdir)/Loaders/IImageLoaderExtensions.cs		\
-	$(srcdir)/Loaders/ImageLoader.cs		\
-	$(srcdir)/Loaders/ImageLoaderItem.cs		\
-	$(srcdir)/Loaders/ImageLoaderItemExtensions.cs		\
-	$(srcdir)/Loaders/ItemCompletedEventArgs.cs		\
-	$(srcdir)/Loaders/LibrawImageLoader.cs		\
-	$(srcdir)/Loaders/ProgressHintEventArgs.cs		\
 	$(srcdir)/ImageLoaderThread.cs		\
 	$(srcdir)/ImportBackend.cs		\
 	$(srcdir)/ImportCommand.cs		\
 	$(srcdir)/InfoOverlay.cs		\
-	$(srcdir)/InternalProcess.cs		\
-	$(srcdir)/IOChannel.cs			\
 	$(srcdir)/ItemAction.cs			\
-	$(srcdir)/Imaging/DCRawFile.cs		\
-	$(srcdir)/Imaging/Bim.cs		\
-	$(srcdir)/Imaging/Ciff.cs		\
-	$(srcdir)/Imaging/Exif.cs		\
-	$(srcdir)/Imaging/ImageFile.cs		\
-	$(srcdir)/Imaging/IptcFile.cs		\
-	$(srcdir)/Imaging/IRawFile.cs		\
-	$(srcdir)/Imaging/JpegFile.cs		\
-	$(srcdir)/Imaging/JpegHeader.cs		\
-	$(srcdir)/Imaging/JpegUtils.cs		\
-	$(srcdir)/Imaging/MrwFile.cs		\
-	$(srcdir)/Imaging/OrderedWriter.cs	\
-	$(srcdir)/Imaging/PngFile.cs		\
-	$(srcdir)/Imaging/PnmFile.cs		\
-	$(srcdir)/Imaging/RafFile.cs		\
-	$(srcdir)/Imaging/SvgFile.cs		\
-	$(srcdir)/Imaging/X3fFile.cs		\
-	$(srcdir)/Imaging/XmpFile.cs		\
-	$(srcdir)/Imaging/Tiff.cs		\
 	$(srcdir)/JobStore.cs			\
 	$(srcdir)/Jobs/SyncMetadataJob.cs	\
 	$(srcdir)/Jobs/CalculateHashJob.cs	\
@@ -230,7 +238,6 @@ F_SPOT_CSDISTFILES =				\
 	$(srcdir)/MainWindow.cs			\
 	$(srcdir)/MemorySurface.cs		\
 	$(srcdir)/MetaStore.cs			\
-	$(srcdir)/MetadataStore.cs		\
 	$(srcdir)/PhotoEventArgs.cs		\
 	$(srcdir)/PhotoImageView.cs		\
 	$(srcdir)/PhotoLoader.cs		\
@@ -241,9 +248,8 @@ F_SPOT_CSDISTFILES =				\
 	$(srcdir)/PhotoVersionCommands.cs	\
 	$(srcdir)/PhotoVersionMenu.cs		\
 	$(srcdir)/PhotoView.cs			\
-	$(srcdir)/PixbufUtils.cs		\
 	$(srcdir)/PixbufCache.cs		\
-	$(srcdir)/PixelBuffer.cs		\
+	$(srcdir)/PixbufUtils.cs		\
 	$(srcdir)/Preferences.cs 		\
 	$(srcdir)/PrintOperation.cs		\
 	$(srcdir)/ProgressItem.cs		\
@@ -343,6 +349,28 @@ CORE_ASSEMBLIES =				\
 	-r:Mono.Posix				\
 	-r:FSpot.Utils.dll
 
+IMAGING_ASSEMBLIES =			\
+	$(LINK_SEMWEB)				\
+	$(LINK_GIOSHARP)			\
+	$(LINK_GTKSHARPBEANS)		\
+	-pkg:gnome-sharp-2.0		\
+	-pkg:gtk-sharp-2.0			\
+	-r:ICSharpCode.SharpZipLib	\
+	-r:Cms.dll					\
+	-r:Mono.Posix				\
+	-r:FSpot.Core.dll			\
+	-r:FSpot.Utils.dll
+
+LOADERS_ASSEMBLIES =			\
+	$(LINK_GIOSHARP)			\
+	$(LINK_GTKSHARPBEANS)		\
+	$(LINK_FSPOTRAWSHARP)		\
+	-pkg:gtk-sharp-2.0			\
+	-r:Mono.Posix				\
+	-r:FSpot.Imaging.dll		\
+	-r:FSpot.Platform.dll		\
+	-r:FSpot.Utils.dll
+
 QUERY_ASSEMBLIES =				\
 	$(LINK_GIOSHARP)			\
 	-r:FSpot.Core.dll			\
@@ -396,18 +424,19 @@ F_SPOT_ASSEMBLIES = 				\
 	$(LINK_KEYRING)				\
 	$(LINK_SMUGMUG)				\
 	$(LINK_SEMWEB)				\
+	$(LINK_FSPOTRAWSHARP)		\
 	$(LINK_GTKSHARPBEANS)			\
 	$(LINK_GIOSHARP)			\
 	$(LINK_UNIQUESHARP)			\
-	$(LINK_FSPOTRAWSHARP)		\
 	-r:System.Data				\
 	-r:System.Web				\
 	-r:Mono.Data.SqliteClient		\
 	-r:Mono.Posix				\
 	-r:Mono.Security			\
 	-r:Mono.Cairo				\
-	-r:ICSharpCode.SharpZipLib		\
 	-r:FSpot.Core.dll			\
+	-r:FSpot.Imaging.dll			\
+	-r:FSpot.Loaders.dll			\
 	-r:FSpot.Query.dll			\
 	-r:FSpot.Utils.dll			\
 	-r:FSpot.JobScheduler.dll		\
@@ -456,6 +485,10 @@ fspotlib_DATA = f-spot.exe.config	\
 		FSpot.Utils.dll		\
 		FSpot.Utils.dll.mdb	\
 		FSpot.Utils.dll.config	\
+		FSpot.Imaging.dll		\
+		FSpot.Imaging.dll.mdb	\
+		FSpot.Loaders.dll		\
+		FSpot.Loaders.dll.mdb	\
 		FSpot.Query.dll		\
 		FSpot.Query.dll.mdb	\
 		FSpot.Core.dll		\
@@ -476,6 +509,10 @@ CMS_CSFILES = $(CMS_CSDISTFILES)
 
 CORE_CSFILES = $(CORE_CSDISTFILES)	\
 	Core/Defines.cs	
+
+IMAGING_CSFILES = $(IMAGING_CSDISTFILES)
+
+LOADERS_CSFILES = $(LOADERS_CSDISTFILES)
 
 QUERY_CSFILES = $(QUERY_CSDISTFILES)
 
@@ -503,6 +540,16 @@ FSpot.Core.dll.mdb: FSpot.Core.dll
 
 FSpot.Core.dll: $(CORE_CSFILES) FSpot.Utils.dll Cms.dll
 	$(CSC_LIB) -warnaserror -out:$@ $(EXTRAFLAGS) $(CORE_CSFILES) $(CORE_ASSEMBLIES)
+
+FSpot.Imaging.dll.mdb: FSpot.Imaging.dll
+
+FSpot.Imaging.dll: $(IMAGING_CSFILES) FSpot.Utils.dll FSpot.Core.dll
+	$(CSC_LIB) -out:$@ $(EXTRAFLAGS) $(UNSAFE) $(IMAGING_CSFILES) $(IMAGING_ASSEMBLIES)
+
+FSpot.Loaders.dll.mdb: FSpot.Loaders.dll
+
+FSpot.Loaders.dll: $(LOADERS_CSFILES) FSpot.Platform.dll FSpot.Utils.dll FSpot.Imaging.dll
+	$(CSC_LIB) -out:$@ $(EXTRAFLAGS) $(LOADERS_CSFILES) $(LOADERS_ASSEMBLIES)
 
 FSpot.Query.dll.mdb: FSpot.Query.dll
 
@@ -539,7 +586,7 @@ FSpot.Platform.dll: $(PLATFORM_CSFILES) FSpot.Utils.dll
 
 f-spot.exe.mdb: f-spot.exe
 
-f-spot.exe: $(F_SPOT_CSFILES) FSpot.Utils.dll FSpot.Core.dll FSpot.Query.dll FSpot.JobScheduler.dll FSpot.Bling.dll FSpot.Widgets.dll Cms.dll FSpot.Platform.dll $(F_SPOT_RESOURCES)
+f-spot.exe: $(F_SPOT_CSFILES) FSpot.Utils.dll FSpot.Core.dll FSpot.Imaging.dll FSpot.Loaders.dll FSpot.Query.dll FSpot.JobScheduler.dll FSpot.Bling.dll FSpot.Widgets.dll Cms.dll FSpot.Platform.dll $(F_SPOT_RESOURCES)
 	$(CSC) -target:winexe -out:$@ $(EXTRAFLAGS) $(UNSAFE) $(NOWARN) $(NUNIT_DEFINES) $(F_SPOT_CSFILES) $(F_SPOT_ASSEMBLIES) $(RESOURCES)
 
 all: f-spot.exe
@@ -548,6 +595,8 @@ EXTRA_DIST =					\
 	$(UTILS_CSDISTFILES)			\
 	$(CMS_CSDISTFILES)			\
 	$(CORE_CSDISTFILES)			\
+	$(IMAGING_CSDISTFILES)			\
+	$(LOADERS_CSDISTFILES)			\
 	$(QUERY_CSDISTFILES)			\
 	$(JOBSCHEDULER_CSDISTFILES)		\
 	$(BLING_CSDISTFILES)			\
@@ -571,6 +620,10 @@ CLEANFILES =					\
 	Cms.dll					\
 	FSpot.Utils.dll.mdb			\
 	FSpot.Utils.dll				\
+	FSpot.Imaging.dll				\
+	FSpot.Imaging.dll.mdb			\
+	FSpot.Loaders.dll				\
+	FSpot.Loaders.dll.mdb			\
 	FSpot.Query.dll				\
 	FSpot.Query.dll.mdb			\
 	FSpot.Core.dll.mdb			\

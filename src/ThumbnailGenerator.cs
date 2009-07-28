@@ -41,8 +41,8 @@ namespace FSpot {
 					GFileInfo info = GLib.FileFactory.NewForUri (uri).QueryInfo ("time::modified", GLib.FileQueryInfoFlags.None, null);
 					DateTime mtime = NativeConvert.ToDateTime ((long)info.GetAttributeULong ("time::modified"));
 
-					FSpot.Utils.PixbufUtils.SetOption (thumb, ThumbUri, UriUtils.UriToStringEscaped (uri));
-					FSpot.Utils.PixbufUtils.SetOption (thumb, ThumbMTime, ((uint)GLib.Marshaller.DateTimeTotime_t (mtime)).ToString ());
+					thumb.SetOption (ThumbUri, UriUtils.UriToStringEscaped (uri));
+					thumb.SetOption (ThumbMTime, ((uint)GLib.Marshaller.DateTimeTotime_t (mtime)).ToString ());
 				} catch (System.Exception e) {
 					Log.Exception (e);
 				}

@@ -30,20 +30,20 @@ namespace FSpot.Loaders {
 
 		Pixbuf thumbnail;
 		public Pixbuf Thumbnail {
-			get { return PixbufUtils.ShallowCopy (thumbnail); }
+			get { return thumbnail.ShallowCopy (); }
 			private set { thumbnail = value; }
 		}
 		public PixbufOrientation ThumbnailOrientation { get; private set; }
 
 		Pixbuf large;
 		public Pixbuf Large {
-			get { return PixbufUtils.ShallowCopy (large); }
+			get { return large.ShallowCopy (); }
 		}
 		public PixbufOrientation LargeOrientation { get; private set; }
 
 		Pixbuf full;
 		public Pixbuf Full {
-			get { return PixbufUtils.ShallowCopy (full); }
+			get { return full.ShallowCopy (); }
 		}
 		public PixbufOrientation FullOrientation { get; private set; }
 
