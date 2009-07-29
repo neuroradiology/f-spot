@@ -71,7 +71,7 @@ namespace FSpot.Filters {
 						FSpotPixbufUtils.SaveJpeg (scaled, dest, 95, exif_data);
 					} else {
 						// FIXME: Metadata is lost, we need decent metadata handling!
-						dest_uri = req.TempUri (".jpg");
+						dest_uri = req.TempUri ("jpg");
 						dest = dest_uri.LocalPath;
 
 						byte [] image_data = PixbufUtils.Save (scaled, "jpeg", new string [] {"quality" }, new string [] { "95" });
