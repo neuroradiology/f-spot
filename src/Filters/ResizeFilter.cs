@@ -69,8 +69,16 @@ namespace FSpot.Filters {
 						exif_data = new Exif.ExifData (source);
 						
 						FSpotPixbufUtils.SaveJpeg (scaled, dest, 95, exif_data);
-					} else 
-						throw new NotImplementedException (String.Format (Catalog.GetString ("No way to save files of type \"{0}\""), destination_extension));
+					} else {
+						// FIXME: Metadata is lost, we need decent metadata handling!
+						dest_uri = req.TempUri (".jpg");
+						dest = dest_uri.LocalPath;
+
+						byte [] image_data = PixbufUtils.Save (scaled, "jpeg", new string [] {"quality" }, new string [] { "95" });
+						using (Stream stream = System.IO.File.OpenWrite (dest)) {
+							stream.Write (image_data, 0, image_data.Length);
+						}
+					}
 				}
 			}
 
