@@ -25,6 +25,7 @@ using FSpot;
 using FSpot.Query;
 using FSpot.Utils;
 using FSpot.Platform;
+using FSpot.Loaders;
 
 using Banshee.Database;
 

@@ -192,7 +192,9 @@ fspot_librawloader_load_embedded (FSpotLibrawLoader *self, int *orientation)
 
 	self->priv->raw_proc->unpack_thumb ();
 	image = self->priv->raw_proc->dcraw_make_mem_thumb (&result);
-	g_assert (result == 0 && image != NULL);
+	if (result != 0 || image == NULL) {
+		return NULL;
+	}
 	g_assert (image->type == LIBRAW_IMAGE_JPEG);
 
 	loader = gdk_pixbuf_loader_new ();

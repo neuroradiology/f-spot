@@ -2214,7 +2214,7 @@ namespace FSpot.Tiff {
 		}
 	}	
 	
-	public class NefFile : TiffFile, IThumbnailContainer, IRawFile {
+	public class NefFile : TiffFile, IRawFile {
 		public NefFile (string path) : base (path) 
 		{
 		}
@@ -2258,13 +2258,6 @@ namespace FSpot.Tiff {
 			} while (i < sub.Directory.Length);
 		}
 
-		public Gdk.Pixbuf GetEmbeddedThumbnail ()
-		{
-			using (System.IO.Stream stream = Open ()) {
-				return TransformAndDispose (new Gdk.Pixbuf (stream));
-			}
-		}
-
 		public override System.IO.Stream PixbufStream ()
 		{
 			try {
@@ -2278,7 +2271,7 @@ namespace FSpot.Tiff {
 	}
 		
 
-	public class Cr2File : TiffFile, IThumbnailContainer, IRawFile {
+	public class Cr2File : TiffFile, IRawFile {
 		public Cr2File (string path) : base (path) 
 		{
 		}
@@ -2301,14 +2294,6 @@ namespace FSpot.Tiff {
 			return PixbufOrientation.TopLeft;
 		}
 		*/
-
-		public Gdk.Pixbuf GetEmbeddedThumbnail ()
-		{
-			ImageDirectory directory;
-			directory = Header.Directory.NextDirectory;
-			return TransformAndDispose (LoadJpegInterchangeFormat (directory));
-		}
-
 
 		public override System.IO.Stream PixbufStream ()
 		{

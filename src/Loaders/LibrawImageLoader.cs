@@ -178,6 +178,11 @@ namespace FSpot.Loaders {
 
 			int orientation;
 			large = loader.LoadEmbedded (out orientation);
+			if (large == null) {
+				// Fallback for files without an embedded preview (yuck!)
+				LoadFull ();
+				large = full.ShallowCopy ();
+			}
 
 			switch (orientation) {
 				case 0:
