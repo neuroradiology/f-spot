@@ -608,6 +608,8 @@ EXTRA_DIST =					\
 	f-spot.exe.config.in			\
 	f-spot.in				\
 	FSpot.Utils.dll.config			\
+	FSpot.Imaging.dll.config.in		\
+	FSpot.Loaders.dll.config.in		\
 	FSpot.Widgets.dll.config.in		\
 	Cms.dll.config.in
 
@@ -622,8 +624,10 @@ CLEANFILES =					\
 	FSpot.Utils.dll				\
 	FSpot.Imaging.dll				\
 	FSpot.Imaging.dll.mdb			\
+	FSpot.Imaging.dll.config			\
 	FSpot.Loaders.dll				\
 	FSpot.Loaders.dll.mdb			\
+	FSpot.Loaders.dll.config			\
 	FSpot.Query.dll				\
 	FSpot.Query.dll.mdb			\
 	FSpot.Core.dll.mdb			\
