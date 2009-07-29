@@ -19,6 +19,8 @@ using System.Xml;
 
 using GLib;
 
+using FSpot.Loaders;
+
 namespace FSpot {
 	public class UriCollection : PhotoList {
 		public UriCollection () : base (new IBrowsableItem [0])
@@ -37,7 +39,7 @@ namespace FSpot {
 
 		public void Add (Uri uri)
 		{
-			if (FSpot.ImageFile.HasLoader (uri)) {
+			if (ImageLoader.IsAvailable (uri)) {
 				//Console.WriteLine ("using image loader {0}", uri.ToString ());
 				Add (new FileBrowsableItem (uri));
 			} else {
@@ -129,7 +131,7 @@ namespace FSpot {
 				foreach (GLib.FileInfo info in file.EnumerateChildrenFinish (res)) {
 					Uri i = file.GetChild (info.Name).Uri;
 					FSpot.Utils.Log.Debug ("testing uri = {0}", i);
-					if (FSpot.ImageFile.HasLoader (i))
+					if (ImageLoader.IsAvailable (i))
 						items.Add (new FileBrowsableItem (i));
 				}
 				Gtk.Application.Invoke (items, System.EventArgs.Empty, delegate (object sender, EventArgs args) {
@@ -142,7 +144,7 @@ namespace FSpot {
 		{
 			List<IBrowsableItem> items = new List<IBrowsableItem> ();
 			foreach (var f in files) {
-				if (FSpot.ImageFile.HasLoader (f.FullName)) {
+				if (ImageLoader.IsAvailable (f.FullName)) {
 					Console.WriteLine (f.FullName);
 					items.Add (new FileBrowsableItem (f.FullName));
 				}

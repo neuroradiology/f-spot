@@ -88,5 +88,18 @@ namespace FSpot.Loaders {
 
 			return loader;
 		}
+
+		[Obsolete ("Use Uri instead, this will deprecate soon")]
+		public static bool IsAvailable (string path)
+		{
+			return IsAvailable (UriUtils.PathToFileUri (path));
+		}
+
+		public static bool IsAvailable (Uri uri)
+		{
+			string path = uri.AbsolutePath;
+			string extension = System.IO.Path.GetExtension (path).ToLower ();
+			return name_table.ContainsKey (extension);
+		}
 	}
 }

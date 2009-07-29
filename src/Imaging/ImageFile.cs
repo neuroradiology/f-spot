@@ -188,17 +188,6 @@ namespace FSpot {
 			}
 		}
 
-		[Obsolete ("use HasLoader (System.Uri) instead")]
-		public static bool HasLoader (string path)
-		{
-			return HasLoader (UriUtils.PathToFileUri (path));
-		}
-		
-		public static bool HasLoader (Uri uri)
-		{
-			return GetLoaderType (uri) != null;
-		}
-
 		static Type GetLoaderType (Uri uri)
 		{
 			string path = uri.AbsolutePath;

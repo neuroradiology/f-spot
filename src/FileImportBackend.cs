@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System;
 using FSpot;
 using FSpot.Utils;
+using FSpot.Loaders;
 using FSpot.Xmp;
 using FSpot.UI.Dialog;
 using System.IO;
@@ -80,7 +81,7 @@ public class FileImportBackend : ImportBackend {
 		foreach (Uri uri in base_paths) {
 			var enumerator = new RecursiveFileEnumerator (uri, recurse, true);
 			foreach (var file in enumerator) {
-				if (FSpot.ImageFile.HasLoader (file.Uri))
+				if (ImageLoader.IsAvailable (file.Uri))
 					import_info.Add (new ImportInfo (file.Uri));
 			}
 		}	
