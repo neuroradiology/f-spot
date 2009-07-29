@@ -343,6 +343,7 @@ namespace FSpot.Exporter.Facebook
 			FilterSet filters = new FilterSet ();
 			filters.Add (new JpegFilter ());
 			filters.Add (new ResizeFilter (size));
+			filters.Add (new ProcessedFormatFilter ());
 
 			for (int i = 0; i < items.Length; i++) {
 				try {

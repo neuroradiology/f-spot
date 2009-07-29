@@ -217,6 +217,7 @@ F_SPOT_CSDISTFILES =				\
 	$(srcdir)/Filters/IFilter.cs		\
 	$(srcdir)/Filters/JpegFilter.cs		\
 	$(srcdir)/Filters/OrientationFilter.cs	\
+	$(srcdir)/Filters/ProcessedFormatFilter.cs	\
 	$(srcdir)/Filters/ResizeFilter.cs	\
 	$(srcdir)/Filters/SharpFilter.cs	\
 	$(srcdir)/Filters/UniqueNameFilter.cs	\

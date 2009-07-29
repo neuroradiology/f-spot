@@ -767,7 +767,7 @@ namespace G2Export {
 					filters.Add (new ResizeFilter (size));
 				else if (rotate)
 					filters.Add (new OrientationFilter ());
-
+				filters.Add (new ProcessedFormatFilter ());
 
 				while (photo_index < items.Length) {
 					IBrowsableItem item = items [photo_index];

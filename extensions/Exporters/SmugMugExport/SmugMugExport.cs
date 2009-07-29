@@ -555,6 +555,8 @@ namespace FSpotSmugMugExport {
 			if (rotate)
 				filters.Add (new OrientationFilter ());
 
+			filters.Add (new ProcessedFormatFilter ());
+
 			while (photo_index < items.Length) {
 				try {
 					IBrowsableItem item = items[photo_index];

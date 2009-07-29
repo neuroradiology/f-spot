@@ -648,6 +648,8 @@ namespace FSpotGoogleExport {
 			if (rotate)
 				filters.Add (new OrientationFilter ());
 
+			filters.Add (new ProcessedFormatFilter ());
+
 			Array.Sort (items, new DateComparer ());
 
 			while (photo_index < items.Length) {
