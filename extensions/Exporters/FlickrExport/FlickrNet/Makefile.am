@@ -71,7 +71,7 @@ all: $(ASSEMBLY)
 $(ASSEMBLY): $(ASSEMBLY_SOURCES)
 	$(CSC_LIB) -out:$@ $(PKGS) $(REFS) $(ASSEMBLY_SOURCES)
 
-assemblydir = $(pkglibdir)
+assemblydir = $(pkglibdir)/extensions
 assembly_DATA =	$(ASSEMBLY)
 
 EXTRA_DIST =			\
