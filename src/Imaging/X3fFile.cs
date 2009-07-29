@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using FSpot;
 using FSpot.Utils;
+using FSpot.Imaging;
 using SemWeb;
 
 namespace FSpot.X3f {
@@ -72,7 +73,7 @@ namespace FSpot.X3f {
 
 	}
 
-	public class X3fFile : DCRawFile, SemWeb.StatementSource {
+	public class X3fFile : DCRawFile, IRawFile, SemWeb.StatementSource {
 		Info info;
 
                 // false seems a safe default

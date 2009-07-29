@@ -30,20 +30,20 @@ namespace FSpot.Loaders {
 			name_table [".png"] = typeof (GdkImageLoader);
 			name_table [".cr2"] = typeof (LibrawImageLoader);
 			name_table [".nef"] = typeof (LibrawImageLoader);
-			name_table [".pef"] = typeof (GdkImageLoader);
-			name_table [".raw"] = typeof (GdkImageLoader);
-			name_table [".kdc"] = typeof (GdkImageLoader);
-			name_table [".arw"] = typeof (GdkImageLoader);
+			name_table [".pef"] = typeof (LibrawImageLoader);
+			name_table [".raw"] = typeof (LibrawImageLoader);
+			name_table [".kdc"] = typeof (LibrawImageLoader);
+			name_table [".arw"] = typeof (LibrawImageLoader);
 			name_table [".tiff"] = typeof (GdkImageLoader);
 			name_table [".tif"] = typeof (GdkImageLoader);
-			name_table [".orf"] =  typeof (GdkImageLoader);
-			name_table [".srf"] = typeof (GdkImageLoader);
+			name_table [".orf"] =  typeof (LibrawImageLoader);
+			name_table [".srf"] = typeof (LibrawImageLoader);
 			name_table [".dng"] = typeof (LibrawImageLoader);
-			name_table [".crw"] = typeof (GdkImageLoader);
+			name_table [".crw"] = typeof (LibrawImageLoader);
 			name_table [".ppm"] = typeof (GdkImageLoader);
-			name_table [".mrw"] = typeof (GdkImageLoader);
-			name_table [".raf"] = typeof (GdkImageLoader);
-			name_table [".x3f"] = typeof (GdkImageLoader);
+			name_table [".mrw"] = typeof (LibrawImageLoader);
+			name_table [".raf"] = typeof (LibrawImageLoader);
+			name_table [".x3f"] = typeof (LibrawImageLoader);
 
 			// add mimetypes for fallback
 			name_table ["image/bmp"]     = name_table ["image/x-bmp"] = name_table [".bmp"];
