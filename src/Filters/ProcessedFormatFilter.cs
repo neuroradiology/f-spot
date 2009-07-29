@@ -27,8 +27,6 @@ namespace FSpot.Filters {
 		{
 			// FIXME this should copy metadata from the original
 			// even when the source is not a jpeg
-			string source = req.Current.LocalPath;
-
 			using (ImageFile img = ImageFile.Create (req.Current)) {
 				Log.Debug ("Got file: {0}, RAW: {1}", req.Current, img is IRawFile);
 				if (!ImageFile.IsRaw (img))
