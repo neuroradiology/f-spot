@@ -12,6 +12,8 @@ using System;
 using System.IO;
 using Gdk;
 
+using FSpot.Imaging;
+
 using Mono.Unix;
 
 namespace FSpot.Filters {
@@ -35,9 +37,9 @@ namespace FSpot.Filters {
 					using (Pixbuf out_pixbuf = PixbufUtils.UnsharpMask (in_pixbuf, radius, amount, threshold)) {
 						string destination_extension = Path.GetExtension (dest_uri.LocalPath);
 		
-						if (Path.GetExtension (req.Current.LocalPath).ToLower () == Path.GetExtension (dest_uri.LocalPath).ToLower ()) {
+						if (Path.GetExtension (req.Current.LocalPath).ToLower () == Path.GetExtension (dest_uri.LocalPath).ToLower () && img is IWritableImageFile) {
 							using (Stream output = File.OpenWrite (dest_uri.LocalPath)) {
-								img.Save (out_pixbuf, output);
+								(img as IWritableImageFile).Save (out_pixbuf, output);
 							}
 						} else if (destination_extension == ".jpg") {
 							// FIXME this is a bit of a nasty hack to work around

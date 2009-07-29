@@ -3,11 +3,12 @@ using SemWeb;
 using Cms;
 using System.IO;
 using FSpot.Xmp;
+using FSpot.Imaging;
 using System.Collections;
 using System.Reflection;
 
 namespace FSpot.Png {
-	public class PngFile : ImageFile, SemWeb.StatementSource {
+	public class PngFile : ImageFile, IWritableImageFile, SemWeb.StatementSource {
 		PngHeader header;
 
                 // false seems a safe default
@@ -1256,7 +1257,7 @@ namespace FSpot.Png {
 			}
 		}
 
-		public override void Save (Gdk.Pixbuf pixbuf, System.IO.Stream stream)
+		public void Save (Gdk.Pixbuf pixbuf, System.IO.Stream stream)
 		{
 			byte [] buffer = PixbufUtils.Save (pixbuf, "png", null, null);
 			using (MemoryStream mem = new MemoryStream (buffer)) {

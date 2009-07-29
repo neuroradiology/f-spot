@@ -57,7 +57,7 @@ namespace FSpot.Widgets {
 			//FIXME: this should be an async call
 			if (loader != null)
 				while (loader.Loading)
-					Gtk.Application.RunIteration ();
+					Gtk.Application.RunIteration (true);
 			return this.Pixbuf;
 		}
 

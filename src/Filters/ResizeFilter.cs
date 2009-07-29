@@ -14,6 +14,7 @@ using System.IO;
 
 using FSpot;
 using FSpot.Loaders;
+using FSpot.Imaging;
 
 using Mono.Unix;
 
@@ -55,9 +56,9 @@ namespace FSpot.Filters {
 				using (scaled) {
 					string destination_extension = Path.GetExtension (dest);
 
-					if (Path.GetExtension (source).ToLower () == Path.GetExtension (dest).ToLower ()) {
+					if (Path.GetExtension (source).ToLower () == Path.GetExtension (dest).ToLower () && img is IWritableImageFile) {
 						using (Stream output = File.OpenWrite (dest)) {
-							img.Save (scaled, output);
+							(img as IWritableImageFile).Save (scaled, output);
 						}
 					} else if (destination_extension == ".jpg") {
 						// FIXME this is a bit of a nasty hack to work around

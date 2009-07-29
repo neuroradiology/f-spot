@@ -10,6 +10,7 @@
 using FSpot;
 using FSpot.Utils;
 using FSpot.Widgets;
+using FSpot.Loaders;
 
 using Gdk;
 using Gtk;
@@ -99,7 +100,14 @@ namespace FSpot.Editors {
 		protected void LoadPhoto (Photo photo, out Pixbuf photo_pixbuf, out Cms.Profile photo_profile) {
 			// FIXME: We might get this value from the PhotoImageView.
 			using (ImageFile img = ImageFile.Create (photo.DefaultVersion.Uri)) {
-				photo_pixbuf = img.Load ();
+				if (State.PhotoImageView != null) {
+					photo_pixbuf = State.PhotoImageView.CompletePixbuf ().ShallowCopy ();
+				} else {
+					using (IImageLoader loader = ImageLoader.Create (photo.DefaultVersionUri)) {
+						loader.Load (ImageLoaderItem.Full);
+						photo_pixbuf = loader.Full;
+					}
+				}
 				photo_profile = img.GetProfile ();
 			}
 		}

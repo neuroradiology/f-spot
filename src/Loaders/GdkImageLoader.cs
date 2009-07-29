@@ -33,8 +33,9 @@ namespace FSpot.Loaders {
 		}
 		public PixbufOrientation ThumbnailOrientation { get; private set; }
 
+		Pixbuf error = null;
 		public Pixbuf Large {
-			get { return Pixbuf.ShallowCopy (); }
+			get { return error == null ? Pixbuf.ShallowCopy () : error.ShallowCopy (); }
 		}
 		public PixbufOrientation LargeOrientation { get; private set; }
 
@@ -86,6 +87,10 @@ namespace FSpot.Loaders {
 			if (thumbnail != null) {
 				thumbnail.Dispose ();
 				thumbnail = null;
+			}
+			if (error != null) {
+				error.Dispose ();
+				error = null;
 			}
 			base.Dispose ();
 		}
@@ -204,9 +209,16 @@ namespace FSpot.Loaders {
 			if (is_disposed)
 				return;
 
-			image_stream = new GLib.GioStream (GLib.FileFactory.NewForUri (uri).Read (null));
-			using (ImageFile image_file = ImageFile.Create (uri)) {
-				LargeOrientation = image_file.Orientation;
+			try {
+				image_stream = new GLib.GioStream (GLib.FileFactory.NewForUri (uri).Read (null));
+				using (ImageFile image_file = ImageFile.Create (uri)) {
+					LargeOrientation = image_file.Orientation;
+				}
+			} catch (GLib.GException) {
+				error = GtkUtil.TryLoadIcon (FSpot.Global.IconTheme, "f-spot-question-mark", 256, (Gtk.IconLookupFlags)0);
+				LargeOrientation = PixbufOrientation.TopLeft;
+				SignalItemCompleted (ImageLoaderItem.Large | ImageLoaderItem.Full);
+				return;
 			}
 
 			while (Loading && !is_disposed) {

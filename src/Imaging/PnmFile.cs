@@ -8,7 +8,7 @@ using NUnit.Framework;
 #endif
 
 namespace FSpot.Pnm {
-	public class PnmFile : ImageFile, StatementSource {
+	public class PnmFile : ImageFile, IWritableImageFile, StatementSource {
 
                 // false seems a safe default
                 public bool Distinct {
@@ -225,7 +225,7 @@ namespace FSpot.Pnm {
 			return PixbufUtils.ScaleToMaxSize (this.Load (), width, height);
 		}
 
-		public override void Save (Gdk.Pixbuf pixbuf, System.IO.Stream stream)
+		public void Save (Gdk.Pixbuf pixbuf, System.IO.Stream stream)
 		{
 			if (pixbuf.HasAlpha)
 				throw new NotImplementedException ();

@@ -2,4 +2,5 @@
   <dllmap dll="libgnomeui-2-0.dll" target="libgnomeui-2.so.0"/>
   <dllmap dll="libfspot" target="@expanded_libdir@/f-spot/libfspot.so.0"/>
   <dllmap dll="libfspotjpeg" target="@expanded_libdir@/f-spot/libfspotjpg.so.0"/>
+  <dllmap dll="libgdk_pixbuf-2.0-0.dll" target="libgdk_pixbuf-2.0.so.0"/>
 </configuration>

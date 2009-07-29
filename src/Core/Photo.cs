@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using Mono.Unix;
 
 using FSpot.Utils;
+using FSpot.Imaging;
 using FSpot.Platform;
 
 namespace FSpot
@@ -240,18 +241,29 @@ namespace FSpot
 			using (ImageFile img = ImageFile.Create (DefaultVersion.Uri)) {
 				// Always create a version if the source is not a jpeg for now.
 				create_version = create_version || !(img is FSpot.JpegFile);
+				bool original_format = img is IWritableImageFile;
 	
 				if (buffer == null)
 					throw new ApplicationException ("invalid (null) image");
 	
+				string extension = original_format ? null : ".jpg";
 				if (create_version)
-					version = CreateDefaultModifiedVersion (DefaultVersionId, false);
+					version = CreateDefaultModifiedVersion (DefaultVersionId, extension, false);
 	
 				try {
 					Uri versionUri = VersionUri (version);
 
-					using (Stream stream = System.IO.File.OpenWrite (versionUri.LocalPath)) {
-						img.Save (buffer, stream);
+					if (original_format) {
+						using (Stream stream = System.IO.File.OpenWrite (versionUri.LocalPath)) {
+							(img as IWritableImageFile).Save (buffer, stream);
+						}
+					} else {
+						// FIXME: There is no metadata copying yet!
+						byte [] image_data = PixbufUtils.Save (buffer, "jpeg", new string [] {"quality" }, new string [] { "95" });
+						using (Stream stream = System.IO.File.OpenWrite (versionUri.LocalPath)) {
+							stream.Write (image_data, 0, image_data.Length);
+						}
+
 					}
 					(GetVersion (version) as PhotoVersion).MD5Sum = GenerateMD5 (VersionUri (version));
 					FSpot.ThumbnailGenerator.Create (versionUri).Dispose ();
@@ -380,6 +392,11 @@ namespace FSpot
 	
 		public uint CreateDefaultModifiedVersion (uint base_version_id, bool create_file)
 		{
+			return CreateDefaultModifiedVersion (base_version_id, null, create_file);
+		}
+
+		public uint CreateDefaultModifiedVersion (uint base_version_id, string extension, bool create_file)
+		{
 			int num = 1;
 	
 			while (true) {
@@ -391,7 +408,7 @@ namespace FSpot
 				GLib.File file = GLib.FileFactory.NewForUri (uri);
 	
 				if (! VersionNameExists (name) && ! file.Exists)
-					return CreateVersion (name, base_version_id, create_file);
+					return CreateVersion (name, extension, base_version_id, create_file);
 	
 				num ++;
 			}

@@ -4,13 +4,14 @@ using System.IO;
 using FSpot.Xmp;
 using FSpot.Tiff;
 using FSpot.Utils;
+using FSpot.Imaging;
 
 namespace FSpot {
 	public interface IThumbnailContainer {
 		Gdk.Pixbuf GetEmbeddedThumbnail ();
 	}
 
-	public class JpegFile : ImageFile, IThumbnailContainer, SemWeb.StatementSource {
+	public class JpegFile : ImageFile, IWritableImageFile, IThumbnailContainer, SemWeb.StatementSource {
 		private Exif.ExifData exif_data;
 		private XmpFile xmp;
 		private JpegHeader header;
@@ -219,7 +220,7 @@ namespace FSpot {
 			image_content.GetEntry (Exif.Tag.PixelYDimension).SetData ((uint)height);
 		}
 
-		public override void Save (Gdk.Pixbuf pixbuf, System.IO.Stream stream)
+		public void Save (Gdk.Pixbuf pixbuf, System.IO.Stream stream)
 		{
 
 			// Console.WriteLine ("starting save");

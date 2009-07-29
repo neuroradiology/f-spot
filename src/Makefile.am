@@ -52,6 +52,7 @@ IMAGING_CSDISTFILES =						\
 	$(srcdir)/Imaging/InternalProcess.cs	\
 	$(srcdir)/Imaging/IOChannel.cs			\
 	$(srcdir)/Imaging/IRawFile.cs			\
+	$(srcdir)/Imaging/IWritableImageFile.cs	\
 	$(srcdir)/Imaging/JpegFile.cs			\
 	$(srcdir)/Imaging/JpegHeader.cs			\
 	$(srcdir)/Imaging/JpegUtils.cs			\
@@ -367,6 +368,7 @@ LOADERS_ASSEMBLIES =			\
 	$(LINK_FSPOTRAWSHARP)		\
 	-pkg:gtk-sharp-2.0			\
 	-r:Mono.Posix				\
+	-r:FSpot.Core.dll			\
 	-r:FSpot.Imaging.dll		\
 	-r:FSpot.Platform.dll		\
 	-r:FSpot.Utils.dll
@@ -548,7 +550,7 @@ FSpot.Imaging.dll: $(IMAGING_CSFILES) FSpot.Utils.dll FSpot.Core.dll
 
 FSpot.Loaders.dll.mdb: FSpot.Loaders.dll
 
-FSpot.Loaders.dll: $(LOADERS_CSFILES) FSpot.Platform.dll FSpot.Utils.dll FSpot.Imaging.dll
+FSpot.Loaders.dll: $(LOADERS_CSFILES) FSpot.Platform.dll FSpot.Utils.dll FSpot.Imaging.dll FSpot.Core.dll
 	$(CSC_LIB) -out:$@ $(EXTRAFLAGS) $(LOADERS_CSFILES) $(LOADERS_ASSEMBLIES)
 
 FSpot.Query.dll.mdb: FSpot.Query.dll

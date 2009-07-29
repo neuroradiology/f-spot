@@ -16,6 +16,7 @@ using Gdk;
 
 using FSpot;
 using FSpot.Png;
+using FSpot.Imaging;
 using FSpot.UI.Dialog;
 
 using FSpot.Utils;
@@ -101,7 +102,7 @@ namespace FSpot {
 						using (Pixbuf pixbuf = img.Load ()) {
 							PixbufOrientation fake = (direction == RotateDirection.Clockwise) ? PixbufOrientation.RightTop : PixbufOrientation.LeftBottom;
 							using (Pixbuf rotated = FSpot.Utils.PixbufUtils.TransformOrientation (pixbuf, fake)) {
-								img.Save (rotated, stream);
+								(img as IWritableImageFile).Save (rotated, stream);
 							}
 						}
 					}
