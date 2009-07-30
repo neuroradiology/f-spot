@@ -57,3 +57,46 @@ MARSHAL_GENERATED = fspot-librawloader-marshal.c fspot-librawloader-marshal.h
 BUILT_SOURCES = $(MARSHAL_GENERATED)
 
 CLEANFILES = $(MARSHAL_GENERATED)
+
+# The stuff below builds a special, non-optimized version of libfspotraw,
+# for valgrinding purposes.
+
+libraw_dcraw_common.vo: LibRaw/internal/dcraw_common.cpp
+	gcc -g -O0 -c -o $@ $< -I LibRaw
+
+libraw_foveon.vo: LibRaw/internal/foveon.cpp
+	gcc -g -O0 -c -o $@ $< -I LibRaw
+
+libraw_cxx.vo: LibRaw/src/libraw_cxx.cpp
+	g++ -g -O0 -c -o $@ $< -I LibRaw
+
+libraw_c_api.vo: LibRaw/src/libraw_c_api.cpp
+	g++ -g -O0 -c -o $@ $< -I LibRaw
+
+libraw_fileio.vo: LibRaw/internal/dcraw_fileio.cpp
+	g++ -g -O0 -c -o $@ $< -I LibRaw
+
+fspot-librawloader_marshal.vo: fspot-librawloader-marshal.c
+	gcc -g -O0 -c -o $@ $< `pkg-config --cflags gtk+-2.0`
+
+fspot-librawloader.vo: fspot-librawloader.cpp fspot-librawloader.h
+	g++ -g -O0 -c -o $@ $< `pkg-config --cflags gtk+-2.0` -I LibRaw
+
+memory-test.vo: memory-test.c
+	gcc -g -O0 -c -o $@ $< `pkg-config --cflags gtk+-2.0`
+
+MEMORY_TEST_OBJECTS =				\
+	libraw_dcraw_common.vo			\
+	libraw_foveon.vo				\
+	libraw_cxx.vo					\
+	libraw_c_api.vo					\
+	libraw_fileio.vo				\
+	fspot-librawloader_marshal.vo	\
+	fspot-librawloader.vo			\
+	memory-test.vo
+
+memory-test: $(MEMORY_TEST_OBJECTS)
+	g++ -g -O0 -o memory-test $(MEMORY_TEST_OBJECTS) `pkg-config --cflags --libs gtk+-2.0` -ljpeg -lm -llcms -lstdc++
+
+valgrind: memory-test
+	G_SLICE=always-malloc G_DEBUG=gc-friendly valgrind --tool=memcheck --leak-check=full --num-callers=20 $O ./memory-test $F

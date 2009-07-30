@@ -4,7 +4,9 @@
 /.libs
 /*.o
 /*.lo
+/*.vo
 /*.la
 /LibRaw-*.tar.gz
 /fspot-librawloader-marshal.c
 /fspot-librawloader-marshal.h
+/memory-test

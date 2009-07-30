@@ -68,6 +68,12 @@ namespace FSpot.Loaders {
 			loader = new NativeLibrawLoader (uri.AbsolutePath);
 		}
 
+		~LibrawImageLoader ()
+		{
+			if (!is_disposed)
+				Dispose ();
+		}
+
 		public ImageLoaderItem Load (ImageLoaderItem items, bool async)
 		{
 			if (is_disposed)
@@ -88,6 +94,7 @@ namespace FSpot.Loaders {
 			is_disposed = true;
 			if (loader != null) {
 				loader.Aborted = true;
+				loader.Dispose ();
 				loader = null;
 			}
 			if (thumbnail != null)

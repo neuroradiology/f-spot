@@ -41,6 +41,7 @@ static void fspot_librawloader_dispose (GObject *object);
 static void fspot_librawloader_finalize (GObject *object);
 
 static void open_if_needed (FSpotLibrawLoader *self);
+static void pixbuf_freed (guchar *pixels, gpointer data);
 
 static int libraw_progress_callback (void *user_data, enum LibRaw_progress p, int iteration, int expected);
 
@@ -163,6 +164,7 @@ fspot_librawloader_dispose (GObject *object)
 {
 	FSpotLibrawLoader *self = FSPOT_LIBRAWLOADER (object);
 
+	self->priv->aborted = true;
 	self->priv->raw_proc->recycle ();
 
 	G_OBJECT_CLASS (fspot_librawloader_parent_class)->dispose (object);
@@ -173,6 +175,7 @@ fspot_librawloader_finalize (GObject *object)
 {
 	FSpotLibrawLoader *self = FSPOT_LIBRAWLOADER (object);
 
+	self->priv->raw_proc->recycle ();
 	delete self->priv->raw_proc;
 	g_free (self->priv->filename);
 
@@ -205,6 +208,9 @@ fspot_librawloader_load_embedded (FSpotLibrawLoader *self, int *orientation)
 	pixbuf = gdk_pixbuf_copy (gdk_pixbuf_loader_get_pixbuf (loader));
 	*orientation = self->priv->raw_proc->imgdata.sizes.flip;
 
+	g_object_unref (loader);
+	g_free (image);
+
 	return pixbuf;
 }
 
@@ -232,10 +238,17 @@ fspot_librawloader_load_full (FSpotLibrawLoader *self)
 									   image->width,
 									   image->height,
 									   image->width * 3, /* rowstride */
-									   (GdkPixbufDestroyNotify) g_free,
-									   NULL);
+									   (GdkPixbufDestroyNotify) pixbuf_freed,
+									   image);
 
 	return pixbuf;
+}
+
+static void
+pixbuf_freed (guchar *pixels, gpointer data)
+{
+	libraw_processed_image_t *image = (libraw_processed_image_t *)data;
+	g_free (image);
 }
 
 FSpotLibrawLoader *
