@@ -250,7 +250,6 @@ F_SPOT_CSDISTFILES =				\
 	$(srcdir)/PhotoVersionCommands.cs	\
 	$(srcdir)/PhotoVersionMenu.cs		\
 	$(srcdir)/PhotoView.cs			\
-	$(srcdir)/PixbufCache.cs		\
 	$(srcdir)/PixbufUtils.cs		\
 	$(srcdir)/Preferences.cs 		\
 	$(srcdir)/PrintOperation.cs		\
@@ -315,6 +314,7 @@ F_SPOT_CSDISTFILES =				\
 	$(srcdir)/Widgets/IEffect.cs		\
 	$(srcdir)/Widgets/ITransition.cs	\
 	$(srcdir)/Widgets/IconView.cs		\
+	$(srcdir)/Widgets/IconViewCache.cs		\
 	$(srcdir)/Widgets/ImageDisplay.cs	\
 	$(srcdir)/Widgets/ImageInfo.cs		\
 	$(srcdir)/Widgets/InfoBox.cs		\

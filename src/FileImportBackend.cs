@@ -316,7 +316,7 @@ public class FileImportBackend : ImportBackend {
 
 		foreach (ImportInfo info in import_info) {
 			if (info.PhotoId != 0) 
-				FSpot.ThumbnailGenerator.Default.Request (store.Get (info.PhotoId).DefaultVersion.Uri, 0, 256, 256);
+				FSpot.ThumbnailGenerator.Default.Request (store.Get (info.PhotoId).DefaultVersion.Uri, 0, ImageLoaderItem.Thumbnail);
 		}
 
 		import_info = null;

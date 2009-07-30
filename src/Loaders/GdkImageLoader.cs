@@ -28,14 +28,13 @@ namespace FSpot.Loaders {
 
 		Pixbuf thumbnail;
 		public Pixbuf Thumbnail {
-			get { return thumbnail.ShallowCopy (); }
+			get { return thumbnail == null ? null : thumbnail.ShallowCopy (); }
 			private set { thumbnail = value; }
 		}
 		public PixbufOrientation ThumbnailOrientation { get; private set; }
 
-		Pixbuf error = null;
 		public Pixbuf Large {
-			get { return error == null ? Pixbuf.ShallowCopy () : error.ShallowCopy (); }
+			get { return Pixbuf == null ? null : Pixbuf.ShallowCopy (); }
 		}
 		public PixbufOrientation LargeOrientation { get; private set; }
 
@@ -87,10 +86,6 @@ namespace FSpot.Loaders {
 			if (thumbnail != null) {
 				thumbnail.Dispose ();
 				thumbnail = null;
-			}
-			if (error != null) {
-				error.Dispose ();
-				error = null;
 			}
 			base.Dispose ();
 		}
@@ -187,8 +182,9 @@ namespace FSpot.Loaders {
 			// for the next call to generate it (see the loop in DoLoad).
 			if (!ThumbnailFactory.ThumbnailExists (uri)) {
 				if (ItemsCompleted.Contains (ImageLoaderItem.Large)) {
-					using (Pixbuf scaled = PixbufUtils.ScaleToMaxSize (Pixbuf, 256, 256, false))
-						ThumbnailFactory.SaveThumbnail (scaled, uri);
+					if (Pixbuf != null)
+						using (Pixbuf scaled = PixbufUtils.ScaleToMaxSize (Pixbuf, 256, 256, false))
+							ThumbnailFactory.SaveThumbnail (scaled, uri);
 				} else {
 					ItemsRequested |= ImageLoaderItem.Large;
 					return;
@@ -197,11 +193,11 @@ namespace FSpot.Loaders {
 
 			Thumbnail = ThumbnailFactory.LoadThumbnail (uri);
 			ThumbnailOrientation = PixbufOrientation.TopLeft;
-			if (Thumbnail == null)
-				throw new Exception ("Null thumbnail returned");
 
-			SignalAreaPrepared (ImageLoaderItem.Thumbnail);
-			SignalAreaUpdated (ImageLoaderItem.Thumbnail, new Rectangle (0, 0, thumbnail.Width, thumbnail.Height));
+			if (thumbnail != null) {
+				SignalAreaPrepared (ImageLoaderItem.Thumbnail);
+				SignalAreaUpdated (ImageLoaderItem.Thumbnail, new Rectangle (0, 0, thumbnail.Width, thumbnail.Height));
+			}
 			SignalItemCompleted (ImageLoaderItem.Thumbnail);
 		}
 
@@ -216,8 +212,6 @@ namespace FSpot.Loaders {
 					LargeOrientation = image_file.Orientation;
 				}
 			} catch (GLib.GException) {
-				error = GtkUtil.TryLoadIcon (FSpot.Global.IconTheme, "f-spot-question-mark", 256, (Gtk.IconLookupFlags)0);
-				LargeOrientation = PixbufOrientation.TopLeft;
 				SignalItemCompleted (ImageLoaderItem.Large | ImageLoaderItem.Full);
 				return;
 			}

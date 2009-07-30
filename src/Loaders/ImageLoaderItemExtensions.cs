@@ -26,5 +26,21 @@ namespace FSpot.Loaders {
 				return ImageLoaderItem.Thumbnail;
 			return ImageLoaderItem.None;
 		}
+
+		public static ImageLoaderItem Smallest (this ImageLoaderItem items)
+		{
+			if (items.Contains (ImageLoaderItem.Thumbnail))
+				return ImageLoaderItem.Thumbnail;
+			if (items.Contains (ImageLoaderItem.Large))
+				return ImageLoaderItem.Large;
+			if (items.Contains (ImageLoaderItem.Full))
+				return ImageLoaderItem.Full;
+			return ImageLoaderItem.None;
+		}
+
+		public static bool Multiple (this ImageLoaderItem item)
+		{
+			return item.Largest () != item.Smallest ();
+		}
 	}
 }

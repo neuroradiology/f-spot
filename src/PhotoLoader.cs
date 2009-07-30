@@ -1,6 +1,7 @@
 using System;
 
 using FSpot.Platform;
+using FSpot.Loaders;
 using FSpot.Utils;
 
 namespace FSpot {
@@ -46,7 +47,7 @@ namespace FSpot {
 			using (Gdk.Pixbuf thumbnail = ThumbnailCache.Default.GetThumbnailForUri (uri)) {
 				if (pixbuf != null && thumbnail != null && !ThumbnailFactory.ThumbnailIsValid (thumbnail, uri)) {
 					Log.Debug ("regenerating thumbnail for {0}", uri);
-					FSpot.ThumbnailGenerator.Default.Request (uri, 0, 256, 256);
+					FSpot.ThumbnailGenerator.Default.Request (uri, 0, ImageLoaderItem.Thumbnail);
 				}
 			}
 			return pixbuf;

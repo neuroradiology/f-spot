@@ -17,6 +17,7 @@ using System.Collections;
 using System.IO;
 using FSpot.Platform;
 using FSpot.Utils;
+using FSpot.Loaders;
 
 namespace FSpot.Widgets
 {
@@ -33,7 +34,7 @@ namespace FSpot.Widgets
 	public class IconView : Gtk.Layout {
 
 		// Public properties.
-		FSpot.PixbufCache cache;
+		IconViewCache cache;
 
 		/* preserve the scroll postion when possible */
 		private bool scroll;
@@ -93,7 +94,7 @@ namespace FSpot.Widgets
 			}
 		}
 
-		public FSpot.PixbufCache Cache {
+		public IconViewCache Cache {
 			get {
 				return cache;
 			}
@@ -220,7 +221,7 @@ namespace FSpot.Widgets
 
 		protected IconView () : base (null, null)
 		{
-			cache = new FSpot.PixbufCache ();
+			cache = new IconViewCache ();
 			cache.OnPixbufLoaded += HandlePixbufLoaded;
 
 			ScrollAdjustmentsSet += new ScrollAdjustmentsSetHandler (HandleScrollAdjustmentsSet);
@@ -856,7 +857,7 @@ namespace FSpot.Widgets
 
 			FSpot.IBrowsableItem photo = collection [thumbnail_num];
 
-			FSpot.PixbufCache.CacheEntry entry = cache.Lookup (photo.DefaultVersion.Uri);
+			IconViewCache.CacheEntry entry = cache.Lookup (photo.DefaultVersion.Uri);
 			if (entry == null)
 				cache.Request (photo.DefaultVersion.Uri, thumbnail_num, ThumbnailWidth, ThumbnailHeight);
 			else
@@ -900,7 +901,7 @@ namespace FSpot.Widgets
 
 				if (Math.Abs (region.Width - thumbnail.Width) > 1
 					&& Math.Abs (region.Height - thumbnail.Height) > 1)
-				cache.Reload (entry, thumbnail_num, thumbnail.Width, thumbnail.Height);
+				cache.Reload (entry, thumbnail_num, ThumbnailWidth, ThumbnailHeight);
 
 				region = Gdk.Rectangle.Inflate (region, expansion, expansion);
 				Pixbuf temp_thumbnail;
@@ -1270,7 +1271,7 @@ namespace FSpot.Widgets
 			int i;
 
 			FSpot.IBrowsableItem photo;
-			FSpot.PixbufCache.CacheEntry entry;
+			IconViewCache.CacheEntry entry;
 
 			// Preload the cache with images aroud the expose area
 			// FIXME the preload need to be tuned to the Cache size but this is a resonable start
@@ -1388,7 +1389,7 @@ namespace FSpot.Widgets
 			Scroll ();
 		}
 
-		private void HandlePixbufLoaded (FSpot.PixbufCache cache, FSpot.PixbufCache.CacheEntry entry)
+		private void HandlePixbufLoaded (IconViewCache cache, IconViewCache.CacheEntry entry)
 		{
 			Gdk.Pixbuf result = entry.ShallowCopyPixbuf ();
 			int order = (int) entry.Data;
@@ -1397,13 +1398,13 @@ namespace FSpot.Widgets
 				System.Uri uri = collection [order].DefaultVersion.Uri;
 
 				if (result == null && !ThumbnailFactory.ThumbnailExists (uri))
-					FSpot.ThumbnailGenerator.Default.Request (uri, 0, 256, 256);
+					FSpot.ThumbnailGenerator.Default.Request (uri, 0, ImageLoaderItem.Thumbnail);
 
 				if (result == null)
 					return;
 
 				if (!ThumbnailFactory.ThumbnailIsValid (result, uri))
-					FSpot.ThumbnailGenerator.Default.Request (uri, 0, 256, 256);
+					FSpot.ThumbnailGenerator.Default.Request (uri, 0, ImageLoaderItem.Thumbnail);
 			}
 
 			if (result == null)

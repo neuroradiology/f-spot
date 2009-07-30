@@ -1080,7 +1080,7 @@ namespace FSpot
 	
 				bool use_icon = false;;
 				while (len-- > 0) {
-					FSpot.PixbufCache.CacheEntry entry = icon_view.Cache.Lookup (photos [len].DefaultVersion.Uri);
+					IconViewCache.CacheEntry entry = icon_view.Cache.Lookup (photos [len].DefaultVersion.Uri);
 	
 					Pixbuf thumbnail = null;
 					if (entry != null) {

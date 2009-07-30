@@ -19,6 +19,7 @@ using Gdk;
 
 using FSpot.Utils;
 using FSpot.Platform;
+using FSpot.Loaders;
 using FSpot.Bling;
 
 namespace FSpot.Widgets
@@ -622,7 +623,7 @@ namespace FSpot.Widgets
 
 			if (current == null) {
 				try {
-					ThumbnailGenerator.Default.Request ((selection.Collection [i]).DefaultVersion.Uri, 0, 256, 256);
+					ThumbnailGenerator.Default.Request ((selection.Collection [i]).DefaultVersion.Uri, 0, ImageLoaderItem.Thumbnail);
 
 					if (SquaredThumbs) {
 						using (Pixbuf p = ThumbnailFactory.LoadThumbnail (uri)) {

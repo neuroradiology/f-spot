@@ -153,8 +153,9 @@ namespace FSpot.Loaders {
 			// for the next call to generate it (see the loop in DoLoad).
 			if (!ThumbnailFactory.ThumbnailExists (uri)) {
 				if (ItemsCompleted.Contains (ImageLoaderItem.Large)) {
-					using (Pixbuf scaled = PixbufUtils.ScaleToMaxSize (large, 256, 256, false))
-						ThumbnailFactory.SaveThumbnail (scaled, uri);
+					if (large != null)
+						using (Pixbuf scaled = PixbufUtils.ScaleToMaxSize (large, 256, 256, false))
+							ThumbnailFactory.SaveThumbnail (scaled, uri);
 				} else {
 					ItemsRequested |= ImageLoaderItem.Large;
 					return;
@@ -163,11 +164,11 @@ namespace FSpot.Loaders {
 
 			Thumbnail = ThumbnailFactory.LoadThumbnail (uri);
 			ThumbnailOrientation = PixbufOrientation.TopLeft;
-			if (Thumbnail == null)
-				throw new Exception ("Null thumbnail returned");
 
-			SignalAreaPrepared (ImageLoaderItem.Thumbnail);
-			SignalAreaUpdated (ImageLoaderItem.Thumbnail, new Rectangle (0, 0, Thumbnail.Width, Thumbnail.Height));
+			if (thumbnail != null) {
+				SignalAreaPrepared (ImageLoaderItem.Thumbnail);
+				SignalAreaUpdated (ImageLoaderItem.Thumbnail, new Rectangle (0, 0, thumbnail.Width, thumbnail.Height));
+			}
 			SignalItemCompleted (ImageLoaderItem.Thumbnail);
 		}
 

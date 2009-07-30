@@ -4,6 +4,7 @@
  * Author(s):
  *	Ettore Perazzoli <ettore@perazzoli.org>
  *	Larry Ewing <lewing@novell.com>
+ *	Ruben Vermeersch <ruben@savanne.be>
  *
  * This is free software. See COPYING for details
  */
@@ -15,6 +16,7 @@ using System.Threading;
 using System;
 
 using FSpot.Utils;
+using FSpot.Loaders;
 
 public class ImageLoaderThread {
 
@@ -29,17 +31,16 @@ public class ImageLoaderThread {
 
 		/* The pixbuf obtained from the operation.  */
 		public Pixbuf result;
+		public PixbufOrientation result_orientation;
 
-		/* the maximium size both must be greater than zero if either is */
-		public int width;
-		public int height;
+		/* The requested item. */
+		public ImageLoaderItem item;
 
-		public RequestItem (Uri uri, int order, int width, int height) {
+		public RequestItem (Uri uri, int order, ImageLoaderItem item) {
 			this.uri = uri;
 			this.order = order;
-			this.width = width;
-			this.height = height;
-			if ((width <= 0 && height > 0) || (height <= 0 && width > 0))
+			this.item = item;
+			if (item.Multiple ())
 				throw new System.Exception ("Invalid arguments");
 		}
 	}
@@ -119,15 +120,10 @@ public class ImageLoaderThread {
 			t.Abort ();
 	}
 
-	public void Request (Uri uri, int order)
-	{
-		Request (uri, order, 0, 0);
-	}
-
-	public virtual void Request (Uri uri, int order, int width, int height)
+	public virtual void Request (Uri uri, int order, ImageLoaderItem item)
 	{
 		lock (queue) {
-			if (InsertRequest (uri, order, width, height))
+			if (InsertRequest (uri, order, item))
 				Monitor.Pulse (queue);
 		}
 	}
@@ -147,30 +143,17 @@ public class ImageLoaderThread {
 
 	protected virtual void ProcessRequest (RequestItem request)
 	{
-		Pixbuf orig_image;
-		try {
-			using (FSpot.ImageFile img = FSpot.ImageFile.Create (request.uri)) {
-				if (request.width > 0) {
-					orig_image = img.Load (request.width, request.height);
-				} else {
-					orig_image = img.Load ();
-				}
-			}
-		} catch (GLib.GException e){
-			System.Console.WriteLine (e.ToString ());
-			return;		
+		using (IImageLoader loader = ImageLoader.Create (request.uri)) {
+			loader.Load (request.item);
+			request.result = loader.Pixbuf (request.item);
+			request.result_orientation = loader.PixbufOrientation (request.item);
 		}
-		
-		if (orig_image == null)
-			return;
-		
-		request.result = orig_image;
 	}
 
 	/* Insert the request in the queue, return TRUE if the queue actually grew.
 	   NOTE: Lock the queue before calling.  */
 
-	private bool InsertRequest (Uri uri, int order, int width, int height)
+	private bool InsertRequest (Uri uri, int order, ImageLoaderItem item)
 	{
 		/* Check if this is the same as the request currently being processed.  */
 		lock(processed_requests) {
@@ -191,7 +174,7 @@ public class ImageLoaderThread {
 		}
 
 		/* New request, just put it on the queue with the right order.  */
-		RequestItem new_request = new RequestItem (uri, order, width, height);
+		RequestItem new_request = new RequestItem (uri, order, item);
 
 		queue.Add (new_request);
 
