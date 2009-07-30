@@ -153,7 +153,8 @@ namespace FSpot.Loaders {
 			// for the next call to generate it (see the loop in DoLoad).
 			if (!ThumbnailFactory.ThumbnailExists (uri)) {
 				if (ItemsCompleted.Contains (ImageLoaderItem.Large)) {
-					ThumbnailFactory.SaveThumbnail (Large, uri);
+					using (Pixbuf scaled = PixbufUtils.ScaleToMaxSize (large, 256, 256, false))
+						ThumbnailFactory.SaveThumbnail (scaled, uri);
 				} else {
 					ItemsRequested |= ImageLoaderItem.Large;
 					return;

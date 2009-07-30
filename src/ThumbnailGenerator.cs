@@ -10,6 +10,7 @@
 using System;
 using System.IO;
 using FSpot.Utils;
+using FSpot.Loaders;
 using FSpot.Platform;
 
 using Mono.Unix.Native;
@@ -32,6 +33,10 @@ namespace FSpot {
 
 				using (ImageFile img = ImageFile.Create (uri)) {
 					thumb = img.Load (256, 256);
+				}
+				using (IImageLoader loader = ImageLoader.Create (uri)) {
+					loader.Load (ImageLoaderItem.Thumbnail);
+					thumb = loader.Thumbnail;
 				}
 
 				if (thumb == null)
