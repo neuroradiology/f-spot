@@ -7,6 +7,8 @@
  * This is free software. See COPYING for details.
  */
 
+using Gdk;
+
 using System;
 using System.Collections;
 using System.Threading;
@@ -187,7 +189,10 @@ namespace FSpot.Widgets {
 			try {
 				using (IImageLoader loader = ImageLoader.Create (entry.Uri)) {
 					loader.Load (ImageLoaderItem.Thumbnail);
-					loaded = loader.Thumbnail;
+					Pixbuf thumb = loader.Thumbnail;
+					loaded = FSpot.Utils.PixbufUtils.TransformOrientation (thumb, loader.ThumbnailOrientation);
+					if (loaded != thumb && thumb != null)
+						thumb.Dispose ();
 				}
 				this.Update (entry, loaded);
 			} catch (GLib.GException){
