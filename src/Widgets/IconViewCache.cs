@@ -261,14 +261,12 @@ namespace FSpot.Widgets {
 
 		public class CacheEntry : System.IDisposable {
 			private Gdk.Pixbuf pixbuf;
-			private Uri uri;
 			private object data;
-			private bool reload;
 			private IconViewCache cache;
 
 			public CacheEntry (IconViewCache cache, Uri uri, object closure, int max_width, int max_height)
 			{
-				this.uri = uri;
+				this.Uri = uri;
 				this.MaxHeight = max_height;
 				this.MaxWidth = max_width;
 				this.data = closure;
@@ -277,15 +275,8 @@ namespace FSpot.Widgets {
 				cache.total_size += this.Size;
 			}
 
-			public bool Reload {
-				get { return reload; }
-				set { reload = value; }
-			}
-
-			public Uri Uri {
-				get { return uri; }
-			}
-
+			public bool Reload { get; set; }
+			public Uri Uri { get; private set; }
 			public int MaxHeight { get; set; }
 			public int MaxWidth { get; set; }
 
@@ -302,9 +293,7 @@ namespace FSpot.Widgets {
 				}
 			}
 
-			public bool IsDisposed {
-				get { return uri == null; }
-			}
+			public bool IsDisposed { get { return Uri == null; } }
 
 			public void SetPixbufExtended (Gdk.Pixbuf value, bool ignore_undead)
 			{
@@ -367,7 +356,7 @@ namespace FSpot.Widgets {
 					}
 					this.pixbuf = null;
 					this.cache = null;
-					this.uri = null;
+					this.Uri = null;
 				}
 				System.GC.SuppressFinalize (this);
 			}
