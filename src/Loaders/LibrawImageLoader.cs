@@ -183,7 +183,8 @@ namespace FSpot.Loaders {
 			if (large == null) {
 				// Fallback for files without an embedded preview (yuck!)
 				LoadFull ();
-				large = full.ShallowCopy ();
+				if (full != null)
+					large = full.ShallowCopy ();
 			}
 
 			switch (orientation) {

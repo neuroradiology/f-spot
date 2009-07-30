@@ -13,6 +13,7 @@ using Cairo;
 using Gdk;
 using FSpot.Widgets;
 using FSpot.Utils;
+using FSpot.Loaders;
 
 namespace FSpot {
 	public class PreviewPopup : Gtk.Window {
@@ -108,15 +109,20 @@ namespace FSpot {
 			
 			string orig_path = item.DefaultVersion.Uri.LocalPath;
 
-			Gdk.Pixbuf pixbuf = preview_cache.Get (orig_path + show_histogram.ToString ()).ShallowCopy ();
+			Gdk.Pixbuf pixbuf = preview_cache.Get (orig_path + show_histogram.ToString ());
+			if (pixbuf != null)
+				pixbuf = pixbuf.ShallowCopy ();
 			if (pixbuf == null) {
 				// A bizarre pixbuf = hack to try to deal with cinematic displays, etc.
 				int preview_size = ((this.Screen.Width + this.Screen.Height)/2)/3;
 				try {
-					if (item is Photo)
-						pixbuf = FSpot.PhotoLoader.LoadAtMaxSize ((Photo)item, preview_size, preview_size);
-					else
-						pixbuf = PixbufUtils.LoadAtMaxSize (orig_path, preview_size, preview_size);
+					using (IImageLoader loader = ImageLoader.Create (item.DefaultVersionUri)) {
+						loader.Load (ImageLoaderItem.Large);
+						using (Pixbuf large = loader.Large) {
+							if (large != null)
+								pixbuf = PixbufUtils.ScaleToMaxSize (large, preview_size, preview_size, false);
+						}
+					}
 				} catch (Exception) {
 					pixbuf = null;
 				}
