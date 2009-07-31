@@ -189,10 +189,7 @@ namespace FSpot.Widgets {
 			try {
 				using (IImageLoader loader = ImageLoader.Create (entry.Uri)) {
 					loader.Load (ImageLoaderItem.Thumbnail);
-					Pixbuf thumb = loader.Thumbnail;
-					loaded = FSpot.Utils.PixbufUtils.TransformOrientation (thumb, loader.ThumbnailOrientation);
-					if (loaded != thumb && thumb != null)
-						thumb.Dispose ();
+					loaded = loader.Thumbnail;
 				}
 				this.Update (entry, loaded);
 			} catch (GLib.GException){

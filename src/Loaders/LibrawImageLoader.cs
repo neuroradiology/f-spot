@@ -79,6 +79,8 @@ namespace FSpot.Loaders {
 			if (is_disposed)
 				return ImageLoaderItem.None;
 
+			Log.Debug ("Loading {0} from {1}", items, uri);
+
 			ItemsRequested |= items;
 
 			StartLoading ();
@@ -103,6 +105,7 @@ namespace FSpot.Loaders {
 				large.Dispose ();
 			if (full != null)
 				full.Dispose ();
+			System.GC.Collect ();
 		}
 #endregion
 
@@ -161,8 +164,12 @@ namespace FSpot.Loaders {
 			if (!ThumbnailFactory.ThumbnailExists (uri)) {
 				if (ItemsCompleted.Contains (ImageLoaderItem.Large)) {
 					if (large != null)
-						using (Pixbuf scaled = PixbufUtils.ScaleToMaxSize (large, 256, 256, false))
-							ThumbnailFactory.SaveThumbnail (scaled, uri);
+						using (Pixbuf scaled = PixbufUtils.ScaleToMaxSize (large, 256, 256, false)) {
+							Pixbuf rotated = FSpot.Utils.PixbufUtils.TransformOrientation (scaled, LargeOrientation);
+							ThumbnailFactory.SaveThumbnail (rotated, uri);
+							if (rotated != scaled)
+								rotated.Dispose ();
+						}
 				} else {
 					ItemsRequested |= ImageLoaderItem.Large;
 					return;

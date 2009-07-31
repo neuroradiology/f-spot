@@ -183,8 +183,12 @@ namespace FSpot.Loaders {
 			if (!ThumbnailFactory.ThumbnailExists (uri)) {
 				if (ItemsCompleted.Contains (ImageLoaderItem.Large)) {
 					if (Pixbuf != null)
-						using (Pixbuf scaled = PixbufUtils.ScaleToMaxSize (Pixbuf, 256, 256, false))
-							ThumbnailFactory.SaveThumbnail (scaled, uri);
+						using (Pixbuf scaled = PixbufUtils.ScaleToMaxSize (Pixbuf, 256, 256, false)) {
+							Pixbuf rotated = FSpot.Utils.PixbufUtils.TransformOrientation (scaled, LargeOrientation);
+							ThumbnailFactory.SaveThumbnail (rotated, uri);
+							if (rotated != scaled)
+								rotated.Dispose ();
+						}
 				} else {
 					ItemsRequested |= ImageLoaderItem.Large;
 					return;
