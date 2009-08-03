@@ -33,13 +33,13 @@ namespace FSpot.Editors {
 
 	public class EditorState {
 		// The area selected by the user.
-		public Rectangle Selection;
+		public Rectangle Selection { get; set; }
 
 		// The images selected by the user.
-		public IBrowsableItem [] Items;
+		public IBrowsableItem [] Items { get; set; }
 
 		// The view, into which images are shown (null if we are in the browse view).
-		public PhotoImageView PhotoImageView;
+		public PhotoImageView PhotoImageView { get; set; }
 
 		// Has a portion of the image been selected?
 		public bool HasSelection {
@@ -179,14 +179,10 @@ namespace FSpot.Editors {
 			return Process (input, input_profile);
 		}
 
-		private bool has_settings;
-		public bool HasSettings {
-			get { return has_settings; }
-			protected set { has_settings = value; }
-		}
+		public bool HasSettings { get; protected set; }
+		Pixbuf Original { get; set; }
+		Pixbuf Preview { get; set; }
 
-		private Pixbuf original;
-		private Pixbuf preview;
 		protected void UpdatePreview () {
 			if (State.InBrowseMode) {
 				throw new Exception ("Previews cannot be made in browse mode!");
@@ -196,23 +192,22 @@ namespace FSpot.Editors {
 				throw new Exception ("We should have one item selected when this happened, otherwise something is terribly wrong.");
 			}
 
-			if (original == null) {
-				original = State.PhotoImageView.Pixbuf;
+			if (Original == null) {
+				Original = State.PhotoImageView.Pixbuf;
 			}
 
 			Pixbuf old_preview = null;
-			if (preview == null) {
+			if (Preview == null) {
 				int width, height;
-				CalcPreviewSize (original, out width, out height);
-				preview = original.ScaleSimple (width, height, InterpType.Nearest);
+				CalcPreviewSize (Original, out width, out height);
+				Preview = Original.ScaleSimple (width, height, InterpType.Nearest);
 			} else {
 				// We're updating a previous preview
 				old_preview = State.PhotoImageView.Pixbuf;
 			}
 
-			Pixbuf previewed = ProcessFast (preview, null);
-			State.PhotoImageView.Pixbuf = previewed;
-			State.PhotoImageView.ZoomFit (false);
+			Pixbuf previewed = ProcessFast (Preview, null);
+			State.PhotoImageView.ChangeImage (previewed, State.PhotoImageView.PixbufOrientation, false, false);
 			App.Instance.Organizer.InfoBox.UpdateHistogram (previewed);
 
 			if (old_preview != null) {
@@ -242,9 +237,8 @@ namespace FSpot.Editors {
 		}
 
 		public void Restore () {
-			if (original != null && State.PhotoImageView != null) {
-				State.PhotoImageView.Pixbuf = original;
-				State.PhotoImageView.ZoomFit (false);
+			if (Original != null && State.PhotoImageView != null) {
+				State.PhotoImageView.ChangeImage (Original, state.PhotoImageView.PixbufOrientation, false, false);
 
 				App.Instance.Organizer.InfoBox.UpdateHistogram (null);
 			}
@@ -253,12 +247,12 @@ namespace FSpot.Editors {
 		}
 
 		private void Reset () {
-			if (preview != null) {
-				preview.Dispose ();
+			if (Preview != null) {
+				Preview.Dispose ();
 			}
 
-			preview = null;
-			original = null;
+			Preview = null;
+			Original = null;
 			State = null;
 		}
 
