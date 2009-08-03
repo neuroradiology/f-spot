@@ -7,6 +7,7 @@ using Banshee.Database;
 using System.Diagnostics;
 using FSpot;
 using FSpot.Utils;
+using FSpot.Editors.Processing;
 
 // A Store maps to a SQL table.  We have separate stores (i.e. SQL tables) for tags, photos and imports.
 
@@ -139,6 +140,7 @@ public class Db : IDisposable {
 	ExportStore export_store;
  	JobStore job_store;
  	MetaStore meta_store;
+	SettingStore setting_store;
 	bool empty;
 	string path;
 
@@ -168,6 +170,10 @@ public class Db : IDisposable {
 	
 	public MetaStore Meta {
 		get { return meta_store; }
+	}
+
+	public SettingStore ProcessingSettings {
+		get { return setting_store; }
 	}
 
 	// This affects how often the database writes data back to disk, and
@@ -232,6 +238,7 @@ public class Db : IDisposable {
 		export_store = new ExportStore (Database, new_db);
 		job_store = new JobStore (Database, new_db);
  		photo_store = new PhotoStore (Database, new_db);
+		setting_store = new SettingStore (Database, new_db);
 
 		Database.CommitTransaction ();
 

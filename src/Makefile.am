@@ -192,6 +192,11 @@ F_SPOT_CSDISTFILES =				\
 	$(srcdir)/Editors/SepiaEditor.cs		\
 	$(srcdir)/Editors/SoftFocusEditor.cs		\
 	$(srcdir)/Editors/TiltEditor.cs		\
+	$(srcdir)/Editors/Processing/Pipeline.cs		\
+	$(srcdir)/Editors/Processing/Setting.cs		\
+	$(srcdir)/Editors/Processing/SettingStore.cs		\
+	$(srcdir)/Editors/Processing/Step.cs		\
+	$(srcdir)/Editors/Processing/ColorAdjustStep.cs		\
 	$(srcdir)/ExportStore.cs		\
 	$(srcdir)/Extensions/ExportMenuItemNode.cs	\
 	$(srcdir)/Extensions/IExporter.cs	\
