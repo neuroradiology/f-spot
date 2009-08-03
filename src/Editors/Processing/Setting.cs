@@ -12,7 +12,6 @@ using System;
 namespace FSpot.Editors.Processing {
 	public class Setting : DbItem
 	{
-		public uint Id { get; internal set; }
 		public uint PhotoId { get; private set; }
 		public uint VersionId { get; private set; }
 		public string Key { get; private set; }
@@ -23,7 +22,6 @@ namespace FSpot.Editors.Processing {
 
 		public Setting (uint id, uint photo, uint version, string key, string val)
 				: base (id) {
-			Id = id;
 			PhotoId = photo;
 			VersionId = version;
 			Key = key;

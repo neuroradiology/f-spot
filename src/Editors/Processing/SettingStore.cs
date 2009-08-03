@@ -87,7 +87,6 @@ namespace FSpot.Editors.Processing {
 							"value", setting.Value
 							)
 						);
-				setting.Id = id;
 			} else {
 				Database.ExecuteNonQuery (
 						new DbCommand (

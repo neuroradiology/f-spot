@@ -50,8 +50,7 @@ namespace FSpot.Editors.Processing {
 		{
 			Pixbuf input = Input.ShallowCopy ();
 			Pixbuf output = null;
-			foreach (Step step in Steps.Values)
-			{
+			foreach (Step step in Steps.Values) {
 				step.Process (this, input, out output);
 				input.Dispose ();
 				input = output;
@@ -83,6 +82,13 @@ namespace FSpot.Editors.Processing {
 			if (!Settings.TryGetValue (key, out setting))
 				setting = new Setting (Photo.Id, Photo.DefaultVersionId, key, null);
 			return setting;
+		}
+
+		public void Save ()
+		{
+			foreach (Setting setting in Settings.Values) {
+				Core.Database.ProcessingSettings.Commit (setting);
+			}
 		}
 #endregion
 	}
