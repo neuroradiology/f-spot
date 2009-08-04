@@ -18,6 +18,7 @@ using Gtk;
 using Mono.Unix;
 
 using System;
+using System.Threading;
 
 namespace FSpot.Editors {
 	// This is the base class from which all editors inherit.
@@ -150,6 +151,9 @@ namespace FSpot.Editors {
 		Pixbuf Original { get; set; }
 		Pixbuf Preview { get; set; }
 
+		volatile bool preview_needed = false;
+		volatile Thread preview_thread = null;
+
 		protected void UpdatePreview () {
 			if (State.InBrowseMode) {
 				throw new Exception ("Previews cannot be made in browse mode!");
@@ -159,6 +163,34 @@ namespace FSpot.Editors {
 				throw new Exception ("We should have one item selected when this happened, otherwise something is terribly wrong.");
 			}
 
+			lock (this) {
+				preview_needed = true;
+				if (preview_thread == null) {
+					preview_thread = new Thread (new ThreadStart (DoUpdatePreview));
+					preview_thread.Start ();
+				}
+			}
+		}
+
+		void DoUpdatePreview ()
+		{
+			bool done = false;
+			while (!done) {
+				preview_needed = false;
+
+				RenderPreview ();
+
+				lock (this) {
+					if (!preview_needed) {
+						done = true;
+						preview_thread = null;
+					}
+				}
+			}
+		}
+
+		void RenderPreview ()
+		{
 			if (Original == null) {
 				Original = State.PhotoImageView.Pixbuf;
 			}
@@ -214,6 +246,10 @@ namespace FSpot.Editors {
 		}
 
 		private void Reset () {
+			preview_needed = false;
+			while (preview_thread != null)
+				preview_thread.Join ();
+
 			if (Preview != null) {
 				Preview.Dispose ();
 			}
