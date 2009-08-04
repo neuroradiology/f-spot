@@ -18,6 +18,10 @@ namespace FSpot.Editors.Processing {
 			Pipeline.AddStep (150, new ColorAdjustStep ());
 		}
 
+		public string Name {
+			get { return "ColorAdjust"; }
+		}
+
 		public void Process (Pipeline pipeline, Pixbuf input, out Pixbuf output)
 		{
 			output = input.ShallowCopy ();

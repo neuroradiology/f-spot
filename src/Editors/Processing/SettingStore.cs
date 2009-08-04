@@ -77,7 +77,7 @@ namespace FSpot.Editors.Processing {
 		public override void Commit (Setting setting)
 		{
 			if (setting.Id == 0) {
-				uint id = (uint) Database.Execute (
+				Database.ExecuteNonQuery (
 						new DbCommand (
 							"INSERT INTO processing_settings (photo_id, version_id, key, value) " +
 							"VALUES (:photo_id, :version_id, :key, :value)",

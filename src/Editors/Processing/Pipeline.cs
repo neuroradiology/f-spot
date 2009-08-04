@@ -13,7 +13,7 @@ using System;
 using System.Collections.Generic;
 
 namespace FSpot.Editors.Processing {
-	public class Pipeline
+	public class Pipeline : IDisposable
 	{
 #region Step registration
 		static SortedList<uint, Step> Steps { get; set; }
@@ -42,8 +42,23 @@ namespace FSpot.Editors.Processing {
 			}
 		}
 
+		~Pipeline ()
+		{
+			Dispose ();
+		}
+
+		public void Dispose ()
+		{
+			if (Output != null) {
+				Output.Dispose ();
+				Output = null;
+			}
+
+		}
+
 #region Processing
 		public Pixbuf Input { get; set; }
+		public Cms.Profile InputProfile { get; set; }
 		public Pixbuf Output { get; private set; }
 
 		public void Process ()
@@ -62,13 +77,14 @@ namespace FSpot.Editors.Processing {
 #region Settings
 		Dictionary<string, Setting> Settings { get; set; }
 
-		public void Set (string key, bool val)
+		public void Set (Step step, string key, bool val)
 		{
-			Set (key, val ? "1" : "0");
+			Set (step, key, val ? "1" : "0");
 		}
 
-		public void Set (string key, string val)
+		public void Set (Step step, string key, string val)
 		{
+			key = step.Name + ":" + key;
 			if (Settings.ContainsKey (key)) {
 				Settings [key].Value = val;
 			} else {
@@ -76,8 +92,9 @@ namespace FSpot.Editors.Processing {
 			}
 		}
 
-		public Setting Get (string key)
+		public Setting Get (Step step, string key)
 		{
+			key = step.Name + ":" + key;
 			Setting setting;
 			if (!Settings.TryGetValue (key, out setting))
 				setting = new Setting (Photo.Id, Photo.DefaultVersionId, key, null);

@@ -183,20 +183,23 @@ F_SPOT_CSDISTFILES =				\
 	$(srcdir)/Db.cs				\
 	$(srcdir)/DependentListStore.cs		\
 	$(srcdir)/DragDropTargets.cs				\
-	$(srcdir)/Editors/Editor.cs		\
 	$(srcdir)/Editors/AutoStretchEditor.cs		\
-	$(srcdir)/Editors/CropEditor.cs		\
 	$(srcdir)/Editors/ColorEditor.cs		\
+	$(srcdir)/Editors/CropEditor.cs		\
 	$(srcdir)/Editors/DesaturateEditor.cs		\
-	$(srcdir)/Editors/RedEyeEditor.cs		\
-	$(srcdir)/Editors/SepiaEditor.cs		\
-	$(srcdir)/Editors/SoftFocusEditor.cs		\
-	$(srcdir)/Editors/TiltEditor.cs		\
+	$(srcdir)/Editors/Editor.cs		\
+	$(srcdir)/Editors/EditorNode.cs		\
+	$(srcdir)/Editors/EditorState.cs		\
+	$(srcdir)/Editors/Processing/ColorAdjustStep.cs		\
 	$(srcdir)/Editors/Processing/Pipeline.cs		\
 	$(srcdir)/Editors/Processing/Setting.cs		\
 	$(srcdir)/Editors/Processing/SettingStore.cs		\
 	$(srcdir)/Editors/Processing/Step.cs		\
-	$(srcdir)/Editors/Processing/ColorAdjustStep.cs		\
+	$(srcdir)/Editors/RedEyeEditor.cs		\
+	$(srcdir)/Editors/RepeatableEditor.cs		\
+	$(srcdir)/Editors/SepiaEditor.cs		\
+	$(srcdir)/Editors/SoftFocusEditor.cs		\
+	$(srcdir)/Editors/TiltEditor.cs		\
 	$(srcdir)/ExportStore.cs		\
 	$(srcdir)/Extensions/ExportMenuItemNode.cs	\
 	$(srcdir)/Extensions/IExporter.cs	\

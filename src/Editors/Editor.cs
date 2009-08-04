@@ -1,11 +1,11 @@
-/*
- * Editor.cs
- *
- * Author(s)
- * 	Ruben Vermeersch <ruben@savanne.be>
- *
- * This is free software. See COPYING for details.
- */
+//
+// FSpot.Editors.Editor.cs
+//
+// Author(s)
+// 	Ruben Vermeersch <ruben@savanne.be>
+//
+// This is free software. See COPYING for details.
+//
 
 using FSpot;
 using FSpot.Utils;
@@ -15,43 +15,11 @@ using FSpot.Loaders;
 using Gdk;
 using Gtk;
 
-using Mono.Addins;
 using Mono.Unix;
 
 using System;
 
 namespace FSpot.Editors {
-	[ExtensionNode ("Editor")]
-	public class EditorNode : ExtensionNode {
-		[NodeAttribute (Required=true)]
-		protected string editor_type;
-
-		public Editor GetEditor () {
-			return (Editor) Addin.CreateInstance (editor_type);
-		}
-	}
-
-	public class EditorState {
-		// The area selected by the user.
-		public Rectangle Selection { get; set; }
-
-		// The images selected by the user.
-		public IBrowsableItem [] Items { get; set; }
-
-		// The view, into which images are shown (null if we are in the browse view).
-		public PhotoImageView PhotoImageView { get; set; }
-
-		// Has a portion of the image been selected?
-		public bool HasSelection {
-			get { return Selection != Rectangle.Zero; }
-		}
-
-		// Is the user in browse mode?
-		public bool InBrowseMode {
-			get { return PhotoImageView == null; }
-		}
-	}
-
 	// This is the base class from which all editors inherit.
 	public abstract class Editor {
 		public delegate void ProcessingStartedHandler (string name, int count);
@@ -61,6 +29,11 @@ namespace FSpot.Editors {
 		public event ProcessingStartedHandler ProcessingStarted;
 		public event ProcessingStepHandler ProcessingStep;
 		public event ProcessingFinishedHandler ProcessingFinished;
+
+		// Whether the user needs to select a part of the image before it can be applied.
+		public bool NeedsSelection { get; protected set; }
+		public bool CanHandleMultiple { get; protected set; }
+		public bool HasSettings { get; protected set; }
 
 		// Contains the current selection, the items being edited, ...
 		private EditorState state;
@@ -78,10 +51,6 @@ namespace FSpot.Editors {
 			get { return state != null; }
 		}
 
-
-		// Whether the user needs to select a part of the image before it can be applied.
-		public bool NeedsSelection = false;
-
 		// A tool can be applied if it doesn't need a selection, or if it has one.
 		public bool CanBeApplied {
 			get {
@@ -90,14 +59,7 @@ namespace FSpot.Editors {
 			}
 		}
 
-		private bool can_handle_multiple = false;
-		public bool CanHandleMultiple {
-			get { return can_handle_multiple; }
-			protected set { can_handle_multiple = value; }
-		}
-
-
-		protected void LoadPhoto (Photo photo, out Pixbuf photo_pixbuf, out Cms.Profile photo_profile) {
+		protected virtual void LoadPhoto (Photo photo, out Pixbuf photo_pixbuf, out Cms.Profile photo_profile) {
 			// FIXME: We might get this value from the PhotoImageView.
 			using (ImageFile img = ImageFile.Create (photo.DefaultVersion.Uri)) {
 				if (State.PhotoImageView != null) {
@@ -129,6 +91,12 @@ namespace FSpot.Editors {
 		public Editor (string label, string icon_name) {
 			Label = label;
 			IconName = icon_name;
+
+			// Default values for capabilities, these need to be set in
+			// the subclass constructor.
+			CanHandleMultiple = false;
+			NeedsSelection = false;
+			HasSettings = false;
 		}
 
 		// Apply the editor's action to a photo.
@@ -179,7 +147,6 @@ namespace FSpot.Editors {
 			return Process (input, input_profile);
 		}
 
-		public bool HasSettings { get; protected set; }
 		Pixbuf Original { get; set; }
 		Pixbuf Preview { get; set; }
 

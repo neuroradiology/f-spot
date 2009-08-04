@@ -12,6 +12,8 @@ using Gdk;
 namespace FSpot.Editors.Processing {
 	public interface Step
 	{
+		string Name { get; }
+
 		void Process (Pipeline pipeline, Pixbuf input, out Pixbuf output);
 	}
 }
