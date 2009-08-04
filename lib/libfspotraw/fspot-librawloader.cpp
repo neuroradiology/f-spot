@@ -40,7 +40,7 @@ fspot_librawloader_get_property (GObject	  *object,
 static void fspot_librawloader_dispose (GObject *object);
 static void fspot_librawloader_finalize (GObject *object);
 
-static void open_if_needed (FSpotLibrawLoader *self);
+static gboolean open_if_needed (FSpotLibrawLoader *self);
 static void pixbuf_freed (guchar *pixels, gpointer data);
 
 static int libraw_progress_callback (void *user_data, enum LibRaw_progress p, int iteration, int expected);
@@ -191,7 +191,8 @@ fspot_librawloader_load_embedded (FSpotLibrawLoader *self, int *orientation)
 	GdkPixbuf *pixbuf = NULL;
 	GError *error = NULL;
 
-	open_if_needed (self);
+	if (!open_if_needed (self))
+		return NULL;
 
 	self->priv->raw_proc->unpack_thumb ();
 	image = self->priv->raw_proc->dcraw_make_mem_thumb (&result);
@@ -221,7 +222,8 @@ fspot_librawloader_load_full (FSpotLibrawLoader *self)
 	libraw_processed_image_t *image = NULL;
 	GdkPixbuf *pixbuf = NULL;
 
-	open_if_needed (self);
+	if (!open_if_needed (self))
+		return NULL;
 
 	self->priv->raw_proc->unpack ();
 	self->priv->raw_proc->dcraw_process ();
@@ -263,16 +265,18 @@ fspot_librawloader_new (const gchar *filename)
 	return loader;
 }
 
-static void
+static gboolean
 open_if_needed (FSpotLibrawLoader *self)
 {
 	if (!self->priv->opened) {
 		self->priv->raw_proc->imgdata.params.use_camera_wb = 1;
 		int result = self->priv->raw_proc->open_file (self->priv->filename);
-		g_assert (result == 0);
+		if (result != 0)
+			return FALSE;
 
 		self->priv->opened = true;
 	}
+	return TRUE;
 }
 
 static int

@@ -30,20 +30,20 @@ namespace FSpot.Loaders {
 
 		Pixbuf thumbnail;
 		public Pixbuf Thumbnail {
-			get { return thumbnail.ShallowCopy (); }
+			get { return thumbnail == null ? null : thumbnail.ShallowCopy (); }
 			private set { thumbnail = value; }
 		}
 		public PixbufOrientation ThumbnailOrientation { get; private set; }
 
 		Pixbuf large;
 		public Pixbuf Large {
-			get { return large.ShallowCopy (); }
+			get { return large == null ? null : large.ShallowCopy (); }
 		}
 		public PixbufOrientation LargeOrientation { get; private set; }
 
 		Pixbuf full;
 		public Pixbuf Full {
-			get { return full.ShallowCopy (); }
+			get { return full == null ? null : full.ShallowCopy (); }
 		}
 		public PixbufOrientation FullOrientation { get; private set; }
 
@@ -163,13 +163,17 @@ namespace FSpot.Loaders {
 			// for the next call to generate it (see the loop in DoLoad).
 			if (!ThumbnailFactory.ThumbnailExists (uri)) {
 				if (ItemsCompleted.Contains (ImageLoaderItem.Large)) {
-					if (large != null)
+					if (large != null) {
 						using (Pixbuf scaled = PixbufUtils.ScaleToMaxSize (large, 256, 256, false)) {
 							Pixbuf rotated = FSpot.Utils.PixbufUtils.TransformOrientation (scaled, LargeOrientation);
 							ThumbnailFactory.SaveThumbnail (rotated, uri);
 							if (rotated != scaled)
 								rotated.Dispose ();
 						}
+					} else {
+						SignalItemCompleted (ImageLoaderItem.Thumbnail);
+						return;
+					}
 				} else {
 					ItemsRequested |= ImageLoaderItem.Large;
 					return;
@@ -197,8 +201,12 @@ namespace FSpot.Loaders {
 			if (large == null) {
 				// Fallback for files without an embedded preview (yuck!)
 				LoadFull ();
-				if (full != null)
+				if (full != null) {
 					large = full.ShallowCopy ();
+				} else {
+					SignalItemCompleted (ImageLoaderItem.Large);
+					return;
+				}
 			}
 
 			switch (orientation) {

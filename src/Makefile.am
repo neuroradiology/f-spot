@@ -495,8 +495,10 @@ fspotlib_DATA = f-spot.exe.config	\
 		FSpot.Utils.dll.config	\
 		FSpot.Imaging.dll		\
 		FSpot.Imaging.dll.mdb	\
+		FSpot.Imaging.dll.config	\
 		FSpot.Loaders.dll		\
 		FSpot.Loaders.dll.mdb	\
+		FSpot.Loaders.dll.config	\
 		FSpot.Query.dll		\
 		FSpot.Query.dll.mdb	\
 		FSpot.Core.dll		\
