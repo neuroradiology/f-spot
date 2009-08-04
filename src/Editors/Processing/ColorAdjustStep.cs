@@ -20,6 +20,11 @@ namespace FSpot.Editors.Processing {
 
 		public void Process (Pipeline pipeline, Pixbuf input, out Pixbuf output)
 		{
+			if (pipeline.Get (this, "Temperature").IsBlank) {
+				output = input.ShallowCopy ();
+				return;
+			}
+
 			Cms.ColorCIEXYZ src_wp;
 			Cms.ColorCIEXYZ dest_wp;
 

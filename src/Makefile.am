@@ -172,9 +172,7 @@ F_SPOT_CSDISTFILES =				\
 	$(srcdir)/PhotoList.cs 		\
 	$(srcdir)/ColorAdjustment/Adjustment.cs		\
 	$(srcdir)/ColorAdjustment/AutoStretch.cs		\
-	$(srcdir)/ColorAdjustment/Desaturate.cs		\
 	$(srcdir)/ColorAdjustment/FullColorAdjustment.cs		\
-	$(srcdir)/ColorAdjustment/SepiaTone.cs		\
 	$(srcdir)/ControlOverlay.cs		\
 	$(srcdir)/Core/App.cs			\
 	$(srcdir)/Core/ColorManagement.cs	\

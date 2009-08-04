@@ -13,15 +13,21 @@ using Gdk;
 using Mono.Unix;
 
 namespace FSpot.Editors {
-    class DesaturateEditor : Editor {
+    class DesaturateEditor : RepeatableEditor {
         public DesaturateEditor () : base (Catalog.GetString ("Desaturate"), "color-desaturate") {
 			// FIXME: need tooltip Catalog.GetString ("Convert the photo to black and white")
 			CanHandleMultiple = true;
         }
 
-        protected override Pixbuf Process (Pixbuf input, Cms.Profile input_profile) {
-            Desaturate desaturate = new Desaturate (input, input_profile);
-            return desaturate.Adjust ();
-        }
+		protected override void SetupPipeline ()
+		{
+			Pipeline.Set ("ColorAdjust", "Temperature", 5000);
+			Pipeline.Set ("ColorAdjust", "Tint", 0);
+			Pipeline.Set ("ColorAdjust", "Exposure", 0.0);
+			Pipeline.Set ("ColorAdjust", "Brightness", 0.0);
+			Pipeline.Set ("ColorAdjust", "Contrast", 0.0);
+			Pipeline.Set ("ColorAdjust", "Hue", 0.0);
+			Pipeline.Set ("ColorAdjust", "Saturation", -100.0);
+		}
     }
 }

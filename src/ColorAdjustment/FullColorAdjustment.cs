@@ -45,11 +45,20 @@ namespace FSpot.ColorAdjustment {
 			List <Cms.Profile> profiles = new List <Cms.Profile> ();
 			profiles.Add (InputProfile);
 			profiles.Add (Cms.Profile.CreateAbstract (nsteps,
+						1.0,
+						0.0,
+						0.0,
+						0.0,
+						saturation,
+						null,
+						ColorCIExyY.D50,
+						ColorCIExyY.D50));
+			profiles.Add (Cms.Profile.CreateAbstract (nsteps,
 						Math.Pow (Math.Sqrt (2.0), exposure),
 						brightness,
 						contrast,
 						hue,
-						saturation,
+						0.0,
 						null,
 						src_wp.ToxyY (),
 						dest_wp.ToxyY ()));
