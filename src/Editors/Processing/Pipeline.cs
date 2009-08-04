@@ -21,6 +21,7 @@ namespace FSpot.Editors.Processing {
 		static Pipeline ()
 		{
 			Steps = new SortedList<uint, Step> ();
+			AddStep (150, new ColorAdjustStep ());
 		}
 
 		public static void AddStep (uint order, Step step)
@@ -84,7 +85,17 @@ namespace FSpot.Editors.Processing {
 
 		public void Set (Step step, string key, string val)
 		{
-			key = step.Name + ":" + key;
+			Set (step.Name, key, val);
+		}
+
+		public void Set (string step, string key, object val)
+		{
+			Set (step, key, val.ToString ());
+		}
+
+		public void Set (string step, string key, string val)
+		{
+			key = step + ":" + key;
 			if (Settings.ContainsKey (key)) {
 				Settings [key].Value = val;
 			} else {
@@ -94,10 +105,23 @@ namespace FSpot.Editors.Processing {
 
 		public Setting Get (Step step, string key)
 		{
-			key = step.Name + ":" + key;
+			return Get (step.Name, key);
+		}
+
+		public Setting Get (string step, string key)
+		{
+			key = step + ":" + key;
 			Setting setting;
 			if (!Settings.TryGetValue (key, out setting))
 				setting = new Setting (Photo.Id, Photo.DefaultVersionId, key, null);
+			return setting;
+		}
+
+		public Setting Get (string step, string key, string def)
+		{
+			Setting setting = Get (step, key);
+			if (setting.IsBlank)
+				setting.Value = def;
 			return setting;
 		}
 
@@ -108,5 +132,18 @@ namespace FSpot.Editors.Processing {
 			}
 		}
 #endregion
+
+		public void Dump ()
+		{
+			Log.Debug ("Dumping pipeline {0}", this);
+			Log.Debug ("   Steps:");
+			foreach (KeyValuePair<uint, Step> kvp in Steps) {
+				Log.Debug ("      {0} - {1}", kvp.Key, kvp.Value.Name);
+			}
+			Log.Debug ("   Settings:");
+			foreach (KeyValuePair<string, Setting> kvp in Settings) {
+				Log.Debug ("      {0} - {1}", kvp.Key, kvp.Value.Value);
+			}
+		}
 	}
 }

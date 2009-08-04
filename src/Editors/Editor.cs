@@ -237,7 +237,7 @@ namespace FSpot.Editors {
 		public delegate void InitializedHandler ();
 		public event InitializedHandler Initialized;
 
-		public void Initialize (EditorState state) {
+		public virtual void Initialize (EditorState state) {
 			State = state;
 
 			if (Initialized != null)

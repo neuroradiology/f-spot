@@ -16,7 +16,7 @@ using Mono.Unix;
 using System;
 
 namespace FSpot.Editors {
-	class ColorEditor : Editor {
+	class ColorEditor : RepeatableEditor {
 		private Glade.XML xml;
 
 		[Glade.Widget] private Gtk.HScale exposure_scale;
@@ -45,24 +45,31 @@ namespace FSpot.Editors {
 			xml = new Glade.XML (null, "f-spot.glade", "color_editor_prefs", "f-spot");
 			xml.Autoconnect (this);
 			AttachInterface ();
-			return xml.GetWidget ("color_editor_prefs");;
+			return xml.GetWidget ("color_editor_prefs");
 		}
 
 		private void AttachInterface () {
-			exposure_spinbutton.Adjustment = exposure_scale.Adjustment;
 			temp_spinbutton.Adjustment = temp_scale.Adjustment;
 			temptint_spinbutton.Adjustment = temptint_scale.Adjustment;
+			exposure_spinbutton.Adjustment = exposure_scale.Adjustment;
 			brightness_spinbutton.Adjustment = brightness_scale.Adjustment;
 			contrast_spinbutton.Adjustment = contrast_scale.Adjustment;
 			hue_spinbutton.Adjustment = hue_scale.Adjustment;
 			sat_spinbutton.Adjustment = sat_scale.Adjustment;
 
+			temp_scale.Adjustment.Value = Pipeline.Get ("ColorAdjust", "Temperature", "5000").IntValue;
+			temptint_scale.Adjustment.Value = Pipeline.Get ("ColorAdjust", "Tint", "0").IntValue;
+			exposure_scale.Adjustment.Value = Pipeline.Get ("ColorAdjust", "Exposure", "0.0").DoubleValue;
+			brightness_scale.Adjustment.Value = Pipeline.Get ("ColorAdjust", "Brightness", "0.0").DoubleValue;
+			contrast_scale.Adjustment.Value = Pipeline.Get ("ColorAdjust", "Contrast", "0.0").DoubleValue;
+			hue_scale.Adjustment.Value = Pipeline.Get ("ColorAdjust", "Hue", "0.0").DoubleValue;
+			sat_scale.Adjustment.Value = Pipeline.Get ("ColorAdjust", "Saturation", "0.0").DoubleValue;
+
 			temp_spinbutton.Adjustment.ChangeValue ();
 			temptint_spinbutton.Adjustment.ChangeValue ();
+			exposure_spinbutton.Adjustment.ChangeValue ();
 			brightness_spinbutton.Adjustment.ChangeValue ();
 			contrast_spinbutton.Adjustment.ChangeValue ();
-			hue_spinbutton.Adjustment.ChangeValue ();
-			sat_spinbutton.Adjustment.ChangeValue ();
 			hue_spinbutton.Adjustment.ChangeValue ();
 			sat_spinbutton.Adjustment.ChangeValue ();
 
@@ -79,20 +86,15 @@ namespace FSpot.Editors {
 			UpdatePreview ();
 		}
 
-		protected override Pixbuf Process (Pixbuf input, Cms.Profile input_profile) {
-			Cms.ColorCIEXYZ src_wp;
-			Cms.ColorCIEXYZ dest_wp;
-
-			src_wp = Cms.ColorCIExyY.WhitePointFromTemperature (5000).ToXYZ ();
-			dest_wp = Cms.ColorCIExyY.WhitePointFromTemperature ((int)temp_scale.Value).ToXYZ ();
-			Cms.ColorCIELab dest_lab = dest_wp.ToLab (src_wp);
-			dest_lab.a += temptint_scale.Value;
-			dest_wp = dest_lab.ToXYZ (src_wp);
-
-			FullColorAdjustment adjust = new FullColorAdjustment (input, input_profile,
-					exposure_scale.Value, brightness_scale.Value, contrast_scale.Value,
-					hue_scale.Value, sat_scale.Value, src_wp, dest_wp);
-			return adjust.Adjust ();
+		protected override void SetupPipeline ()
+		{
+			Pipeline.Set ("ColorAdjust", "Temperature", (int) temp_scale.Value);
+			Pipeline.Set ("ColorAdjust", "Tint", (int) temptint_scale.Value);
+			Pipeline.Set ("ColorAdjust", "Exposure", (double) exposure_scale.Value);
+			Pipeline.Set ("ColorAdjust", "Brightness", (double) brightness_scale.Value);
+			Pipeline.Set ("ColorAdjust", "Contrast", (double) contrast_scale.Value);
+			Pipeline.Set ("ColorAdjust", "Hue", (double) hue_scale.Value);
+			Pipeline.Set ("ColorAdjust", "Saturation", (double) sat_scale.Value);
 		}
 	}
 }

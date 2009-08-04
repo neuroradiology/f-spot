@@ -18,17 +18,21 @@ namespace FSpot.Editors {
 		public RepeatableEditor (string label, string icon_name)
 				: base (label, icon_name)
 		{
-
 		}
 
-		// When this is called, the pipeline should be filled with the
-		// appropriate values, chosen in the configuration widget.
-		protected abstract void SetupPipeline ();
+		sealed public override void Initialize (EditorState state)
+		{
+			base.Initialize (state);
+
+			if (State.Items.Length > 0)
+				Pipeline = new Pipeline (State.Items [0] as Photo);
+		}
 
 		sealed protected override Pixbuf Process (Pixbuf input, Cms.Profile input_profile)
 		{
 			Pipeline.Input = input;
 			Pipeline.InputProfile = input_profile;
+			SetupPipeline ();
 			Pipeline.Process ();
 			return Pipeline.Output.ShallowCopy ();
 		}
@@ -39,5 +43,10 @@ namespace FSpot.Editors {
 			Pipeline = new Pipeline (photo);
 			SetupPipeline ();
 		}
+
+		// When this is called, the pipeline should be filled with the
+		// appropriate values, chosen in the configuration widget.
+		protected abstract void SetupPipeline ();
+
 	}
 }
