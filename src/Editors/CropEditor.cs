@@ -10,6 +10,7 @@
 using FSpot;
 using FSpot.UI.Dialog;
 using FSpot.Utils;
+using FSpot.Loaders;
 using Gdk;
 using Gtk;
 using Mono.Unix;
@@ -140,8 +141,10 @@ namespace FSpot.Editors {
 					break;
 				case ConstraintType.SameAsPhoto:
 					try {
-						Pixbuf pb = State.PhotoImageView.CompletePixbuf ();
-						State.PhotoImageView.SelectionXyRatio = (double)pb.Width / (double)pb.Height;
+						IImageLoader loader = State.PhotoImageView.Loader;
+						loader.Load (ImageLoaderItem.Large);
+						using (Pixbuf large = loader.Large)
+							State.PhotoImageView.SelectionXyRatio = (double)large.Width / (double)large.Height;
 					} catch (System.Exception ex) {
 						Log.Warning ("Exception in selection ratio's: {0}", ex);
 						State.PhotoImageView.SelectionXyRatio = 0;

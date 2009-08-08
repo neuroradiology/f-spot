@@ -64,7 +64,9 @@ namespace FSpot.Editors {
 			// FIXME: We might get this value from the PhotoImageView.
 			using (ImageFile img = ImageFile.Create (photo.DefaultVersion.Uri)) {
 				if (State.PhotoImageView != null) {
-					photo_pixbuf = State.PhotoImageView.CompletePixbuf ().ShallowCopy ();
+					IImageLoader loader = State.PhotoImageView.Loader;
+					loader.Load (ImageLoaderItem.Full);
+					photo_pixbuf = loader.Full;
 				} else {
 					using (IImageLoader loader = ImageLoader.Create (photo.DefaultVersionUri)) {
 						loader.Load (ImageLoaderItem.Full);

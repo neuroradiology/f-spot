@@ -52,15 +52,6 @@ namespace FSpot.Widgets {
 			get { return loupe; }
 		}
 
-		public Gdk.Pixbuf CompletePixbuf ()
-		{
-			//FIXME: this should be an async call
-			if (loader != null)
-				while (loader.Loading)
-					Gtk.Application.RunIteration (true);
-			return this.Pixbuf;
-		}
-
 		public void Reload ()
 		{
 			if (Item == null || !Item.IsValid)
@@ -160,10 +151,10 @@ namespace FSpot.Widgets {
 
 		protected override void OnDestroyed ()
 		{
-			if (loader != null) {
-				loader.AreaUpdated -= HandlePixbufAreaUpdated;
-				loader.AreaPrepared -= HandlePixbufPrepared;
-				loader.Dispose ();
+			if (Loader != null) {
+				Loader.AreaUpdated -= HandlePixbufAreaUpdated;
+				Loader.AreaPrepared -= HandlePixbufPrepared;
+				Loader.Dispose ();
 			}
 			base.OnDestroyed ();
 		}
@@ -219,32 +210,33 @@ namespace FSpot.Widgets {
 #endregion
 
 #region loader		
+		public IImageLoader Loader { get; private set; }
+
 		uint timer;
-		IImageLoader loader;
 		bool prepared_is_new;
 		ImageLoaderItem current_item;
 
 		void Load (Uri uri)
 		{
 			timer = Log.DebugTimerStart ();
-			if (loader != null)
-				loader.Dispose ();
+			if (Loader != null)
+				Loader.Dispose ();
 			HideStatus ();
 
 			current_item = ImageLoaderItem.None;
 
 			prepared_is_new = true;
-			loader = ImageLoader.Create (uri);
-			loader.AreaPrepared += HandlePixbufPrepared;
-			loader.AreaUpdated += HandlePixbufAreaUpdated;
-			loader.ProgressHint += HandleProgressHint;
-			loader.Load (ImageLoaderItem.Thumbnail | ImageLoaderItem.Large | ImageLoaderItem.Full, HandleCompleted);
+			Loader = ImageLoader.Create (uri);
+			Loader.AreaPrepared += HandlePixbufPrepared;
+			Loader.AreaUpdated += HandlePixbufAreaUpdated;
+			Loader.ProgressHint += HandleProgressHint;
+			Loader.Load (ImageLoaderItem.Thumbnail | ImageLoaderItem.Large | ImageLoaderItem.Full, HandleCompleted);
 		}
 
 		void HandlePixbufPrepared (object sender, AreaPreparedEventArgs args)
 		{
 			IImageLoader loader = sender as IImageLoader;
-			if (loader != this.loader)
+			if (loader != Loader)
 				return;
 
 			if (!ShowProgress)
@@ -258,8 +250,8 @@ namespace FSpot.Widgets {
 			Log.Debug ("Prepared is new: {0}", prepared_is_new);
 
 			Gdk.Pixbuf prev = Pixbuf;
-			PixbufOrientation orientation = Accelerometer.GetViewOrientation (loader.PixbufOrientation (current_item));
-			ChangeImage (loader.Pixbuf (current_item), orientation, prepared_is_new, current_item != ImageLoaderItem.Full);
+			PixbufOrientation orientation = Accelerometer.GetViewOrientation (Loader.PixbufOrientation (current_item));
+			ChangeImage (Loader.Pixbuf (current_item), orientation, prepared_is_new, current_item != ImageLoaderItem.Full);
 			prepared_is_new = false;
 
 			if (prev != null)
@@ -271,7 +263,7 @@ namespace FSpot.Widgets {
 		void HandlePixbufAreaUpdated (object sender, AreaUpdatedEventArgs args)
 		{
 			IImageLoader loader = sender as IImageLoader;
-			if (loader != this.loader)
+			if (loader != Loader)
 				return;
 
 			if (!ShowProgress)
@@ -286,13 +278,13 @@ namespace FSpot.Widgets {
 			Log.DebugTimerPrint (timer, "Loading image took {0} (" + args.Items.ToString () + ")");
 			HideStatus ();
 			IImageLoader loader = sender as IImageLoader;
-			if (loader != this.loader)
+			if (loader != Loader)
 				return;
 
 			Pixbuf prev = this.Pixbuf;
 			if (current_item != args.Items.Largest ()) {
 				current_item = args.Items.Largest ();
-				ChangeImage (loader.Pixbuf (current_item), Accelerometer.GetViewOrientation (loader.PixbufOrientation (current_item)), false, false);
+				ChangeImage (Loader.Pixbuf (current_item), Accelerometer.GetViewOrientation (Loader.PixbufOrientation (current_item)), false, false);
 			}
 
 			if (Pixbuf == null) {

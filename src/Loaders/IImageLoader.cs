@@ -15,8 +15,6 @@ using Gdk;
 
 namespace FSpot.Loaders {
 	public interface IImageLoader : IDisposable {
-		bool Loading { get; }	
-
 		event EventHandler<AreaPreparedEventArgs> AreaPrepared;
 		event EventHandler<AreaUpdatedEventArgs> AreaUpdated;
 		event EventHandler<ItemsCompletedEventArgs> Completed;
