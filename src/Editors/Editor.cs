@@ -208,12 +208,15 @@ namespace FSpot.Editors {
 			}
 
 			Pixbuf previewed = ProcessFast (Preview, null);
-			State.PhotoImageView.ChangeImage (previewed, State.PhotoImageView.PixbufOrientation, false, false);
-			App.Instance.Organizer.InfoBox.UpdateHistogram (previewed);
 
-			if (old_preview != null) {
-				old_preview.Dispose ();
-			}
+			Gtk.Application.Invoke (delegate {
+					State.PhotoImageView.ChangeImage (previewed, State.PhotoImageView.PixbufOrientation, false, false);
+                    App.Instance.Organizer.InfoBox.UpdateHistogram (previewed);
+
+					if (old_preview != null) {
+						old_preview.Dispose ();
+					}
+				});
 		}
 
 		private void CalcPreviewSize (Pixbuf input, out int width, out int height) {
