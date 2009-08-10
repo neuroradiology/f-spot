@@ -174,9 +174,9 @@ namespace FSpot
 	
 		// This doesn't check if a version of that name already exists, 
 		// it's supposed to be used only within the Photo and PhotoStore classes.
-		internal void AddVersionUnsafely (uint version_id, System.Uri uri, string md5_sum, string name, bool is_protected)
+		internal void AddVersionUnsafely (uint version_id, System.Uri uri, string md5_sum, string name, bool is_protected, PhotoVersionType type, uint parent_version_id)
 		{
-			versions [version_id] = new PhotoVersion (this, version_id, uri, md5_sum, name, is_protected);
+			versions [version_id] = new PhotoVersion (this, version_id, uri, md5_sum, name, is_protected, type, parent_version_id);
 	
 			highest_version_id = Math.Max (version_id, highest_version_id);
 			changes.AddVersion (version_id);
@@ -194,7 +194,7 @@ namespace FSpot
 			highest_version_id ++;
 			string md5_sum = GenerateMD5 (uri);
 
-			versions [highest_version_id] = new PhotoVersion (this, highest_version_id, uri, md5_sum, name, is_protected);
+			versions [highest_version_id] = new PhotoVersion (this, highest_version_id, uri, md5_sum, name, is_protected, PhotoVersionType.Simple, 0);
 
 			changes.AddVersion (highest_version_id);
 			return highest_version_id;
@@ -358,7 +358,7 @@ namespace FSpot
 			}
 			highest_version_id ++;
 
-			versions [highest_version_id] = new PhotoVersion (this, highest_version_id, new_uri, md5_sum, name, is_protected);
+			versions [highest_version_id] = new PhotoVersion (this, highest_version_id, new_uri, md5_sum, name, is_protected, PhotoVersionType.Simple, 0);
 
 			changes.AddVersion (highest_version_id);
 	
@@ -382,7 +382,7 @@ namespace FSpot
 					continue;
 	
 				highest_version_id ++;
-				versions [highest_version_id] = new PhotoVersion (this, highest_version_id, version.Uri, version.MD5Sum, name, is_protected);
+				versions [highest_version_id] = new PhotoVersion (this, highest_version_id, version.Uri, version.MD5Sum, name, is_protected, PhotoVersionType.Simple, 0);
 
 				changes.AddVersion (highest_version_id);
 
@@ -579,7 +579,7 @@ namespace FSpot
 	
 			// Note that the original version is never stored in the photo_versions table in the
 			// database.
-			AddVersionUnsafely (OriginalVersionId, uri, md5_sum, Catalog.GetString ("Original"), true);
+			AddVersionUnsafely (OriginalVersionId, uri, md5_sum, Catalog.GetString ("Original"), true, PhotoVersionType.Simple, 0);
 		}
 
 #region IComparable implementation

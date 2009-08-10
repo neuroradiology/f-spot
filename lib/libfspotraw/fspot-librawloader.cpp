@@ -225,8 +225,14 @@ fspot_librawloader_load_full (FSpotLibrawLoader *self)
 	if (!open_if_needed (self))
 		return NULL;
 
-	self->priv->raw_proc->unpack ();
-	self->priv->raw_proc->dcraw_process ();
+	result = self->priv->raw_proc->unpack ();
+	if (result != 0)
+		return NULL;
+
+	result = self->priv->raw_proc->dcraw_process ();
+	if (result != 0)
+		return NULL;
+
 	image = self->priv->raw_proc->dcraw_make_mem_image (&result);
 	if (result != 0 || image == NULL) {
 		return NULL;

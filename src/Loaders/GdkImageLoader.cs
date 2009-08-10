@@ -75,6 +75,9 @@ namespace FSpot.Loaders {
 
 		public override void Dispose ()
 		{
+			if (is_disposed)
+				return;
+
 			is_disposed = true;
 			if (image_stream != null)
 				try {

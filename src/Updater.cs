@@ -588,6 +588,33 @@ namespace FSpot.Database {
 				Execute ("UPDATE tags SET name = 'Imported Tags' WHERE name = 'Import Tags'");
 			});
 			
+			// Update to version 17.2, add type and parent id to photo versions
+			AddUpdate (new Version (17,2),delegate () {
+				string temp_table = MoveTableToTemp ("photo_versions");
+
+				Execute (
+					"CREATE TABLE photo_versions (\n"+
+					"	photo_id	INTEGER, \n" +
+					"	version_id	INTEGER, \n" +
+					"	name		STRING, \n" +
+					"	base_uri		STRING NOT NULL, \n" +
+					"	filename		STRING NOT NULL, \n" +
+					"	md5_sum		TEXT NULL, \n" +
+					"	protected	BOOLEAN, \n" +
+					"	type		INTEGER, \n" +
+					"	parent_version_id	INTEGER, \n" +
+					"	UNIQUE (photo_id, version_id)\n" +
+					")");
+
+				Execute ("CREATE INDEX idx_photo_versions_id ON photo_versions(photo_id)");
+				Execute ("CREATE INDEX idx_photo_parent_versions_id ON photo_versions(parent_version_id)");
+
+				Execute (String.Format (
+					"INSERT OR IGNORE INTO photo_versions (photo_id, version_id, name, base_uri, filename, md5_sum, protected) " +
+					"SELECT photo_id, version_id, name, base_uri, filename, md5_sum, protected " +
+					"FROM {0}", temp_table));
+				Execute (String.Format ("UPDATE photo_versions SET type = {0}, parent_version_id = 0", (uint) PhotoVersionType.Simple));
+			});
 		}
 
 		public static void Run (Db database)

@@ -92,10 +92,13 @@ public class PhotoStore : DbStore<Photo> {
 		    "	filename		STRING NOT NULL, \n" +
 			"	md5_sum		TEXT NULL, \n" +
 			"	protected	BOOLEAN, \n" +
+			"	type		INTEGER, \n" +
+			"	parent_version_id	INTEGER, \n" +
 			"	UNIQUE (photo_id, version_id)\n" +
 			")");
 
 		Database.ExecuteNonQuery ("CREATE INDEX idx_photo_versions_id ON photo_versions(photo_id)");
+		Database.ExecuteNonQuery ("CREATE INDEX idx_photo_parent_versions_id ON photo_versions(parent_version_id)");
 		Database.ExecuteNonQuery ("CREATE INDEX idx_photos_roll_id ON photos(roll_id)");
 	}
 
@@ -171,7 +174,7 @@ public class PhotoStore : DbStore<Photo> {
 	private void GetVersions (Photo photo)
 	{
 		SqliteDataReader reader = Database.Query(
-			new DbCommand("SELECT version_id, name, base_uri, filename, md5_sum, protected " + 
+			new DbCommand("SELECT version_id, name, base_uri, filename, md5_sum, protected, type, parent_version_id " +
 				      "FROM photo_versions " + 
 				      "WHERE photo_id = :id", 
 				      "id", photo.Id
@@ -184,8 +187,10 @@ public class PhotoStore : DbStore<Photo> {
 			System.Uri uri = new Uri (new Uri (reader ["base_uri"].ToString ()), reader ["filename"].ToString ());
 			string md5_sum = reader["md5_sum"] != null ? reader ["md5_sum"].ToString () : null;
 			bool is_protected = Convert.ToBoolean (reader["protected"]);
+			PhotoVersionType type = (PhotoVersionType) Enum.ToObject (typeof (PhotoVersionType), reader["type"]);
+			uint parent_version_id = Convert.ToUInt32 (reader ["parent_version_id"]);
 			                              
-			photo.AddVersionUnsafely (version_id, uri, md5_sum, name, is_protected);
+			photo.AddVersionUnsafely (version_id, uri, md5_sum, name, is_protected, type, parent_version_id);
 		}
 		reader.Close();
 	}
@@ -203,7 +208,7 @@ public class PhotoStore : DbStore<Photo> {
 	}		
 	
 	private void GetAllVersions  (string ids) {
-		SqliteDataReader reader = Database.Query ("SELECT photo_id, version_id, name, base_uri, filename, md5_sum, protected FROM photo_versions WHERE photo_id IN " + ids);
+		SqliteDataReader reader = Database.Query("SELECT photo_id, version_id, name, base_uri, filename, md5_sum, protected, type, parent_version_id FROM photo_versions WHERE photo_id IN " + ids");
 		
 		while (reader.Read ()) {
 			uint id = Convert.ToUInt32 (reader ["photo_id"]);
@@ -225,8 +230,10 @@ public class PhotoStore : DbStore<Photo> {
 				System.Uri uri = new Uri (new Uri (reader ["base_uri"].ToString ()), reader ["filename"].ToString ());
 				string md5_sum = reader["md5_sum"] != null ? reader ["md5_sum"].ToString () : null;
 				bool is_protected = Convert.ToBoolean (reader["protected"]);
+				PhotoVersionType type = (PhotoVersionType) Enum.ToObject (typeof (PhotoVersionType), reader["type"]);
+				uint parent_version_id = Convert.ToUInt32 (reader ["parent_version_id"]);
 				
-				photo.AddVersionUnsafely (version_id, uri, md5_sum, name, is_protected);
+				photo.AddVersionUnsafely (version_id, uri, md5_sum, name, is_protected, type, parent_version_id);
 			}
 
 			/*
@@ -237,6 +244,17 @@ public class PhotoStore : DbStore<Photo> {
 			*/
 		}
 		reader.Close();
+	}
+
+	public uint VersionRefCount (PhotoVersion version)
+	{
+		SqliteDataReader reader = Database.Query (
+				new DbCommand ("SELECT COUNT (*) as ref_count FROM photo_versions WHERE parent_version_id = :version_id AND photo_id = :photo_id",
+				"version_id", version.VersionId,
+				"photo_id", version.Photo));
+		uint ref_count = Convert.ToUInt32 (reader ["ref_count"]);
+		reader.Close ();
+		return ref_count;
 	}
 
 	private void GetAllTags (string ids) {
@@ -515,29 +533,33 @@ public class PhotoStore : DbStore<Photo> {
 			foreach (uint version_id in changes.VersionsAdded) {
 				PhotoVersion version = photo.GetVersion (version_id) as PhotoVersion;
 				Database.ExecuteNonQuery (new DbCommand (
-					"INSERT OR IGNORE INTO photo_versions (photo_id, version_id, name, base_uri, filename, protected, md5_sum) " +
-					"VALUES (:photo_id, :version_id, :name, :base_uri, :filename, :is_protected, :md5_sum)",
+					"INSERT OR IGNORE INTO photo_versions (photo_id, version_id, name, base_uri, filename, protected, md5_sum, type, parent_version_id) " +
+					"VALUES (:photo_id, :version_id, :name, :base_uri, :filename, :is_protected, :md5_sum, :type, :parent_version_id)",
 					"photo_id", photo.Id,
 					"version_id", version_id,
 					"name", version.Name,
 			        "base_uri", version.Uri.GetDirectoryUri ().ToString (),
 					"filename", version.Uri.GetFilename (),
 					"is_protected", version.IsProtected,
-					"md5_sum", (version.MD5Sum != String.Empty ? version.MD5Sum : null)));
+					"md5_sum", (version.MD5Sum != String.Empty ? version.MD5Sum : null),
+					"type", (uint) version.Type,
+					"parent_version_id", version.ParentVersionId));
 			}
 		if (changes.VersionsModified != null)
 			foreach (uint version_id in changes.VersionsModified) {
 				PhotoVersion version = photo.GetVersion (version_id) as PhotoVersion;
 				Database.ExecuteNonQuery (new DbCommand (
 					"UPDATE photo_versions SET name = :name, " +
-					"base_uri = :base_uri, filename = :filename, protected = :protected, md5_sum = :md5_sum " +
+					"base_uri = :base_uri, filename = :filename, protected = :protected, md5_sum = :md5_sum, type = :type, parent_version_id = :parent_version_id" +
 					"WHERE photo_id = :photo_id AND version_id = :version_id",
 					"name", version.Name,
 					"base_uri", version.Uri.GetDirectoryUri ().ToString (),
 					"filename", version.Uri.GetFilename (),
 					"protected", version.IsProtected,
-					"photo_id", photo.Id,
 					"md5_sum", (version.MD5Sum != String.Empty ? version.MD5Sum : null),
+					"type", (uint) version.Type,
+					"parent_version_id", version.ParentVersionId,
+					"photo_id", photo.Id,
 					"version_id", version_id));
 			}
 		photo.Changes = null;

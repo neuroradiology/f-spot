@@ -1,5 +1,5 @@
 //
-// Fspot/Loaders/IImageLoaderExtensions.cs
+// Fspot.Loaders.IImageLoaderExtensions.cs
 //
 // Author(s)
 //	Ruben Vermeersch  <ruben@savanne.be>

@@ -178,6 +178,7 @@ F_SPOT_CSDISTFILES =				\
 	$(srcdir)/Core/ColorManagement.cs	\
 	$(srcdir)/Core/Photo.cs			\
 	$(srcdir)/Core/PhotoVersion.cs		\
+	$(srcdir)/Core/PhotoVersionType.cs		\
 	$(srcdir)/Db.cs				\
 	$(srcdir)/DependentListStore.cs		\
 	$(srcdir)/DragDropTargets.cs				\

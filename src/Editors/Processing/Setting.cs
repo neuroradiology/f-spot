@@ -12,8 +12,21 @@ using System;
 namespace FSpot.Editors.Processing {
 	public class Setting : DbItem
 	{
+		uint version_id;
+
 		public uint PhotoId { get; private set; }
-		public uint VersionId { get; private set; }
+		public uint VersionId {
+			get { return version_id; }
+			set {
+				if (value == version_id)
+					return;
+
+				if (Id != 0 && version_id != 0)
+					throw new Exception ("Can't change version on committed setting!");
+
+				version_id = value;
+			}
+		}
 		public string Key { get; private set; }
 		public string Value { get; set; }
 

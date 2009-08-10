@@ -147,7 +147,15 @@ namespace FSpot.Editors {
 
 		protected virtual void SaveEditedPhoto (Photo photo, Pixbuf pixbuf)
 		{
+			// Create a new version if the original is protected...
 			bool create_version = photo.DefaultVersion.IsProtected;
+
+			// Or if there's another version based on it...
+			create_version |= photo.DefaultVersion.RefCount != 0;
+
+			// Or if it's based on a processable version.
+			create_version |= photo.DefaultVersion.Type == PhotoVersionType.Processable;
+
 			photo.SaveVersion (pixbuf, create_version);
 			photo.Changes.DataChanged = true;
 			Core.Database.Photos.Commit (photo);
@@ -159,8 +167,8 @@ namespace FSpot.Editors {
 			return Process (input, input_profile);
 		}
 
-		Pixbuf Original { get; set; }
-		Pixbuf Preview { get; set; }
+		protected Pixbuf Original { get; set; }
+		protected Pixbuf Preview { get; set; }
 
 		volatile bool preview_needed = false;
 		volatile Thread preview_thread = null;
@@ -203,7 +211,7 @@ namespace FSpot.Editors {
 		void RenderPreview ()
 		{
 			if (Original == null) {
-				Original = State.PhotoImageView.Pixbuf;
+				Original = GetOriginal ();
 			}
 
 			Pixbuf old_preview = null;
@@ -228,7 +236,12 @@ namespace FSpot.Editors {
 				});
 		}
 
-		private void CalcPreviewSize (Pixbuf input, out int width, out int height) {
+		protected virtual Pixbuf GetOriginal ()
+		{
+			return State.PhotoImageView.Pixbuf;
+		}
+
+		protected void CalcPreviewSize (Pixbuf input, out int width, out int height) {
 			int awidth = State.PhotoImageView.Allocation.Width;
 			int aheight = State.PhotoImageView.Allocation.Height;
 			int iwidth = input.Width;
@@ -264,9 +277,11 @@ namespace FSpot.Editors {
 			while (preview_thread != null)
 				preview_thread.Join ();
 
-			if (Preview != null) {
+			if (Preview != null)
 				Preview.Dispose ();
-			}
+
+			if (State.PhotoImageView.Pixbuf != Original && Original != null)
+				Original.Dispose ();
 
 			Preview = null;
 			Original = null;

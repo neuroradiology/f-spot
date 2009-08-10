@@ -125,9 +125,10 @@ namespace FSpot.Editors.Processing {
 			return setting;
 		}
 
-		public void Save ()
+		public void Save (uint version)
 		{
 			foreach (Setting setting in Settings.Values) {
+				setting.VersionId = version;
 				Core.Database.ProcessingSettings.Commit (setting);
 			}
 		}
