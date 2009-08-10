@@ -195,6 +195,7 @@ F_SPOT_CSDISTFILES =				\
 	$(srcdir)/Editors/Processing/Step.cs		\
 	$(srcdir)/Editors/RedEyeEditor.cs		\
 	$(srcdir)/Editors/RepeatableEditor.cs		\
+	$(srcdir)/Editors/RepeatableEditorState.cs		\
 	$(srcdir)/Editors/SepiaEditor.cs		\
 	$(srcdir)/Editors/SoftFocusEditor.cs		\
 	$(srcdir)/Editors/TiltEditor.cs		\

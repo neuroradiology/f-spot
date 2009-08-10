@@ -21,7 +21,7 @@ namespace FSpot.Editors {
 			ApplyLabel = Catalog.GetString ("Fix!");
 		}
 
-		public override Widget ConfigurationWidget () {
+		protected override Widget CreateConfigurationWidget () {
 			return new Label(Catalog.GetString ("Select the eyes you wish to fix."));
 		}
 

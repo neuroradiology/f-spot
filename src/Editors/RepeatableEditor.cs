@@ -13,19 +13,20 @@ using FSpot.Editors.Processing;
 
 namespace FSpot.Editors {
 	public abstract class RepeatableEditor : Editor {
-		protected Pipeline Pipeline { get; private set; }
+
+		Pipeline pipeline;
+		protected Pipeline Pipeline {
+			get {
+				return (State as RepeatableEditorState).Pipeline;
+			}
+			set {
+				(State as RepeatableEditorState).Pipeline = value;
+			}
+		}
 
 		public RepeatableEditor (string label, string icon_name)
 				: base (label, icon_name)
 		{
-		}
-
-		sealed public override void Initialize (EditorState state)
-		{
-			base.Initialize (state);
-
-			if (State.Items.Length > 0)
-				Pipeline = new Pipeline (State.Items [0] as Photo);
 		}
 
 		sealed protected override Pixbuf Process (Pixbuf input, Cms.Profile input_profile)
@@ -48,5 +49,15 @@ namespace FSpot.Editors {
 		// appropriate values, chosen in the configuration widget.
 		protected abstract void SetupPipeline ();
 
+		sealed protected override void SaveEditedPhoto (Photo photo, Pixbuf pixbuf)
+		{
+			Pipeline.Save ();
+			base.SaveEditedPhoto (photo, pixbuf);
+		}
+
+		public override EditorState CreateState ()
+		{
+			return new RepeatableEditorState ();
+		}
 	}
 }

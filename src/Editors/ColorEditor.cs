@@ -41,7 +41,7 @@ namespace FSpot.Editors {
 			ApplyLabel = Catalog.GetString ("Adjust");
 		}
 
-		public override Widget ConfigurationWidget () {
+		protected override Widget CreateConfigurationWidget () {
 			xml = new Glade.XML (null, "f-spot.glade", "color_editor_prefs", "f-spot");
 			xml.Autoconnect (this);
 			AttachInterface ();

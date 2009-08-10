@@ -123,17 +123,18 @@ namespace FSpot.Editors {
 
 			int done = 0;
 			foreach (Photo photo in State.Items) {
-				Pixbuf input;
+				Pixbuf input, edited = null;
 				Cms.Profile input_profile;
 				LoadPhoto (photo, out input, out input_profile);
 
-				Pixbuf edited = Process (input, input_profile);
-				input.Dispose ();
-
-				bool create_version = photo.DefaultVersion.IsProtected;
-				photo.SaveVersion (edited, create_version);
-				photo.Changes.DataChanged = true;
-				App.Instance.Database.Photos.Commit (photo);
+				try {
+					edited = Process (input, input_profile);
+					SaveEditedPhoto (photo, edited);
+				} finally {
+					input.Dispose ();
+					if (edited != null)
+						edited.Dispose ();
+				}
 
 				done++;
 				if (ProcessingStep != null) {
@@ -142,6 +143,14 @@ namespace FSpot.Editors {
 			}
 
 			Reset ();
+		}
+
+		protected virtual void SaveEditedPhoto (Photo photo, Pixbuf pixbuf)
+		{
+			bool create_version = photo.DefaultVersion.IsProtected;
+			photo.SaveVersion (pixbuf, create_version);
+			photo.Changes.DataChanged = true;
+			Core.Database.Photos.Commit (photo);
 		}
 
 		protected abstract Pixbuf Process (Pixbuf input, Cms.Profile input_profile);
@@ -250,7 +259,7 @@ namespace FSpot.Editors {
 			Reset ();
 		}
 
-		private void Reset () {
+		protected virtual void Reset () {
 			preview_needed = false;
 			while (preview_thread != null)
 				preview_thread.Join ();
@@ -264,14 +273,23 @@ namespace FSpot.Editors {
 			State = null;
 		}
 
+		public Widget ConfigurationWidget {
+			get {
+				Widget widget = CreateConfigurationWidget ();
+				UpdatePreview ();
+				return widget;
+			}
+		}
+
 		// Can be overriden to provide a specific configuration widget.
 		// Returning null means no configuration widget.
-		public virtual Widget ConfigurationWidget () {
+		protected virtual Widget CreateConfigurationWidget () {
 			return null;
 		}
 
 
-		public virtual EditorState CreateState () {
+		public virtual EditorState CreateState ()
+		{
 			return new EditorState ();
 		}
 

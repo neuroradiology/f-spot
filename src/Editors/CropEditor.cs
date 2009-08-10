@@ -68,7 +68,7 @@ namespace FSpot.Editors {
 			}
 		}
 
-		public override Widget ConfigurationWidget () {
+		protected override Widget CreateConfigurationWidget () {
 			VBox vbox = new VBox ();
 
 			Label info = new Label (Catalog.GetString ("Select the area that needs cropping."));

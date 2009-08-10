@@ -32,7 +32,7 @@ namespace FSpot.Editors
 			HasSettings = true;
         }
 
-		public override Widget ConfigurationWidget ()
+		protected override Widget CreateConfigurationWidget ()
 		{
 			scale = new HScale (-45, 45, 1);
 			scale.Value = 0.0;

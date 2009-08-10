@@ -242,7 +242,7 @@ namespace FSpot.Widgets {
 			vbox.PackStart (label, false, false, 5);
 
 			// Optional config widget
-			Widget config = editor.ConfigurationWidget ();
+			Widget config = editor.ConfigurationWidget;
 			if (config != null) {
 				vbox.PackStart (config, false, false, 0);
 			}
