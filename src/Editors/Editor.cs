@@ -211,14 +211,12 @@ namespace FSpot.Editors {
 		void RenderPreview ()
 		{
 			if (Original == null) {
-				Original = GetOriginal ();
+				Original = State.PhotoImageView.Pixbuf;
 			}
 
 			Pixbuf old_preview = null;
 			if (Preview == null) {
-				int width, height;
-				CalcPreviewSize (Original, out width, out height);
-				Preview = Original.ScaleSimple (width, height, InterpType.Nearest);
+				Preview = GetPreviewInput ();
 			} else {
 				// We're updating a previous preview
 				old_preview = State.PhotoImageView.Pixbuf;
@@ -236,9 +234,16 @@ namespace FSpot.Editors {
 				});
 		}
 
-		protected virtual Pixbuf GetOriginal ()
+		protected Pixbuf ScalePreviewInput (Pixbuf input)
 		{
-			return State.PhotoImageView.Pixbuf;
+			int width, height;
+			CalcPreviewSize (input, out width, out height);
+			return input.ScaleSimple (width, height, InterpType.Nearest);
+		}
+
+		protected virtual Pixbuf GetPreviewInput ()
+		{
+			return ScalePreviewInput (Original);
 		}
 
 		protected void CalcPreviewSize (Pixbuf input, out int width, out int height) {

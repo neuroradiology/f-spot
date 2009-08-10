@@ -41,7 +41,23 @@ namespace FSpot.Editors {
 
 		sealed protected override void LoadPhoto (Photo photo, out Pixbuf photo_pixbuf, out Cms.Profile photo_profile)
 		{
-			base.LoadPhoto (photo, out photo_pixbuf, out photo_profile);
+			// Figure out the original version to process
+			PhotoVersion version = photo.DefaultVersion;
+			uint parent_version = version.Type == PhotoVersionType.Processable ? version.ParentVersionId : version.VersionId;
+			Uri uri = photo.VersionUri (parent_version);
+
+			if (parent_version == photo.DefaultVersionId) {
+				base.LoadPhoto (photo, out photo_pixbuf, out photo_profile);
+			} else {
+				using (ImageFile img = ImageFile.Create (uri)) {
+					using (IImageLoader loader = ImageLoader.Create (uri)) {
+						loader.Load (ImageLoaderItem.Full);
+						photo_pixbuf = loader.Full;
+					}
+					photo_profile = img.GetProfile ();
+				}
+			}
+
 			Pipeline = new Pipeline (photo);
 			SetupPipeline ();
 		}
@@ -76,7 +92,7 @@ namespace FSpot.Editors {
 			return new RepeatableEditorState ();
 		}
 
-		sealed protected override Pixbuf GetOriginal ()
+		sealed protected override Pixbuf GetPreviewInput ()
 		{
 			// Figure out the original version to process
 			Photo photo = State.Items [0] as Photo;
@@ -87,40 +103,43 @@ namespace FSpot.Editors {
 			// Load the large size blocking
 			IImageLoader loader = ImageLoader.Create (uri);
 			loader.Load (ImageLoaderItem.Large);
+			Pixbuf large = loader.Large;
 
 			// Load the full size in the background
-			loader.Load (ImageLoaderItem.Full, delegate (object sender, ItemsCompletedEventArgs args) {
-				if (!args.Items.Contains (ImageLoaderItem.Full))
-					return;
+			loader.Load (ImageLoaderItem.Full, HandleFullPreviewLoaded);
 
-				Pixbuf old_original = Original;
-				Pixbuf full = loader.Full;
-				if (full == null) {
-					loader.Dispose ();
-					return;
-				}
+			if (large == null)
+				return ScalePreviewInput (Original);
+			else
+				return ScalePreviewInput (large);
+		}
 
-				if (!StateInitialized) {
-					full.Dispose ();
-					loader.Dispose ();
-					return;
-				}
+		private void HandleFullPreviewLoaded (object sender, ItemsCompletedEventArgs args)
+		{
+			IImageLoader loader = sender as IImageLoader;
 
-				Original = full;
-				if (old_original != null)
-					old_original.Dispose ();
+			if (!args.Items.Contains (ImageLoaderItem.Full))
+				return;
 
-				int width, height;
-				CalcPreviewSize (Original, out width, out height);
-				Pixbuf old_preview = Preview;
-				Preview = Original.ScaleSimple (width, height, InterpType.Nearest);
-				if (old_preview != null)
-					old_preview.Dispose ();
-
+			Pixbuf full = loader.Full;
+			if (full == null) {
 				loader.Dispose ();
-			});
+				return;
+			}
 
-			return loader.Large;
+			if (!StateInitialized) {
+				full.Dispose ();
+				loader.Dispose ();
+				return;
+			}
+
+			Pixbuf old_preview = Preview;
+			Preview = ScalePreviewInput (full);
+			if (old_preview != null)
+				old_preview.Dispose ();
+
+			full.Dispose ();
+			loader.Dispose ();
 		}
 	}
 }
