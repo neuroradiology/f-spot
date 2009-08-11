@@ -65,6 +65,10 @@ namespace FSpot.Loaders {
 
 			ItemsRequested |= items;
 
+			// Full equals Large for GdkImageLoader
+			if (ItemsRequested.Contains (ImageLoaderItem.Full))
+				ItemsRequested |= ImageLoaderItem.Large;
+
 			StartLoading ();
 
 			if (!async)

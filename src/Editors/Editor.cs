@@ -8,9 +8,10 @@
 //
 
 using FSpot;
+using FSpot.Loaders;
+using FSpot.Platform;
 using FSpot.Utils;
 using FSpot.Widgets;
-using FSpot.Loaders;
 
 using Gdk;
 using Gtk;
@@ -159,6 +160,7 @@ namespace FSpot.Editors {
 			photo.SaveVersion (pixbuf, create_version);
 			photo.Changes.DataChanged = true;
 			Core.Database.Photos.Commit (photo);
+			ThumbnailFactory.DeleteThumbnail (photo.DefaultVersionUri);
 		}
 
 		protected abstract Pixbuf Process (Pixbuf input, Cms.Profile input_profile);
@@ -285,7 +287,7 @@ namespace FSpot.Editors {
 			if (Preview != null)
 				Preview.Dispose ();
 
-			if (State.PhotoImageView.Pixbuf != Original && Original != null)
+			if (StateInitialized && State.PhotoImageView.Pixbuf != Original && Original != null)
 				Original.Dispose ();
 
 			Preview = null;

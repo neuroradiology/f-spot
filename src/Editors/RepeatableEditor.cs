@@ -9,6 +9,7 @@
 
 using FSpot.Editors.Processing;
 using FSpot.Loaders;
+using FSpot.Platform;
 using FSpot.Utils;
 using Gdk;
 using System;
@@ -85,6 +86,7 @@ namespace FSpot.Editors {
 
 			photo.Changes.DataChanged = true;
 			Core.Database.Photos.Commit (photo);
+			ThumbnailFactory.DeleteThumbnail (photo.DefaultVersionUri);
 		}
 
 		public override EditorState CreateState ()
@@ -92,8 +94,11 @@ namespace FSpot.Editors {
 			return new RepeatableEditorState ();
 		}
 
+		bool have_full_preview = false;
 		sealed protected override Pixbuf GetPreviewInput ()
 		{
+			have_full_preview = false;
+
 			// Figure out the original version to process
 			Photo photo = State.Items [0] as Photo;
 			PhotoVersion version = photo.DefaultVersion;
@@ -118,6 +123,9 @@ namespace FSpot.Editors {
 		{
 			IImageLoader loader = sender as IImageLoader;
 
+			if (have_full_preview)
+				return;
+
 			if (!args.Items.Contains (ImageLoaderItem.Full))
 				return;
 
@@ -138,6 +146,7 @@ namespace FSpot.Editors {
 			if (old_preview != null)
 				old_preview.Dispose ();
 
+			have_full_preview = true;
 			full.Dispose ();
 			loader.Dispose ();
 		}
