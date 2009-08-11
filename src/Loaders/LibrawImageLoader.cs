@@ -251,6 +251,7 @@ namespace FSpot.Loaders {
 			full = loader.LoadFull ();
 			FullOrientation = PixbufOrientation.TopLeft;
 			if (full == null) {
+				SignalItemCompleted (ImageLoaderItem.Full);
 				return;
 			}
 

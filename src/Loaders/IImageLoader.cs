@@ -15,6 +15,9 @@ using Gdk;
 
 namespace FSpot.Loaders {
 	public interface IImageLoader : IDisposable {
+		// Completed is always emitted, either when the loading is completed,
+		// or when an error is occured. Requesting the relevant item and
+		// checking for a NULL value should always be done.
 		event EventHandler<AreaPreparedEventArgs> AreaPrepared;
 		event EventHandler<AreaUpdatedEventArgs> AreaUpdated;
 		event EventHandler<ItemsCompletedEventArgs> Completed;
@@ -22,11 +25,17 @@ namespace FSpot.Loaders {
 
 		ImageLoaderItem Load (ImageLoaderItem items, bool async);
 
+		// Each of these properties should return a pixbuf that should be
+		// disposed by the requestor.
+		//
+		// If something goes wrong with the loading or if the item isn't loaded
+		// yet, NULL should be returned.
 		Pixbuf Thumbnail { get; }
-		PixbufOrientation ThumbnailOrientation { get; }
 		Pixbuf Large { get; }
-		PixbufOrientation LargeOrientation { get; }
 		Pixbuf Full { get; }
+
+		PixbufOrientation ThumbnailOrientation { get; }
+		PixbufOrientation LargeOrientation { get; }
 		PixbufOrientation FullOrientation { get; }
 	}
 }
