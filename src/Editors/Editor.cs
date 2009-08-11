@@ -227,6 +227,9 @@ namespace FSpot.Editors {
 			Pixbuf previewed = ProcessFast (Preview, null);
 
 			Gtk.Application.Invoke (delegate {
+					if (!StateInitialized)
+						return;
+
 					State.PhotoImageView.ChangeImage (previewed, State.PhotoImageView.PixbufOrientation, false, false);
                     App.Instance.Organizer.InfoBox.UpdateHistogram (previewed);
 

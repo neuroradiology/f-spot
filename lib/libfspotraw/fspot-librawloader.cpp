@@ -12,6 +12,8 @@
 
 #include <libraw/libraw.h>
 
+#define return_null_if(cond) if ((cond)) { g_print ("Stopping running!"); self->priv->running = false; return NULL; }
+
 G_DEFINE_TYPE (FSpotLibrawLoader, fspot_librawloader, G_TYPE_OBJECT);
 
 enum {
@@ -54,6 +56,7 @@ struct _FSpotLibrawLoaderPriv
 
 	gboolean opened;
 	gboolean aborted;
+	volatile gboolean running;
 };
 
 static void
@@ -107,6 +110,7 @@ fspot_librawloader_init (FSpotLibrawLoader *self)
 	self->priv->raw_proc = new LibRaw;
 	self->priv->opened = false;
 	self->priv->aborted = false;
+	self->priv->running = false;
 
 	self->priv->raw_proc->set_progress_handler (libraw_progress_callback, self);
 }
@@ -191,14 +195,14 @@ fspot_librawloader_load_embedded (FSpotLibrawLoader *self, int *orientation)
 	GdkPixbuf *pixbuf = NULL;
 	GError *error = NULL;
 
-	if (!open_if_needed (self))
-		return NULL;
+	self->priv->running = true;
+
+	return_null_if (!open_if_needed (self));
 
 	self->priv->raw_proc->unpack_thumb ();
 	image = self->priv->raw_proc->dcraw_make_mem_thumb (&result);
-	if (result != 0 || image == NULL) {
-		return NULL;
-	}
+	return_null_if (result != 0 || image == NULL);
+
 	g_assert (image->type == LIBRAW_IMAGE_JPEG);
 
 	loader = gdk_pixbuf_loader_new ();
@@ -212,6 +216,7 @@ fspot_librawloader_load_embedded (FSpotLibrawLoader *self, int *orientation)
 	g_object_unref (loader);
 	g_free (image);
 
+	self->priv->running = false;
 	return pixbuf;
 }
 
@@ -222,21 +227,18 @@ fspot_librawloader_load_full (FSpotLibrawLoader *self)
 	libraw_processed_image_t *image = NULL;
 	GdkPixbuf *pixbuf = NULL;
 
-	if (!open_if_needed (self))
-		return NULL;
+	self->priv->running = true;
+
+	return_null_if (!open_if_needed (self));
 
 	result = self->priv->raw_proc->unpack ();
-	if (result != 0)
-		return NULL;
+	return_null_if (result != 0);
 
 	result = self->priv->raw_proc->dcraw_process ();
-	if (result != 0)
-		return NULL;
+	return_null_if (result != 0);
 
 	image = self->priv->raw_proc->dcraw_make_mem_image (&result);
-	if (result != 0 || image == NULL) {
-		return NULL;
-	}
+	return_null_if (result != 0 || image == NULL);
 	g_assert (image->type == LIBRAW_IMAGE_BITMAP);
 
 	pixbuf = gdk_pixbuf_new_from_data (image->data,
@@ -249,6 +251,7 @@ fspot_librawloader_load_full (FSpotLibrawLoader *self)
 									   (GdkPixbufDestroyNotify) pixbuf_freed,
 									   image);
 
+	self->priv->running = false;
 	return pixbuf;
 }
 
@@ -305,4 +308,7 @@ fspot_librawloader_set_aborted (FSpotLibrawLoader *self, gboolean aborted)
 {
 	g_return_if_fail (FSPOT_IS_LIBRAWLOADER (self));
 	self->priv->aborted = aborted;
+
+	while (self->priv->running)
+		;
 }

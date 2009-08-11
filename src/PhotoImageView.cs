@@ -11,6 +11,8 @@
 //
 
 using System;
+using System.Threading;
+
 using FSpot.Editors;
 using FSpot.Utils;
 using FSpot.Loaders;
@@ -205,6 +207,9 @@ namespace FSpot.Widgets {
 
 		void HandleProgressHint (object sender, ProgressHintEventArgs args)
 		{
+			if (sender != Loader)
+				return;
+
 			UpdateStatus (args.Text, args.Fraction);
 		}
 #endregion
@@ -216,11 +221,21 @@ namespace FSpot.Widgets {
 		bool prepared_is_new;
 		ImageLoaderItem current_item;
 
+		void DisposeLoader (IImageLoader loader)
+		{
+			// This can take some time for slow loaders, doing it in a thread
+			// to improve responsiveness.
+			Thread t = new Thread (delegate () {
+				loader.Dispose ();
+			});
+			t.Start ();
+		}
+
 		void Load (Uri uri)
 		{
 			timer = Log.DebugTimerStart ();
 			if (Loader != null)
-				Loader.Dispose ();
+				DisposeLoader (Loader);
 			HideStatus ();
 
 			current_item = ImageLoaderItem.None;
