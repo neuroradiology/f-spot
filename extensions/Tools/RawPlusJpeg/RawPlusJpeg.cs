@@ -96,7 +96,7 @@ namespace RawPlusJpegExtension
 				foreach (uint version_id in jpeg.VersionIds) {
 					string name = jpeg.GetVersion (version_id).Name;
 					try {
-						raw.DefaultVersionId = raw.CreateReparentedVersion (jpeg.GetVersion (version_id) as PhotoVersion, version_id == Photo.OriginalVersionId);
+						raw.DefaultVersionId = raw.CreateReparentedVersion (jpeg.GetVersion (version_id));
 						if (version_id == Photo.OriginalVersionId)
 							raw.RenameVersion (raw.DefaultVersionId, "Jpeg");
 						else
@@ -110,7 +110,7 @@ namespace RawPlusJpegExtension
 				Array.Reverse (version_ids);
 				foreach (uint version_id in version_ids) {
 					try {
-						jpeg.DeleteVersion (version_id, true, true);
+						jpeg.DeleteVersion (version_id, true);
 					} catch (Exception e) {
 						Console.WriteLine (e);
 					}

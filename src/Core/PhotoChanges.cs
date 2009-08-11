@@ -146,7 +146,33 @@ namespace FSpot
 				return;
 			if (versions_removed != null && versions_removed.Contains (v))
 				return;
+			if (versions_hidden != null && versions_hidden.Contains (v))
+				return;
 			versions_modified.Add (v);
+		}
+
+		List<uint> versions_hidden = null;
+		public uint [] VersionsHidden {
+			get {
+				if (versions_hidden == null)
+					return null;
+				if (versions_hidden.Count == 0)
+					return null;
+				return versions_hidden.ToArray ();
+			}
+			set {
+				foreach (uint u in value)
+					HideVersion (u);
+			}
+		}
+
+		public void HideVersion (uint v)
+		{
+			if (versions_hidden == null)
+				versions_hidden = new List<uint> ();
+			if (versions_modified != null)
+				versions_modified.Remove (v);
+			versions_hidden.Add (v);
 		}
 
 		public PhotoChanges ()

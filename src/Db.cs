@@ -248,6 +248,7 @@ public class Db : IDisposable {
 
 	void HandleDbException (Exception e)
 	{
+		Log.Debug ("DatabaseException: {0}", e.ToString ());
 		if (ExceptionThrown != null)
 			ExceptionThrown (e);
 		else

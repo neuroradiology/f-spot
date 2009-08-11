@@ -2204,12 +2204,13 @@ namespace FSpot
 				foreach (Photo photo in photos) {
 					foreach (uint id in photo.VersionIds) {
 						try {
-							photo.DeleteVersion (id, true);
+							photo.FullyDeleteVersion (id, false);
 						} catch (Exception e) {
 							DeleteException (e, photo.VersionUri (id).ToString ());
 						}
 					}
 				}
+				photo.DeleteHiddenVersions ();
 				Database.Photos.Remove (photos);
 				
 				UpdateQuery ();
@@ -2238,6 +2239,16 @@ namespace FSpot
 			string ok_caption = Catalog.GetString("_Remove from Catalog");
 			if (ResponseType.Ok == HigMessageDialog.RunHigConfirmation(GetToplevel (sender), DialogFlags.DestroyWithParent, 
 										   MessageType.Warning, header, msg, ok_caption)) {                              
+				foreach (Photo photo in photos) {
+					foreach (uint id in photo.VersionIds) {
+						try {
+							photo.FullyDeleteVersion (id, true);
+						} catch (Exception e) {
+							DeleteException (e, photo.VersionUri (id).ToString ());
+						}
+					}
+					photo.DeleteHiddenVersions ();
+				}
 				Database.Photos.Remove (photos);
 				UpdateQuery ();
 			}

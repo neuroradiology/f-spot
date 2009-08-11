@@ -218,7 +218,8 @@ public class PhotoVersionCommands
 				new_parent.AddTag (photo.Tags);
 				foreach (uint version_id in photo.VersionIds) {
 					try {
-						new_parent.DefaultVersionId = new_parent.CreateReparentedVersion (photo.GetVersion (version_id) as PhotoVersion);
+						uint new_version = new_parent.CreateReparentedVersion (photo.GetVersion (version_id) as PhotoVersion);
+						new_parent.DefaultVersionId = new_version;
 						store.Commit (new_parent);
 					} catch (Exception e) {
 						Log.DebugException (e);	
@@ -228,7 +229,7 @@ public class PhotoVersionCommands
 				Array.Reverse (version_ids);
 				foreach (uint version_id in version_ids) {
 					try {
-						photo.DeleteVersion (version_id, true, true);
+						photo.DeleteVersion (version_id, true);
 					} catch (Exception e) {
 						Log.DebugException (e);
 					}

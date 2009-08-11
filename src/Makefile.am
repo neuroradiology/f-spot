@@ -244,6 +244,7 @@ F_SPOT_CSDISTFILES =				\
 	$(srcdir)/JobStore.cs			\
 	$(srcdir)/Jobs/SyncMetadataJob.cs	\
 	$(srcdir)/Jobs/CalculateHashJob.cs	\
+	$(srcdir)/Jobs/CleanHiddenVersionsJob.cs	\
 	$(srcdir)/Loupe.cs			\
 	$(srcdir)/MainWindow.cs			\
 	$(srcdir)/MemorySurface.cs		\

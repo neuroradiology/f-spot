@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using Mono.Unix;
 
 using FSpot.Utils;
+using FSpot.Jobs;
 using FSpot.Imaging;
 using FSpot.Platform;
 
@@ -131,7 +132,26 @@ namespace FSpot
 	
 		// Version management
 		public const int OriginalVersionId = 1;
-		private uint highest_version_id;
+
+		public uint HighestVersionId {
+			get {
+				uint highest = 0;
+				foreach (uint key in HiddenVersions.Keys)
+					highest = Math.Max (highest, key);
+				foreach (uint key in Versions.Keys)
+					highest = Math.Max (highest, key);
+				return highest;
+			}
+		}
+
+		private Dictionary<uint, PhotoVersion> hidden_versions;
+		private Dictionary<uint, PhotoVersion> HiddenVersions {
+			get {
+				if (hidden_versions == null)
+					hidden_versions = new Dictionary<uint, PhotoVersion> ();
+				return hidden_versions;
+			}
+		}
 	
 		private Dictionary<uint, PhotoVersion> versions = new Dictionary<uint, PhotoVersion> ();
 		public IEnumerable<IBrowsableItemVersion> Versions {
@@ -155,10 +175,18 @@ namespace FSpot
 
 		public PhotoVersion GetVersion (uint version_id)
 		{
-			if (versions == null)
-				return null;
+			return GetVersion (version_id, false);
+		}
+
+		public PhotoVersion GetVersion (uint version_id, bool include_hidden)
+		{
+			if (versions.ContainsKey (version_id))
+				return versions [version_id];
+
+			if (include_hidden && HiddenVersions.ContainsKey (version_id))
+				return HiddenVersions [version_id];
 	
-			return versions [version_id];
+			return null;
 		}
 	
 		private uint default_version_id = OriginalVersionId;
@@ -171,6 +199,11 @@ namespace FSpot
 				changes.DefaultVersionIdChanged = true;
 			}
 		}
+
+		internal void AddHiddenVersion (uint version_id, System.Uri uri, string md5_sum, string name, bool is_protected, PhotoVersionType type, uint parent_version_id)
+		{
+			HiddenVersions [version_id] = new PhotoVersion (this, version_id, uri, md5_sum, name, is_protected, type, parent_version_id);
+		}
 	
 		// This doesn't check if a version of that name already exists, 
 		// it's supposed to be used only within the Photo and PhotoStore classes.
@@ -178,7 +211,6 @@ namespace FSpot
 		{
 			versions [version_id] = new PhotoVersion (this, version_id, uri, md5_sum, name, is_protected, type, parent_version_id);
 	
-			highest_version_id = Math.Max (version_id, highest_version_id);
 			changes.AddVersion (version_id);
 		}
 	
@@ -191,13 +223,13 @@ namespace FSpot
 		{
 			if (VersionNameExists (name))
 				throw new ApplicationException ("A version with that name already exists");
-			highest_version_id ++;
+			uint version_id = HighestVersionId + 1;
 			string md5_sum = GenerateMD5 (uri);
 
-			versions [highest_version_id] = new PhotoVersion (this, highest_version_id, uri, md5_sum, name, is_protected, PhotoVersionType.Simple, 0);
+			versions [version_id] = new PhotoVersion (this, version_id, uri, md5_sum, name, is_protected, PhotoVersionType.Simple, 0);
 
-			changes.AddVersion (highest_version_id);
-			return highest_version_id;
+			changes.AddVersion (version_id);
+			return version_id;
 		}
 	
 		//FIXME: store versions next to originals. will crash on ro locations.
@@ -280,22 +312,37 @@ namespace FSpot
 			return version;
 		}
 
+		uint clean_hidden_versions_timeout = 0;
+
 		public void DeleteVersion (uint version_id)
 		{
-			DeleteVersion (version_id, false, false);
+			DeleteVersion (version_id, false);
 		}
-	
+
 		public void DeleteVersion (uint version_id, bool remove_original)
-		{
-			DeleteVersion (version_id, remove_original, false);
-		}
-	
-		public void DeleteVersion (uint version_id, bool remove_original, bool keep_file)
 		{
 			if (version_id == OriginalVersionId && !remove_original)
 				throw new Exception ("Cannot delete original version");
 	
-			System.Uri uri =  VersionUri (version_id);
+			changes.HideVersion (version_id);
+			Versions.Remove (version_id);
+			ResetDefaultVersion (version_id);
+
+			if (clean_hidden_versions_timeout == 0) {
+				clean_hidden_versions_timeout = GLib.Timeout.Add (5000, delegate () {
+					clean_hidden_versions_timeout = 0;
+
+					Core.Database.Jobs.Create (typeof (CleanHiddenVersionsJob), "");
+					return true;
+				});
+			}
+		}
+
+		// Deletes a version without checking for refs. Use with care!
+		public void FullyDeleteVersion (uint version_id, bool keep_file)
+		{
+			PhotoVersion version = GetVersion (version_id, true) as PhotoVersion;
+			System.Uri uri =  version.Uri;
 	
 			if (!keep_file) {
 				GLib.File file = GLib.FileFactory.NewForUri (uri);
@@ -312,10 +359,27 @@ namespace FSpot
 					//ignore an error here we don't really care.
 				}
 			}
-			versions.Remove (version_id);
 
-			changes.RemoveVersion (version_id);
+			if (versions.ContainsKey (version_id)) {
+				versions.Remove (version_id);
+				changes.RemoveVersion (version_id);
+			} else if (HiddenVersions.ContainsKey (version_id)) {
+				HiddenVersions.Remove (version_id);
+			}
 
+			ResetDefaultVersion (version_id);
+		}
+
+		public void DeleteHiddenVersions ()
+		{
+			foreach (uint version_id in HiddenVersions.Keys)
+			{
+				FullyDeleteVersion (version_id, false);
+			}
+		}
+
+		void ResetDefaultVersion (uint version_id)
+		{
 			do {
 				version_id --;
 				if (versions.ContainsKey (version_id)) {
@@ -356,21 +420,17 @@ namespace FSpot
 	
 				FSpot.ThumbnailGenerator.Create (new_uri).Dispose ();
 			}
-			highest_version_id ++;
 
-			versions [highest_version_id] = new PhotoVersion (this, highest_version_id, new_uri, md5_sum, name, is_protected, PhotoVersionType.Simple, 0);
+			uint version_id = HighestVersionId + 1;
 
-			changes.AddVersion (highest_version_id);
+			versions [version_id] = new PhotoVersion (this, version_id, new_uri, md5_sum, name, is_protected, PhotoVersionType.Simple, 0);
+
+			changes.AddVersion (version_id);
 	
-			return highest_version_id;
+			return version_id;
 		}
 	
 		public uint CreateReparentedVersion (PhotoVersion version)
-		{
-			return CreateReparentedVersion (version, false);
-		}
-	
-		public uint CreateReparentedVersion (PhotoVersion version, bool is_protected)
 		{
 			int num = 0;
 			while (true) {
@@ -381,12 +441,21 @@ namespace FSpot
 				if (VersionNameExists (name))
 					continue;
 	
-				highest_version_id ++;
-				versions [highest_version_id] = new PhotoVersion (this, highest_version_id, version.Uri, version.MD5Sum, name, is_protected, PhotoVersionType.Simple, 0);
+				Uri uri = GetUriForVersionName (name, System.IO.Path.GetExtension (version.Uri.AbsolutePath));
+				uint version_id = HighestVersionId + 1;
+				bool is_protected = version_id == OriginalVersionId;
+				versions [version_id] = new PhotoVersion (this, version_id, uri, version.MD5Sum, name, is_protected, PhotoVersionType.Simple, 0);
 
-				changes.AddVersion (highest_version_id);
+				changes.AddVersion (version_id);
 
-				return highest_version_id;
+				Uri source_uri = version.Uri;
+				Uri dest_uri = VersionUri (version_id);
+
+				GLib.File source = GLib.FileFactory.NewForUri (source_uri);
+				GLib.File dest = GLib.FileFactory.NewForUri (dest_uri);
+				source.Copy (dest, GLib.FileCopyFlags.None, null, null);
+
+				return version_id;
 			}
 		}
 	

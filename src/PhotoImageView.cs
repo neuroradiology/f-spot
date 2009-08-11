@@ -156,7 +156,7 @@ namespace FSpot.Widgets {
 			if (Loader != null) {
 				Loader.AreaUpdated -= HandlePixbufAreaUpdated;
 				Loader.AreaPrepared -= HandlePixbufPrepared;
-				Loader.Dispose ();
+				DisposeLoader (Loader);
 			}
 			base.OnDestroyed ();
 		}

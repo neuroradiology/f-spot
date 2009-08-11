@@ -190,7 +190,11 @@ public class PhotoStore : DbStore<Photo> {
 			PhotoVersionType type = (PhotoVersionType) Enum.ToObject (typeof (PhotoVersionType), reader["type"]);
 			uint parent_version_id = Convert.ToUInt32 (reader ["parent_version_id"]);
 			                              
-			photo.AddVersionUnsafely (version_id, uri, md5_sum, name, is_protected, type, parent_version_id);
+			if (type == PhotoVersionType.Hidden) {
+				photo.AddHiddenVersion (version_id, uri, md5_sum, name, is_protected, type, parent_version_id);
+			} else {
+				photo.AddVersionUnsafely (version_id, uri, md5_sum, name, is_protected, type, parent_version_id);
+			}
 		}
 		reader.Close();
 	}
@@ -233,7 +237,11 @@ public class PhotoStore : DbStore<Photo> {
 				PhotoVersionType type = (PhotoVersionType) Enum.ToObject (typeof (PhotoVersionType), reader["type"]);
 				uint parent_version_id = Convert.ToUInt32 (reader ["parent_version_id"]);
 				
-				photo.AddVersionUnsafely (version_id, uri, md5_sum, name, is_protected, type, parent_version_id);
+				if (type == PhotoVersionType.Hidden) {
+					photo.AddHiddenVersion (version_id, uri, md5_sum, name, is_protected, type, parent_version_id);
+				} else {
+					photo.AddVersionUnsafely (version_id, uri, md5_sum, name, is_protected, type, parent_version_id);
+				}
 			}
 
 			/*
@@ -246,14 +254,33 @@ public class PhotoStore : DbStore<Photo> {
 		reader.Close();
 	}
 
+	public void CleanHiddenVersions ()
+	{
+		bool deleted;
+		do {
+			deleted = false;
+			SqliteDataReader reader = Database.Query(new DbCommand ("SELECT photo_id, version_id FROM photo_versions WHERE type = :type", "type", (uint) PhotoVersionType.Hidden));
+
+			while (reader.Read ()) {
+				uint photo_id = Convert.ToUInt32 (reader ["photo_id"]);
+				uint version_id = Convert.ToUInt32 (reader ["version_id"]);
+
+				Photo photo = Get (photo_id);
+				PhotoVersion version = photo.GetVersion (version_id, true);
+
+				if (VersionRefCount (version) == 0) {
+					photo.FullyDeleteVersion (version_id, false);
+					Database.ExecuteNonQuery (new DbCommand ("DELETE FROM photo_versions WHERE photo_id = :photo_id AND version_id = :version_id", "photo_id", photo_id, "version_id", version_id));
+					deleted = true;
+				}
+			}
+		} while (deleted);
+	}
+
 	public uint VersionRefCount (PhotoVersion version)
 	{
-		SqliteDataReader reader = Database.Query (
-				new DbCommand ("SELECT COUNT (*) as ref_count FROM photo_versions WHERE parent_version_id = :version_id AND photo_id = :photo_id",
-				"version_id", version.VersionId,
-				"photo_id", version.Photo));
-		uint ref_count = Convert.ToUInt32 (reader ["ref_count"]);
-		reader.Close ();
+		string query = String.Format ("SELECT COUNT(*) AS ref_count FROM photo_versions WHERE photo_id = {0} AND parent_version_id = {1}", version.Photo.Id, version.VersionId);
+		uint ref_count = Convert.ToUInt32 (Database.QuerySingle (query));
 		return ref_count;
 	}
 
@@ -559,6 +586,15 @@ public class PhotoStore : DbStore<Photo> {
 					"md5_sum", (version.MD5Sum != String.Empty ? version.MD5Sum : null),
 					"type", (uint) version.Type,
 					"parent_version_id", version.ParentVersionId,
+					"photo_id", photo.Id,
+					"version_id", version_id));
+			}
+		if (changes.VersionsHidden != null)
+			foreach (uint version_id in changes.VersionsHidden) {
+				Database.ExecuteNonQuery (new DbCommand (
+					"UPDATE photo_versions SET type = :type " +
+					"WHERE photo_id = :photo_id AND version_id = :version_id",
+					"type", (uint) PhotoVersionType.Hidden,
 					"photo_id", photo.Id,
 					"version_id", version_id));
 			}
