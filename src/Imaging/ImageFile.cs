@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Collections;
+using System.Collections.Generic;
 
 using FSpot.Utils;
 using FSpot.Imaging;
@@ -20,8 +21,8 @@ namespace FSpot {
 	public class ImageFile : IDisposable {
 		protected Uri uri;
 
-		static Hashtable name_table;
-		internal static Hashtable NameTable { get { return name_table; } }
+		static Dictionary<string, Type> name_table;
+		static Dictionary<string, Type> mime_table;
 
 		public ImageFile (string path) 
 		{
@@ -58,7 +59,7 @@ namespace FSpot {
 
 		static ImageFile ()
 		{
-			name_table = new Hashtable ();
+			name_table = new Dictionary<string, Type> ();
 			name_table [".svg"] = typeof (FSpot.Svg.SvgFile);
 			name_table [".gif"] = typeof (ImageFile);
 			name_table [".bmp"] = typeof (ImageFile);
@@ -85,20 +86,21 @@ namespace FSpot {
 			name_table [".x3f"] = typeof (FSpot.X3f.X3fFile);
 
 			// add mimetypes for fallback
-			name_table ["image/bmp"]     = name_table ["image/x-bmp"] = name_table [".bmp"];
-			name_table ["image/gif"]     = name_table [".gif"];
-			name_table ["image/pjpeg"]   = name_table ["image/jpeg"] = name_table ["image/jpg"] = name_table [".jpg"];
-			name_table ["image/x-png"]   = name_table ["image/png"]  = name_table [".png"];
-			name_table ["image/svg+xml"] = name_table [".svg"];
-			name_table ["image/tiff"]    = name_table [".tiff"];
-			name_table ["image/x-dcraw"] = name_table [".raw"];
-			name_table ["image/x-ciff"]  = name_table [".crw"];
-			name_table ["image/x-mrw"]   = name_table [".mrw"];
-			name_table ["image/x-x3f"]   = name_table [".x3f"];
-			name_table ["image/x-orf"]   = name_table [".orf"];
-			name_table ["image/x-nef"]   = name_table [".nef"];
-			name_table ["image/x-cr2"]   = name_table [".cr2"];
-			name_table ["image/x-raf"]   = name_table [".raf"];
+			mime_table = new Dictionary<string, Type> ();
+			mime_table ["image/bmp"]     = mime_table ["image/x-bmp"] = name_table [".bmp"];
+			mime_table ["image/gif"]     = name_table [".gif"];
+			mime_table ["image/pjpeg"]   = mime_table ["image/jpeg"] = mime_table ["image/jpg"] = name_table [".jpg"];
+			mime_table ["image/x-png"]   = mime_table ["image/png"]  = name_table [".png"];
+			mime_table ["image/svg+xml"] = name_table [".svg"];
+			mime_table ["image/tiff"]    = name_table [".tiff"];
+			mime_table ["image/x-dcraw"] = name_table [".raw"];
+			mime_table ["image/x-ciff"]  = name_table [".crw"];
+			mime_table ["image/x-mrw"]   = name_table [".mrw"];
+			mime_table ["image/x-x3f"]   = name_table [".x3f"];
+			mime_table ["image/x-orf"]   = name_table [".orf"];
+			mime_table ["image/x-nef"]   = name_table [".nef"];
+			mime_table ["image/x-cr2"]   = name_table [".cr2"];
+			mime_table ["image/x-raf"]   = name_table [".raf"];
 
 			//as xcf pixbufloader is not part of gdk-pixbuf, check if it's there,
 			//and enable it if needed.
@@ -188,25 +190,6 @@ namespace FSpot {
 			}
 		}
 
-		static Type GetLoaderType (Uri uri)
-		{
-			string path = uri.AbsolutePath;
-			string extension = System.IO.Path.GetExtension (path).ToLower ();
-			Type t = (Type) name_table [extension];
-
-			if (t == null) {
-				// check if GIO can find the file, which is not the case
-				// with filenames with invalid encoding
-				GLib.File f = GLib.FileFactory.NewForUri (uri);
-				if (f.QueryExists (null)) {
-					GLib.FileInfo info = f.QueryInfo ("standard::type,standard::content-type", GLib.FileQueryInfoFlags.None, null);
-					t = (Type) name_table [info.ContentType];
-				}
-			}
-
-			return t;
-		}
-		
 		[Obsolete ("use Create (System.Uri) instead")]
 		public static ImageFile Create (string path)
 		{
@@ -215,7 +198,16 @@ namespace FSpot {
 
 		public static ImageFile Create (Uri uri)
 		{
-			System.Type t = GetLoaderType (uri);
+			string path = uri.AbsolutePath;
+			string extension = System.IO.Path.GetExtension (path).ToLower ();
+			Type t = (Type) name_table [extension];
+
+			if (!name_table.TryGetValue (extension, out t)) {
+				GLib.FileInfo info = GLib.FileFactory.NewForUri (uri).QueryInfo ("standard::type,standard::content-type", GLib.FileQueryInfoFlags.None, null);
+				if (!mime_table.TryGetValue (info.ContentType, out t))
+					t = null;
+			}
+
 			ImageFile img;
 
 			if (t != null)
