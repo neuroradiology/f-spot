@@ -22,7 +22,7 @@ namespace FSpot.Loaders {
 	{
 		Uri uri;
 		object sync_handle = new object ();
-		bool is_disposed = false;
+		volatile bool is_disposed = false;
 		Rectangle damage;
 
 		public ImageLoaderItem ItemsRequested { get; private set; }
@@ -93,7 +93,13 @@ namespace FSpot.Loaders {
 
 		public void Dispose ()
 		{
+			if (is_disposed)
+				return;
 			is_disposed = true;
+
+			while (Loading)
+				WaitForPulse ();
+
 			if (loader != null) {
 				loader.Aborted = true;
 				loader.Dispose ();
@@ -105,7 +111,6 @@ namespace FSpot.Loaders {
 				large.Dispose ();
 			if (full != null)
 				full.Dispose ();
-			System.GC.Collect ();
 		}
 #endregion
 
@@ -273,11 +278,15 @@ namespace FSpot.Loaders {
 
 		void WaitForCompletion (ImageLoaderItem items)
 		{
-			while (!ItemsCompleted.Contains(items)) {
-				Monitor.Enter (sync_handle);
-				Monitor.Wait (sync_handle);
-				Monitor.Exit (sync_handle);
-			}
+			while (!ItemsCompleted.Contains(items))
+				WaitForPulse ();
+		}
+
+		void WaitForPulse ()
+		{
+			Monitor.Enter (sync_handle);
+			Monitor.Wait (sync_handle);
+			Monitor.Exit (sync_handle);
 		}
 
 		void SignalAreaPrepared (ImageLoaderItem item) {
@@ -317,9 +326,7 @@ namespace FSpot.Loaders {
 		{
 			ItemsCompleted |= item;
 
-			Monitor.Enter (sync_handle);
-			Monitor.PulseAll (sync_handle);
-			Monitor.Exit (sync_handle);
+			Pulse ();
 
 			EventHandler<ItemsCompletedEventArgs> eh = Completed;
 			if (eh != null)
@@ -327,6 +334,13 @@ namespace FSpot.Loaders {
 					eh (this, new ItemsCompletedEventArgs (item));
 					return false;
 				});
+		}
+
+		void Pulse ()
+		{
+			Monitor.Enter (sync_handle);
+			Monitor.PulseAll (sync_handle);
+			Monitor.Exit (sync_handle);
 		}
 #endregion
 	}

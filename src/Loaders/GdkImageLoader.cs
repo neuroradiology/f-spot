@@ -20,7 +20,7 @@ namespace FSpot.Loaders {
 	{
 		Uri uri;
 		object sync_handle = new object ();
-		bool is_disposed = false;
+		volatile bool is_disposed = false;
 		Rectangle damage;
 
 		public ImageLoaderItem ItemsRequested { get; private set; }
@@ -81,16 +81,15 @@ namespace FSpot.Loaders {
 		{
 			if (is_disposed)
 				return;
-
 			is_disposed = true;
+
 			while (Loading)
-				;
+				WaitForPulse ();
 
 			if (image_stream != null)
 				try {
 					image_stream.Close ();
-				} catch (GLib.GException)
-				{
+				} catch (GLib.GException) {
 				}
 			Close ();
 			if (thumbnail != null) {
@@ -160,7 +159,7 @@ namespace FSpot.Loaders {
 					try {
 						DoLoad ();
 					} catch (Exception e) {
-						Log.Debug (e.ToString ());
+						Log.Debug ("[{0}] {1}", this.GetHashCode (), e.ToString ());
 						Log.Debug ("Requested: {0}, Done: {1}", ItemsRequested, ItemsCompleted);
 						Gtk.Application.Invoke (delegate { throw e; });
 					}
@@ -180,6 +179,7 @@ namespace FSpot.Loaders {
 			lock (sync_handle) {
 				Loading = false;
 			}
+			Pulse ();
 		}
 
 		void LoadThumbnail ()
@@ -231,7 +231,12 @@ namespace FSpot.Loaders {
 			}
 
 			while (Loading && !is_disposed) {
-				int byte_read = image_stream.Read (buffer, 0, count);
+				int byte_read = 0;
+
+				try {
+					byte_read = image_stream.Read (buffer, 0, count);
+				} catch (System.ObjectDisposedException) {
+				}
 
 				if (byte_read == 0) {
 					image_stream.Close ();
@@ -250,11 +255,15 @@ namespace FSpot.Loaders {
 
 		void WaitForCompletion (ImageLoaderItem items)
 		{
-			while (!ItemsCompleted.Contains(items)) {
-				Monitor.Enter (sync_handle);
-				Monitor.Wait (sync_handle);
-				Monitor.Exit (sync_handle);
-			}
+			while (!ItemsCompleted.Contains(items))
+				WaitForPulse ();
+		}
+
+		void WaitForPulse ()
+		{
+			Monitor.Enter (sync_handle);
+			Monitor.Wait (sync_handle);
+			Monitor.Exit (sync_handle);
 		}
 
 		void SignalAreaPrepared (ImageLoaderItem item) {
@@ -294,9 +303,7 @@ namespace FSpot.Loaders {
 		{
 			ItemsCompleted |= item;
 
-			Monitor.Enter (sync_handle);
-			Monitor.PulseAll (sync_handle);
-			Monitor.Exit (sync_handle);
+			Pulse ();
 
 			EventHandler<ItemsCompletedEventArgs> eh = Completed;
 			if (eh != null)
@@ -304,6 +311,13 @@ namespace FSpot.Loaders {
 					eh (this, new ItemsCompletedEventArgs (item));
 					return false;
 				});
+		}
+
+		void Pulse ()
+		{
+			Monitor.Enter (sync_handle);
+			Monitor.PulseAll (sync_handle);
+			Monitor.Exit (sync_handle);
 		}
 #endregion
 	}
