@@ -279,6 +279,9 @@ open_if_needed (FSpotLibrawLoader *self)
 {
 	if (!self->priv->opened) {
 		self->priv->raw_proc->imgdata.params.use_camera_wb = 1;
+		self->priv->raw_proc->imgdata.params.use_camera_matrix = 1;
+		self->priv->raw_proc->imgdata.params.user_qual = 2;
+		self->priv->raw_proc->imgdata.params.highlight = 2;
 		int result = self->priv->raw_proc->open_file (self->priv->filename);
 		if (result != 0)
 			return FALSE;
