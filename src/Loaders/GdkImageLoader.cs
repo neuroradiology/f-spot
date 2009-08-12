@@ -251,11 +251,9 @@ namespace FSpot.Loaders {
 		void WaitForCompletion (ImageLoaderItem items)
 		{
 			while (!ItemsCompleted.Contains(items)) {
-				Log.Debug ("Waiting for completion of {0} (done: {1})", ItemsRequested, ItemsCompleted);
 				Monitor.Enter (sync_handle);
 				Monitor.Wait (sync_handle);
 				Monitor.Exit (sync_handle);
-				Log.Debug ("Woke up after waiting for {0} (done: {1})", ItemsRequested, ItemsCompleted);
 			}
 		}
 
@@ -295,13 +293,10 @@ namespace FSpot.Loaders {
 		void SignalItemCompleted (ImageLoaderItem item)
 		{
 			ItemsCompleted |= item;
-			Log.Debug ("Notifying completion of {0} (done: {1}, requested: {2})", item, ItemsCompleted, ItemsRequested);
 
 			Monitor.Enter (sync_handle);
 			Monitor.PulseAll (sync_handle);
 			Monitor.Exit (sync_handle);
-
-			Log.Debug ("Signalled!");
 
 			EventHandler<ItemsCompletedEventArgs> eh = Completed;
 			if (eh != null)

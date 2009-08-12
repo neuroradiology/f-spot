@@ -261,8 +261,6 @@ namespace FSpot.Widgets {
 				return;
 
 			current_item = args.Item.Largest ();
-			Log.Debug ("Switched to new item: {0}", current_item);
-			Log.Debug ("Prepared is new: {0}", prepared_is_new);
 
 			Gdk.Pixbuf prev = Pixbuf;
 			PixbufOrientation orientation = Accelerometer.GetViewOrientation (Loader.PixbufOrientation (current_item));
