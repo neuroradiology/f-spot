@@ -1,3 +1,21 @@
+2009-07-21 Alex Tutubalin <lexa@lexa.ru>
+           * Imported dcraw 8.95 (1.425):
+             + new huffman tree code
+             + New cameras supported: AGFAPHOTO DC-833m, Casio EX-S20,
+                Phase One P65, Samsung S850
+             + Removed hardcoded white-balance data for many P&S cameras.
+               It is recommended to set params.use_camera_wb to 1 for
+               safe WB.
+           * Fixes for Nikon D5000 files: no pink stripe at
+             right side of frame
+           * C-wrapper: added missed calls
+               libraw_dcraw_make_mem_image
+               libraw_dcraw_ make_mem_thumb
+           * Minor fixes to make non-gcc compilers more happy
+           * Internal structures changed, full recompilation of all client
+             code is needed.
+           * LibRaw 0.8.0-Beta4
+
 2009-06-08 Alex Tutubalin <lexa@lexa.ru>
            * Fixes: gamma  curve processing was not performed in 
               dcraw_write_mem_image()
