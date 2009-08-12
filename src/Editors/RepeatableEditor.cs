@@ -149,6 +149,8 @@ namespace FSpot.Editors {
 			have_full_preview = true;
 			full.Dispose ();
 			loader.Dispose ();
+
+			UpdatePreview ();
 		}
 	}
 }
