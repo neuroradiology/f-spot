@@ -187,8 +187,8 @@ public class PhotoStore : DbStore<Photo> {
 			System.Uri uri = new Uri (new Uri (reader ["base_uri"].ToString ()), reader ["filename"].ToString ());
 			string md5_sum = reader["md5_sum"] != null ? reader ["md5_sum"].ToString () : null;
 			bool is_protected = Convert.ToBoolean (reader["protected"]);
-			PhotoVersionType type = (PhotoVersionType) Enum.ToObject (typeof (PhotoVersionType), reader["type"]);
-			uint parent_version_id = Convert.ToUInt32 (reader ["parent_version_id"]);
+			PhotoVersionType type = (PhotoVersionType) Enum.ToObject (typeof (PhotoVersionType), reader["type"] ?? (uint) PhotoVersionType.Simple);
+			uint parent_version_id = Convert.ToUInt32 (reader ["parent_version_id"] ?? "0");
 			                              
 			if (type == PhotoVersionType.Hidden) {
 				photo.AddHiddenVersion (version_id, uri, md5_sum, name, is_protected, type, parent_version_id);
@@ -234,8 +234,8 @@ public class PhotoStore : DbStore<Photo> {
 				System.Uri uri = new Uri (new Uri (reader ["base_uri"].ToString ()), reader ["filename"].ToString ());
 				string md5_sum = reader["md5_sum"] != null ? reader ["md5_sum"].ToString () : null;
 				bool is_protected = Convert.ToBoolean (reader["protected"]);
-				PhotoVersionType type = (PhotoVersionType) Enum.ToObject (typeof (PhotoVersionType), reader["type"]);
-				uint parent_version_id = Convert.ToUInt32 (reader ["parent_version_id"]);
+				PhotoVersionType type = (PhotoVersionType) Enum.ToObject (typeof (PhotoVersionType), reader["type"] ?? (uint) PhotoVersionType.Simple);
+				uint parent_version_id = Convert.ToUInt32 (reader ["parent_version_id"] ?? "0");
 				
 				if (type == PhotoVersionType.Hidden) {
 					photo.AddHiddenVersion (version_id, uri, md5_sum, name, is_protected, type, parent_version_id);
