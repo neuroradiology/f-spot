@@ -83,6 +83,9 @@ namespace FSpot.Loaders {
 				return;
 
 			is_disposed = true;
+			while (Loading)
+				;
+
 			if (image_stream != null)
 				try {
 					image_stream.Close ();

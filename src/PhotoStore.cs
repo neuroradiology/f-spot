@@ -268,6 +268,8 @@ public class PhotoStore : DbStore<Photo> {
 				Photo photo = Get (photo_id);
 				PhotoVersion version = photo.GetVersion (version_id, true);
 
+				Log.Debug ("[CleanHidden] P: {0}, V: {1}, RefCount: {2}", photo_id, version_id, VersionRefCount (version));
+
 				if (VersionRefCount (version) == 0) {
 					photo.FullyDeleteVersion (version_id, false);
 					Database.ExecuteNonQuery (new DbCommand ("DELETE FROM photo_versions WHERE photo_id = :photo_id AND version_id = :version_id", "photo_id", photo_id, "version_id", version_id));

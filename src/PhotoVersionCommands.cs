@@ -110,6 +110,8 @@ public class PhotoVersionCommands
 					string msg = Catalog.GetString ("Could not create a new version");
 					string desc = String.Format (Catalog.GetString ("Received exception \"{0}\". Unable to create version \"{1}\""),
 								     e.Message, name);
+
+					Log.Debug ("{0}", e);
 					
 					HigMessageDialog md = new HigMessageDialog (parent_window, DialogFlags.DestroyWithParent, 
 										    Gtk.MessageType.Error, ButtonsType.Ok, 

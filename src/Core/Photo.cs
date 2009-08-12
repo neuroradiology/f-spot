@@ -5,9 +5,12 @@
  *	Ettore Perazzoli <ettore@perazzoli.org>
  *	Larry Ewing <lewing@gnome.org>
  *	Stephane Delcroix <stephane@delcroix.org>
+ *	Ruben Vermeersch <ruben@savanne.be>
  * 
  * This is free software. See COPYING for details.
  */
+
+using Gdk;
 
 using System;
 using System.IO;
@@ -418,7 +421,9 @@ namespace FSpot
 				GLib.File source = GLib.FileFactory.NewForUri (original_uri);
 				source.Copy (destination, GLib.FileCopyFlags.None, null, null);
 	
-				FSpot.ThumbnailGenerator.Create (new_uri).Dispose ();
+				Pixbuf thumb = FSpot.ThumbnailGenerator.Create (new_uri);
+				if (thumb != null)
+					thumb.Dispose ();
 			}
 
 			uint version_id = HighestVersionId + 1;
