@@ -291,10 +291,11 @@ namespace FSpot.Widgets {
 		void HandleCompleted (object sender, ItemsCompletedEventArgs args)
 		{
 			Log.DebugTimerPrint (timer, "Loading image took {0} (" + args.Items.ToString () + ")");
-			HideStatus ();
 			IImageLoader loader = sender as IImageLoader;
 			if (loader != Loader)
 				return;
+
+			HideStatus ();
 
 			Pixbuf prev = this.Pixbuf;
 			if (current_item != args.Items.Largest ()) {
