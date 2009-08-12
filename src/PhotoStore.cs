@@ -550,12 +550,13 @@ public class PhotoStore : DbStore<Photo> {
 
 		// Update versions.
 		if (changes.VersionsRemoved != null)
-			foreach (uint version_id in changes.VersionsRemoved)
+			foreach (uint version_id in changes.VersionsRemoved) {
 				Database.ExecuteNonQuery (new DbCommand (
 					"DELETE FROM photo_versions WHERE photo_id = :photo_id AND version_id = :version_id",
 					"photo_id", photo.Id,
 					"version_id", version_id));
-
+				Core.Database.ProcessingSettings.RemoveAll (photo.Id, version_id);
+			}
 		if (changes.VersionsAdded != null)
 			foreach (uint version_id in changes.VersionsAdded) {
 				PhotoVersion version = photo.GetVersion (version_id) as PhotoVersion;
