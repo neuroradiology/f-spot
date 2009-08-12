@@ -12,7 +12,7 @@
 
 #include <libraw/libraw.h>
 
-#define return_null_if(cond) if ((cond)) { g_print ("Stopping running!"); self->priv->running = false; return NULL; }
+#define return_null_if(cond) if ((cond)) { self->priv->running = false; return NULL; }
 
 G_DEFINE_TYPE (FSpotLibrawLoader, fspot_librawloader, G_TYPE_OBJECT);
 

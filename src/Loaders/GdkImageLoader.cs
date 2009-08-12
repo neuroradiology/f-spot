@@ -61,7 +61,7 @@ namespace FSpot.Loaders {
 		public ImageLoaderItem Load (ImageLoaderItem items, bool async)
 		{
 			if (is_disposed)
-				return ImageLoaderItem.None;
+				throw new Exception ("Can't request after disposing!");
 
 			ItemsRequested |= items;
 
