@@ -156,6 +156,7 @@ namespace FSpot.Loaders {
 			lock (sync_handle) {
 				Loading = false;
 			}
+			Pulse ();
 		}
 
 		void LoadThumbnail ()
