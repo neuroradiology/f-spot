@@ -73,7 +73,7 @@ namespace FSpot.X3f {
 
 	}
 
-	public class X3fFile : DCRawFile, IRawFile, SemWeb.StatementSource {
+	public class X3fFile : ImageFile, IRawFile, SemWeb.StatementSource {
 		Info info;
 
                 // false seems a safe default

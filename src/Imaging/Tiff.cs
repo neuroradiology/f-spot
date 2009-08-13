@@ -2078,11 +2078,6 @@ namespace FSpot.Tiff {
 					return base.Date;
 			}
 		}
-		
-		public override System.IO.Stream PixbufStream ()
-		{
-			return Open ();
-		}
 
 		public override PixbufOrientation GetOrientation ()
 		{
@@ -2137,21 +2132,6 @@ namespace FSpot.Tiff {
 
 		public DngFile (System.Uri uri) : base (uri) 
 		{
-		}
-
-		public override System.IO.Stream PixbufStream ()
-		{
-			try {
-				SubdirectoryEntry sub = (SubdirectoryEntry) Header.Directory.Lookup (TagId.SubIFDs);
-				ImageDirectory directory = sub.Directory [sub.Directory.Length - 1];
-
-				uint offset = directory.Lookup (TagId.StripOffsets).ValueAsLong [0];
-				System.IO.Stream file = Open ();
-				file.Position = offset;
-				return file;
-			} catch {
-				return DCRawFile.RawPixbufStream (uri);
-			}
 		}
 
 		public override void Select (SemWeb.StatementSink sink)
@@ -2257,52 +2237,6 @@ namespace FSpot.Tiff {
 				i++;
 			} while (i < sub.Directory.Length);
 		}
-
-		public override System.IO.Stream PixbufStream ()
-		{
-			try {
-				SubdirectoryEntry sub = (SubdirectoryEntry) Header.Directory.Lookup (TagId.SubIFDs);
-				ImageDirectory jpeg_directory = sub.Directory [0];
-				return LookupJpegSubstream (jpeg_directory);
-			} catch (System.Exception) {
-				return DCRawFile.RawPixbufStream (uri);
-			}
-		}
 	}
-		
-
-	public class Cr2File : TiffFile, IRawFile {
-		public Cr2File (string path) : base (path) 
-		{
-		}
-
-		public Cr2File (Uri uri) : base (uri)
-		{
-//							Gtk.MessageDialog md = new Gtk.MessageDialog (null, 
-//							                                              Gtk.DialogFlags.DestroyWithParent,
-//							                                              Gtk.MessageType.Error, 
-//							                                              Gtk.ButtonsType.Close,
-//							                                              "bca");
-//	
-//							int result = md.Run ();
-//							md.Destroy();
-		}
-
-		/*
-		public override PixbufOrientation GetOrientation ()
-		{
-			return PixbufOrientation.TopLeft;
-		}
-		*/
-
-		public override System.IO.Stream PixbufStream ()
-		{
-			uint offset = Header.Directory.Lookup (TagId.StripOffsets).ValueAsLong [0];
-			System.IO.Stream file = Open ();
-			file.Position = offset;
-			return file;
-		}
-	}
-
 }
 

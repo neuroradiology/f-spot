@@ -446,16 +446,6 @@ namespace FSpot.Ciff {
 			}
 		}
 
-		public override System.IO.Stream PixbufStream ()
-		{
-			byte [] data = GetEmbeddedJpeg ();
-			
-			if (data != null)
-				return new System.IO.MemoryStream (data);
-			else	
-				return DCRawFile.RawPixbufStream (uri);
-		}
-
 		public void Dump ()
 		{
 			Root.Dump ();

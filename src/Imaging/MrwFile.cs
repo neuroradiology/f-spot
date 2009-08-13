@@ -213,11 +213,6 @@ namespace FSpot.Mrw {
 			this.Header.Select (sink);
 		}
 
-		public override System.IO.Stream PixbufStream ()
-		{
-			return DCRawFile.RawPixbufStream (uri);
-		}
-		
 		protected void LoadBlocks () 
 		{
 			using (System.IO.Stream file = Open ()) {

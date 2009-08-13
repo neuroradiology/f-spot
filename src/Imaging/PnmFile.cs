@@ -61,17 +61,6 @@ namespace FSpot.Pnm {
 			}
 		}
 		
-		public override Stream PixbufStream ()
-		{
-			Stream stream = Open ();
-			Header header = new Header (stream);
-			if (header.IsDeep)
-				return null;
-
-			stream.Position = 0;
-			return stream;
-		}
-
 		static char EatComment (Stream stream)
 		{
 			char c;

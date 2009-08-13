@@ -42,14 +42,12 @@ CORE_CSDISTFILES =				\
 
 IMAGING_CSDISTFILES =						\
 	$(srcdir)/Imaging/PixbufUtils.cs		\
-	$(srcdir)/Imaging/DCRawFile.cs			\
 	$(srcdir)/Imaging/BitConverter.cs		\
 	$(srcdir)/Imaging/Bim.cs				\
 	$(srcdir)/Imaging/Ciff.cs				\
 	$(srcdir)/Imaging/Exif.cs				\
 	$(srcdir)/Imaging/ImageFile.cs			\
 	$(srcdir)/Imaging/IptcFile.cs			\
-	$(srcdir)/Imaging/InternalProcess.cs	\
 	$(srcdir)/Imaging/IOChannel.cs			\
 	$(srcdir)/Imaging/IRawFile.cs			\
 	$(srcdir)/Imaging/IWritableImageFile.cs	\

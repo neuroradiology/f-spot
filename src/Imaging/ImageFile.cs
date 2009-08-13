@@ -47,11 +47,6 @@ namespace FSpot {
 			return new GLib.GioStream (GLib.FileFactory.NewForUri (uri).Read (null));
 		}
 
-		public virtual Stream PixbufStream ()
-		{
-			return Open ();
-		}
-
 		public static void AddExtension (string extension, Type type)
 		{
 			name_table [extension] = type;
@@ -67,7 +62,7 @@ namespace FSpot {
 			name_table [".jpeg"] = typeof (JpegFile);
 			name_table [".jpg"] = typeof (JpegFile);
 			name_table [".png"] = typeof (FSpot.Png.PngFile);
-			name_table [".cr2"] = typeof (FSpot.Tiff.Cr2File);
+			name_table [".cr2"] = typeof (FSpot.Tiff.TiffFile);
 			name_table [".nef"] = typeof (FSpot.Tiff.NefFile);
 			name_table [".pef"] = typeof (FSpot.Tiff.NefFile);
 			name_table [".raw"] = typeof (FSpot.Tiff.NefFile);
