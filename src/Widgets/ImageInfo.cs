@@ -11,6 +11,7 @@ using Cairo;
 using Gdk;
 using Gtk;
 using FSpot.Utils;
+using FSpot.Loaders;
 
 namespace FSpot.Widgets {
 	public class ImageInfo : IDisposable {
@@ -19,11 +20,12 @@ namespace FSpot.Widgets {
 		
 		public ImageInfo (Uri uri)
 		{
-				using (ImageFile img = ImageFile.Create (uri)) {
-					Pixbuf pixbuf = img.Load ();
+			using (IImageLoader loader = ImageLoader.Create (uri)) {
+				loader.Load (ImageLoaderItem.Full);
+				using (Gdk.Pixbuf pixbuf = loader.Full)
 					SetPixbuf (pixbuf);
-					pixbuf.Dispose ();
-				}
+
+			}
 		}
 		
 		public ImageInfo (Pixbuf pixbuf)

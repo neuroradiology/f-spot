@@ -13,6 +13,7 @@ using System.IO;
 using Gdk;
 
 using FSpot.Imaging;
+using FSpot.Loaders;
 
 using Mono.Unix;
 
@@ -32,35 +33,46 @@ namespace FSpot.Filters {
 		{
 			Uri dest_uri = req.TempUri (System.IO.Path.GetExtension (req.Current.LocalPath));
 
-			using (ImageFile img = ImageFile.Create (req.Current)) {
-				using (Pixbuf in_pixbuf = img.Load ()) {
-					using (Pixbuf out_pixbuf = PixbufUtils.UnsharpMask (in_pixbuf, radius, amount, threshold)) {
-						string destination_extension = Path.GetExtension (dest_uri.LocalPath);
-		
-						if (Path.GetExtension (req.Current.LocalPath).ToLower () == Path.GetExtension (dest_uri.LocalPath).ToLower () && img is IWritableImageFile) {
-							using (Stream output = File.OpenWrite (dest_uri.LocalPath)) {
-								(img as IWritableImageFile).Save (out_pixbuf, output);
-							}
-						} else if (destination_extension == ".jpg") {
-							// FIXME this is a bit of a nasty hack to work around
-							// the lack of being able to change the path in this filter
-							// and the lack of proper metadata copying yuck
-							Exif.ExifData exif_data;
-		
-							exif_data = new Exif.ExifData (req.Current.LocalPath);
-							
-							FSpotPixbufUtils.SaveJpeg (out_pixbuf, dest_uri.LocalPath, 90, exif_data);
-						} else 
-							throw new NotImplementedException (String.Format (Catalog.GetString ("No way to save files of type \"{0}\""), destination_extension));
-						
+			ImageFile img = null;
+			IImageLoader loader = null;
+			Pixbuf in_pixbuf = null;
+			Pixbuf out_pixbuf = null;
+			try {
+				img = ImageFile.Create (req.Current);
+				loader = ImageLoader.Create (req.Current);
+				loader.Load (ImageLoaderItem.Full);
+
+				in_pixbuf = loader.Full;
+				out_pixbuf = PixbufUtils.UnsharpMask (in_pixbuf, radius, amount, threshold);
+				string destination_extension = Path.GetExtension (dest_uri.LocalPath);
+
+				if (Path.GetExtension (req.Current.LocalPath).ToLower () == Path.GetExtension (dest_uri.LocalPath).ToLower () && img is IWritableImageFile) {
+					using (Stream output = File.OpenWrite (dest_uri.LocalPath)) {
+						(img as IWritableImageFile).Save (out_pixbuf, output);
 					}
+				} else if (destination_extension == ".jpg") {
+					// FIXME this is a bit of a nasty hack to work around
+					// the lack of being able to change the path in this filter
+					// and the lack of proper metadata copying yuck
+					Exif.ExifData exif_data;
+
+					exif_data = new Exif.ExifData (req.Current.LocalPath);
+
+					FSpotPixbufUtils.SaveJpeg (out_pixbuf, dest_uri.LocalPath, 90, exif_data);
+				} else  {
+					// TODO: Implement the saving like in ResizeFilter.
+					throw new NotImplementedException (String.Format (Catalog.GetString ("No way to save files of type \"{0}\""), destination_extension));
 				}
+			} finally {
+				if (img != null) img.Dispose ();
+				if (loader != null) loader.Dispose ();
+				if (in_pixbuf != null) in_pixbuf.Dispose ();
+				if (out_pixbuf != null) out_pixbuf.Dispose ();
 			}
 
 			req.Current = dest_uri;
 			return true;
 		}
-
 	}
 }
 

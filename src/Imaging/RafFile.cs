@@ -72,20 +72,6 @@ namespace FSpot.Raf {
 				return DCRawFile.RawPixbufStream (uri);
 		}
  
-		public override Gdk.Pixbuf Load ()
-		{
-			return new Gdk.Pixbuf (PixbufStream ());
-		}
-
-		public override Gdk.Pixbuf Load (int width, int height)
-		{
-			Gdk.Pixbuf full = this.Load ();
-			Gdk.Pixbuf rotated = FSpot.Utils.PixbufUtils.TransformOrientation (full, this.GetOrientation());
-			Gdk.Pixbuf scaled  = PixbufUtils.ScaleToMaxSize (rotated, width, height);
-			full.Dispose ();
-			return scaled;
-		}
-
 		public void Select (SemWeb.StatementSink sink)
 		{
 			byte [] data = GetEmbeddedJpeg ();

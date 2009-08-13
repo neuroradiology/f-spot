@@ -17,6 +17,7 @@ using Gdk;
 using FSpot;
 using FSpot.Png;
 using FSpot.Imaging;
+using FSpot.Loaders;
 using FSpot.UI.Dialog;
 
 using FSpot.Utils;
@@ -99,10 +100,13 @@ namespace FSpot {
 
 					string backup = ImageFile.TempPath (original_path);
 					using (Stream stream = File.Open (backup, FileMode.Truncate, FileAccess.Write)) {
-						using (Pixbuf pixbuf = img.Load ()) {
-							PixbufOrientation fake = (direction == RotateDirection.Clockwise) ? PixbufOrientation.RightTop : PixbufOrientation.LeftBottom;
-							using (Pixbuf rotated = FSpot.Utils.PixbufUtils.TransformOrientation (pixbuf, fake)) {
-								(img as IWritableImageFile).Save (rotated, stream);
+						using (IImageLoader loader = ImageLoader.Create (UriUtils.PathToFileUri (original_path))) {
+							loader.Load (ImageLoaderItem.Full);
+							using (Pixbuf pixbuf = loader.Large) {
+								PixbufOrientation fake = (direction == RotateDirection.Clockwise) ? PixbufOrientation.RightTop : PixbufOrientation.LeftBottom;
+								using (Pixbuf rotated = FSpot.Utils.PixbufUtils.TransformOrientation (pixbuf, fake)) {
+									(img as IWritableImageFile).Save (rotated, stream);
+								}
 							}
 						}
 					}

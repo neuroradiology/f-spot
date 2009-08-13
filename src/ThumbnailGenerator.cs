@@ -28,35 +28,11 @@ namespace FSpot {
 
 		public static Gdk.Pixbuf Create (Uri uri)
 		{
-			try {
-				Gdk.Pixbuf thumb;
-
-				using (ImageFile img = ImageFile.Create (uri)) {
-					thumb = img.Load (256, 256);
-				}
-				using (IImageLoader loader = ImageLoader.Create (uri)) {
-					loader.Load (ImageLoaderItem.Thumbnail);
-					thumb = loader.Thumbnail;
-				}
-
-				if (thumb == null)
-					return null;
-
-				try { //Setting the thumb options
-					GFileInfo info = GLib.FileFactory.NewForUri (uri).QueryInfo ("time::modified", GLib.FileQueryInfoFlags.None, null);
-					DateTime mtime = NativeConvert.ToDateTime ((long)info.GetAttributeULong ("time::modified"));
-
-					thumb.SetOption (ThumbUri, UriUtils.UriToStringEscaped (uri));
-					thumb.SetOption (ThumbMTime, ((uint)GLib.Marshaller.DateTimeTotime_t (mtime)).ToString ());
-				} catch (System.Exception e) {
-					Log.Exception (e);
-				}
-
+			using (IImageLoader loader = ImageLoader.Create (uri)) {
+				loader.Load (ImageLoaderItem.Thumbnail);
+				Gdk.Pixbuf thumb = loader.Thumbnail;
 				Save (thumb, uri);
 				return thumb;
-			} catch (Exception e) {
-				Log.Exception (e);
-				return null;
 			}
 		}
 		

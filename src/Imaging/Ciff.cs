@@ -456,14 +456,6 @@ namespace FSpot.Ciff {
 				return DCRawFile.RawPixbufStream (uri);
 		}
 
-		public override Gdk.Pixbuf Load (int width, int height)
-		{
-			Gdk.Pixbuf full = this.Load ();
-			Gdk.Pixbuf scaled  = PixbufUtils.ScaleToMaxSize (full, width, height);
-			full.Dispose ();
-			return scaled;
-		}
-
 		public void Dump ()
 		{
 			Root.Dump ();

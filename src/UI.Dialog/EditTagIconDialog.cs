@@ -16,6 +16,7 @@ using Mono.Unix;
 using Gtk;
 using FSpot.Widgets;
 using FSpot.Utils;
+using FSpot.Loaders;
 
 namespace FSpot.UI.Dialog
 {
@@ -159,10 +160,10 @@ namespace FSpot.UI.Dialog
 		void CreateTagIconFromExternalPhoto ()
 		{
 			try {
-				using (FSpot.ImageFile img = FSpot.ImageFile.Create (new Uri(external_photo_chooser.Uri))) {
-					using (Gdk.Pixbuf external_image = img.Load ()) {
+				using (IImageLoader loader = ImageLoader.Create (new Uri (external_photo_chooser.Uri))) {
+					loader.Load (ImageLoaderItem.Large);
+					using (Gdk.Pixbuf external_image = loader.Large)
 						PreviewPixbuf = FSpotPixbufUtils.TagIconFromPixbuf (external_image);
-					}
 				}
 			} catch (Exception) {
 				string caption = Catalog.GetString ("Unable to load image");

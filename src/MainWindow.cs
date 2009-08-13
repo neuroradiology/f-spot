@@ -23,6 +23,7 @@ using FSpot;
 using FSpot.Extensions;
 using FSpot.Query;
 using FSpot.Widgets;
+using FSpot.Loaders;
 using FSpot.Utils;
 using FSpot.UI.Dialog;
 using FSpot.Platform;
@@ -942,9 +943,12 @@ namespace FSpot
 				// FIXME this needs a lot more work.
 				Pixbuf icon = null;
 				try {
-					Pixbuf tmp = FSpot.PhotoLoader.LoadAtMaxSize (query [nums[0]], 128, 128);
-					icon = FSpotPixbufUtils.TagIconFromPixbuf (tmp);
-					tmp.Dispose ();
+					using (IImageLoader loader = ImageLoader.Create (query [nums[0]].DefaultVersion.Uri)) {
+						loader.Load (ImageLoaderItem.Thumbnail);
+						using (Pixbuf thumb = loader.Thumbnail)
+							using (Pixbuf tmp = PixbufUtils.ScaleToMaxSize (thumb, 128, 128))
+							icon = FSpotPixbufUtils.TagIconFromPixbuf (tmp);
+					}
 				} catch {
 					icon = null;
 				}

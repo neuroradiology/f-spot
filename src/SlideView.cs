@@ -5,6 +5,7 @@ using GLib;
 using System.Runtime.InteropServices;
 using FSpot;
 using FSpot.Utils;
+using FSpot.Loaders;
 
 namespace FSpot {
 	public class XScreenSaverSlide : Gtk.Window {
@@ -343,7 +344,10 @@ namespace FSpot {
 		{
 			Pixbuf orig;
 			try { 
-				orig = FSpot.PhotoLoader.LoadAtMaxSize (photo, Allocation.Width, Allocation.Height);
+				using (IImageLoader loader = ImageLoader.Create (photo.DefaultVersionUri)) {
+					loader.Load (ImageLoaderItem.Full);
+					orig = loader.Full;
+				}
 			} catch {
 				orig = null;
 			}

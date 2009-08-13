@@ -20,6 +20,7 @@ using FSpot;
 using SemWeb;
 using Mono.Unix;
 using FSpot.Utils;
+using FSpot.Loaders;
 using GLib;
 using GFile = GLib.File;
 using GFileInfo = GLib.FileInfo;
@@ -707,9 +708,14 @@ namespace FSpot.Widgets
 			int max = histogram_expander.Allocation.Width;
 
 			try {
-				if (hint == null)
-					using (ImageFile img = ImageFile.Create (photo.DefaultVersion.Uri))
-						hint = img.Load (256, 256);
+				if (hint == null) {
+					using (IImageLoader loader = ImageLoader.Create (photo.DefaultVersion.Uri)) {
+						loader.Load (ImageLoaderItem.Large);
+
+						using (Gdk.Pixbuf large = loader.Large)
+							hint = PixbufUtils.ScaleToMaxSize (large, 256, 256);
+					}
+				}
 				
 				histogram_image.Pixbuf = histogram.Generate (hint, max);
 				

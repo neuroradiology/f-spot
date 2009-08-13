@@ -207,24 +207,6 @@ namespace FSpot.Pnm {
 			}			
 		}
 
-		public override Gdk.Pixbuf Load ()
-		{
-			try {
-				using (Stream stream = Open ()) {
-					Gdk.Pixbuf pixbuf = PnmFile.Load (stream);
-					return pixbuf;
-				}
-			} catch (System.Exception e) {
-				System.Console.WriteLine (e.ToString ());
-			}
-			return null;
-		}
-
-		public override Gdk.Pixbuf Load (int width, int height)
-		{
-			return PixbufUtils.ScaleToMaxSize (this.Load (), width, height);
-		}
-
 		public void Save (Gdk.Pixbuf pixbuf, System.IO.Stream stream)
 		{
 			if (pixbuf.HasAlpha)

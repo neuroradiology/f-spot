@@ -19,6 +19,7 @@ using Mono.Unix;
 using FSpot;
 using FSpot.Filters;
 using FSpot.Widgets;
+using FSpot.Loaders;
 using FSpot.Utils;
 using FSpot.UI.Dialog;
 
@@ -285,8 +286,9 @@ namespace FSpotGoogleExport {
 
 			if (show_captcha) {
 				try {
-					using  (ImageFile img = ImageFile.Create(new Uri(captcha_exception.CaptchaUrl))) {
-						captcha_image.Pixbuf = img.Load();
+					using (IImageLoader loader = ImageLoader.Create (new Uri (captcha_exception.CaptchaUrl))) {
+						loader.Load (ImageLoaderItem.Full);
+						captcha_image.Pixbuf = loader.Full;
 						token = captcha_exception.Token;
 					}
 				} catch (Exception) {}

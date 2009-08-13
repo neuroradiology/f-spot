@@ -301,29 +301,8 @@ namespace FSpot.Widgets {
 				ChangeImage (Loader.Pixbuf (current_item), Accelerometer.GetViewOrientation (Loader.PixbufOrientation (current_item)), false, false);
 			}
 
-			if (Pixbuf == null) {
-				// FIXME: Do we have test cases for this ???
-
-				// FIXME in some cases the image passes completely through the
-				// pixbuf loader without properly loading... I'm not sure what to do about this other
-				// than try to load the image one last time.
-				try {
-					Log.Warning ("Falling back to file loader");
-					Pixbuf = PhotoLoader.Load (item.Collection, item.Index);
-				} catch (Exception e) {
-					LoadErrorImage (e);
-				}
-			}
-
-			if (loader.Pixbuf != null) //FIXME: this test in case the photo was loaded with the direct loader
-				PixbufOrientation = Accelerometer.GetViewOrientation (loader.PixbufOrientation);
-			else
-				PixbufOrientation = PixbufOrientation.TopLeft;
-
 			if (Pixbuf == null)
-				LoadErrorImage (null);
-			else
-				ZoomFit ();
+				LoadErrorImage ();
 
 			progressive_display = true;
 
@@ -346,7 +325,7 @@ namespace FSpot.Widgets {
 			get { return progressive_display; }
 		}
 
-		void LoadErrorImage (System.Exception e)
+		void LoadErrorImage ()
 		{
 			// FIXME we should check the exception type and do something
 			// like offer the user a chance to locate the moved file and
@@ -392,10 +371,10 @@ namespace FSpot.Widgets {
 				if (Item.IsValid) 
 					Load (Item.Current.DefaultVersion.Uri);
 				else
-					LoadErrorImage (null);
+					LoadErrorImage ();
 			} catch (System.Exception e) {
 				Log.DebugException (e);
-				LoadErrorImage (e);
+				LoadErrorImage ();
 			}
 			
 			Selection = Gdk.Rectangle.Zero;

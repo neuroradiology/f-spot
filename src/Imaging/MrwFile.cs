@@ -218,18 +218,6 @@ namespace FSpot.Mrw {
 			return DCRawFile.RawPixbufStream (uri);
 		}
 		
-		public override Gdk.Pixbuf Load ()
-		{
-			using (System.IO.Stream stream = Open ()) {
-				return new Gdk.Pixbuf (PixbufStream ());
-			}
-		}
-
-		public override Gdk.Pixbuf Load (int width, int height)
-		{
-			return PixbufUtils.ScaleToMaxSize (this.Load (), width, height);
-		}
-
 		protected void LoadBlocks () 
 		{
 			using (System.IO.Stream file = Open ()) {

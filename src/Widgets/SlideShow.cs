@@ -14,6 +14,7 @@ using Gtk;
 using Gdk;
 using Mono.Addins;
 using FSpot.Bling;
+using FSpot.Loaders;
 using FSpot.Extensions;
 
 namespace FSpot.Widgets
@@ -113,9 +114,11 @@ namespace FSpot.Widgets
 				if (item == null || item.Current == null)
 					return;
 
-				using (ImageFile img = ImageFile.Create (item.Current.DefaultVersion.Uri)) {
+				using (IImageLoader loader = ImageLoader.Create (item.Current.DefaultVersion.Uri)) {
+					// FIXME: This does synchronous loading, so it sucks!
+					loader.Load (ImageLoaderItem.Large);
 					try {
-						using (var pb =  img.Load ()) {
+						using (var pb = loader.Large) {
 							double scale = Math.Min ((double)Allocation.Width/(double)pb.Width, (double)Allocation.Height/(double)pb.Height);
 							int w = (int)(pb.Width * scale);
 							int h = (int)(pb.Height * scale);

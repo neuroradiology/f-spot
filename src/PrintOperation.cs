@@ -14,6 +14,7 @@ using Mono.Unix;
 
 using FSpot.Widgets;
 using FSpot.Utils;
+using FSpot.Loaders;
 
 namespace FSpot
 {
@@ -114,7 +115,11 @@ namespace FSpot
 					{
 						Gdk.Pixbuf pixbuf;
 						try {
-							pixbuf = img.Load ((int) mx, (int) my);
+							using (IImageLoader loader = ImageLoader.Create (selected_photos[p_index].DefaultVersionUri)) {
+								loader.Load (ImageLoaderItem.Full);
+								using (Gdk.Pixbuf full = loader.Full)
+									pixbuf = PixbufUtils.ScaleToMaxSize (full, (int) mx, (int) my);
+							}
 							Cms.Profile printer_profile;
 							if (FSpot.ColorManagement.Profiles.TryGetValue (Preferences.Get<string> (Preferences.COLOR_MANAGEMENT_OUTPUT_PROFILE), out printer_profile)) 
 								FSpot.ColorManagement.ApplyProfile (pixbuf, img.GetProfile (), printer_profile);

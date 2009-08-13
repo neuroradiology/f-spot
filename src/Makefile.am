@@ -251,7 +251,6 @@ F_SPOT_CSDISTFILES =				\
 	$(srcdir)/MetaStore.cs			\
 	$(srcdir)/PhotoEventArgs.cs		\
 	$(srcdir)/PhotoImageView.cs		\
-	$(srcdir)/PhotoLoader.cs		\
 	$(srcdir)/PhotoPopup.cs			\
 	$(srcdir)/PhotoQuery.cs			\
 	$(srcdir)/PhotoStore.cs			\
