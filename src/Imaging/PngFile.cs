@@ -388,8 +388,6 @@ namespace FSpot.Png {
 		public class TimeChunk : Chunk {
 			//public static string Name = "tIME";
 
-			System.DateTime time;
-
 			public System.DateTime Time {
 				get {
 					return new System.DateTime (FSpot.BitConverter.ToUInt16 (data, 0, false),

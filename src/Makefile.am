@@ -57,7 +57,6 @@ IMAGING_CSDISTFILES =						\
 	$(srcdir)/Imaging/MetadataStore.cs		\
 	$(srcdir)/Imaging/MrwFile.cs			\
 	$(srcdir)/Imaging/OrderedWriter.cs		\
-	$(srcdir)/Imaging/PixelBuffer.cs		\
 	$(srcdir)/Imaging/PngFile.cs			\
 	$(srcdir)/Imaging/PnmFile.cs			\
 	$(srcdir)/Imaging/RafFile.cs			\
