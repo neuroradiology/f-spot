@@ -138,7 +138,7 @@ namespace FSpot.Loaders {
 
 #region private stuffs
 		System.IO.Stream image_stream;
-		const int count = 1 << 16;
+		const int count = 1 << 10;
 		byte [] buffer = new byte [count];
 
 		void StartLoading ()
