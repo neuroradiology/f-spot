@@ -1,12 +1,12 @@
 /* 
    GENERATED FILE, DO NOT EDIT
-   Generated from dcraw/dcraw.c at Tue Jul 21 20:35:34 2009
+   Generated from dcraw/dcraw.c at Wed Sep  2 11:06:05 2009
    Look into original file (probably http://cybercom.net/~dcoffin/dcraw/dcraw.c)
    for copyright information.
 */
 
 #define NO_JPEG
-#define VERSION "8.95"
+#define VERSION "8.97"
 
 #ifndef _GNU_SOURCE
 #define _GNU_SOURCE
@@ -53,14 +53,10 @@
 #define snprintf _snprintf
 #define strcasecmp _stricmp
 #define strncasecmp strnicmp
-typedef __int64 INT64;
-typedef unsigned __int64 UINT64;
 #else
 #include <unistd.h>
 #include <utime.h>
 #include <netinet/in.h>
-typedef long long INT64;
-typedef unsigned long long UINT64;
 #endif
 
 #ifdef LJPEG_DECODE

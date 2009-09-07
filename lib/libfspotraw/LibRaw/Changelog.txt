@@ -1,3 +1,41 @@
+2009-09-02 Alex Tutubalin <lexa@lexa.ru>
+           + Fixed bug in Hasselblad .3FR unpacking code
+           * Imported dcraw 8.97/1.428: Nikon D3000 image width fix
+           * LibRaw 0.8.2
+
+2009-08-31 Alex Tutubalin <lexa@lexa.ru>
+           + Enum LibRaw_thumbnail_formats (LIBRAW_IMAGE_*) values changed to
+             match values in  enum LibRaw_image_formats (LIBRAW_THUMBNAIL_*).
+             You need to recompile all sources using these constants.
+
+2009-08-30 Alex Tutubalin <lexa@lexa.ru>
+           * Imported dcraw 8.97/1.427:
+             + new cameras: Canon A470, Canon G11 (without color data),
+                Nikon D3000, Olympus E-P1, Panasonic DMC-FZ35/FZ38
+             + some changes in decoding code.
+            * Fixes for Microsoft Visual C++ 6.0 compatibility
+            * C-API dcraw_make_mem_thumb() call finally exported in API
+           * LibRaw 0.8.1
+
+2009-08-24 Alex Tutubalin <lexa@lexa.ru>
+           * Imported dcraw 8.96/1.426
+             + New cameras: Casio EX-Z60 and EX-Z75, Kodak Z980,
+               Nikon D5000,  Olympus X200, D560Z,C350Z,E620,
+               Pentax K7, Sony A330.
+             + New color data for many cameras
+             + Generalized unpacker code for Canon and Casio P&S cameras
+           * LibRaw 0.8.0-Release
+
+2009-08-13 Alex Tutubalin <lexa@lexa.ru>
+           * RAW files larger than 2Gb are supported on:
+              - Unix (all supported: FreeBSD, MacOS X, Linux)
+              - Windows (with C runtime version  >= 8.0)
+           * bzero replaced with memset to make Solaris users happy
+           * All applications on 32-bit systems should be recompiled
+             due to data structures size changes.
+           * Minor fixes in windows makefile
+           * LibRaw 0.8.0-Beta5
+
 2009-07-21 Alex Tutubalin <lexa@lexa.ru>
            * Imported dcraw 8.95 (1.425):
              + new huffman tree code

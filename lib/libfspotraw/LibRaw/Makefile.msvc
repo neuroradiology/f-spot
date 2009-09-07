@@ -89,5 +89,5 @@ object\libraw_c_api_st.obj: src\libraw_c_api.cpp
 
 clean:
 	-del $(LIBSTATIC) $(LIBDLL) lib\*.exp
-	-del $(LIB_OBJECTS) $(LIB_OBJECTS)
+	-del $(LIB_OBJECTS) $(DLL_OBJECTS)
 	-del $(DLL) $(SAMPLES)
