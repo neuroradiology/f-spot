@@ -1,3 +1,14 @@
+2009-11-21 Alex Tutubalin <lexa@lexa.ru>
+           + Исправлена ошибка в обработке некомпрессированных файлов Phase One
+           * LibRaw 0.8.4
+
+2009-10-24 Alex Tutubalin <lexa@lexa.ru>
+           + Импортирована dcraw 8.98/1.431:
+             * Новые камеры: Canon 7D, Panasonic GF1, Sony A850 и A380, Casio Z850,
+               Nikon D300s
+           + Изменения в заголовочных файлах для подавления предупреждений компилятора
+           * LibRaw 0.8.3
+
 2009-09-02 Alex Tutubalin <lexa@lexa.ru>
            + Исправлена ошибка в коде распаковки Hasselblad .3FR
            * Импортирована dcraw 8.97/1.428: исправлена ошибка определения

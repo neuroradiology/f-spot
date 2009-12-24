@@ -1,6 +1,6 @@
 include $(top_srcdir)/Makefile.include
 
-LIBRAW = LibRaw-0.8.2
+LIBRAW = LibRaw-0.8.4
 INCLUDES = -I $(top_srcdir) -I $(srcdir)/LibRaw $(F_CFLAGS)
 
 fspotlibdir = $(libdir)/f-spot
