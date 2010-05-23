@@ -18,11 +18,6 @@ using FSpot;
 using FSpot.Utils;
 
 public class PixbufUtils {
-	public static int GetSize (Pixbuf pixbuf)
-	{
-		return Math.Max (pixbuf.Width, pixbuf.Height);
-	}
-
 	public static double Fit (Pixbuf pixbuf,
 				  int dest_width, int dest_height,
 				  bool upscale_smaller,
@@ -79,53 +74,12 @@ public class PixbufUtils {
 		return result;
 	}
 
-	static public void GetSize (string path, out int width, out int height)
+	public static void GetSize (string path, out int width, out int height)
 	{
-#if true
 		using (Gdk.Pixbuf pixbuf = new Gdk.Pixbuf (path)) {
 			width = pixbuf.Width;
 			height = pixbuf.Height;
 		}
-#else //yes, the pixbuf loader hack is smarter, but it leaks like an old women
-		Gdk.PixbufLoader loader = new Gdk.PixbufLoader ();
-		int orig_width = 0;
-		int orig_height = 0;
-		bool done = false;
-
-		loader.SizePrepared += delegate (object obj, SizePreparedArgs args) {
-			orig_width = args.Width;
-			orig_height = args.Height;
-			done = true;
-		};
-
-		using (Stream stream = File.OpenRead (path)) {
-			byte [] data = new byte [4096];
-			int count;
-
-			while (((count = stream.Read (data, 0, data.Length)) > 0) && loader.Write (data, (ulong)count)) {
-				if (done)
-					break;
-			}
-		}
-
-		width = orig_width;
-		height = orig_height;
-#endif
-	}
-
-	static public Pixbuf LoadFromStream (System.IO.Stream input)
-	{
-		Gdk.PixbufLoader loader = new Gdk.PixbufLoader ();
-		byte [] buffer = new byte [8192];
-		int n;
-
-		while ((n = input.Read (buffer, 0, 8192)) != 0)
-			loader.Write (buffer, (ulong) n);
-
-		loader.Close ();
-
-		return loader.Pixbuf;
-
 	}
 
 	public static void Save (Gdk.Pixbuf pixbuf, System.IO.Stream stream, string type, string [] options, string [] values)
@@ -180,42 +134,6 @@ public class PixbufUtils {
 		GLib.Marshaller.Free (data);
 
 		return content;
-	}
-
-	static public Pixbuf LoadFromScreen (Gdk.Window win) {
-		Gdk.Screen screen = win.Screen;
-		Drawable d = screen.RootWindow;
-		int monitor = screen.GetMonitorAtWindow (win);
-		Gdk.Rectangle geom = screen.GetMonitorGeometry (monitor);
-
-		//
-		// We use the screen width and height because that reflects
-		// the current resolution, the RootWindow can actually be different.
-		//
-
-		Pixbuf buf = new Pixbuf (Colorspace.Rgb, false, 8, geom.Width, geom.Height);
-
-		return buf.GetFromDrawable (d,
-					    d.Colormap, geom.X, geom.Y, 0, 0,
-					    geom.Width, geom.Height);
-	}
-
-	static public Pixbuf LoadFromScreen () {
-		Screen screen = Display.Default.GetScreen (0);
-		Drawable d = screen.RootWindow;
-		int width = screen.Width;
-		int height = screen.Height;
-
-		//
-		// We use the screen width and height because that reflects
-		// the current resolution, the RootWindow can actually be different.
-		//
-
-		Pixbuf buf = new Pixbuf (Colorspace.Rgb, false, 8, width, height);
-
-		return buf.GetFromDrawable (d,
-					    d.Colormap, 0, 0, 0, 0,
-					    width, height);
 	}
 
 	static public Pixbuf LoadFromAssembly (string resource)
