@@ -554,12 +554,12 @@ FSpot.Core.dll: $(CORE_CSFILES) FSpot.Utils.dll Cms.dll
 FSpot.Imaging.dll.mdb: FSpot.Imaging.dll
 
 FSpot.Imaging.dll: $(IMAGING_CSFILES) FSpot.Utils.dll FSpot.Core.dll
-	$(CSC_LIB) -out:$@ $(EXTRAFLAGS) $(UNSAFE) $(IMAGING_CSFILES) $(IMAGING_ASSEMBLIES)
+	$(CSC_LIB) -warnaserror -out:$@ $(EXTRAFLAGS) $(UNSAFE) $(IMAGING_CSFILES) $(IMAGING_ASSEMBLIES)
 
 FSpot.Loaders.dll.mdb: FSpot.Loaders.dll
 
 FSpot.Loaders.dll: $(LOADERS_CSFILES) FSpot.Platform.dll FSpot.Utils.dll FSpot.Imaging.dll FSpot.Core.dll
-	$(CSC_LIB) -out:$@ $(EXTRAFLAGS) $(LOADERS_CSFILES) $(LOADERS_ASSEMBLIES)
+	$(CSC_LIB) -warnaserror -out:$@ $(EXTRAFLAGS) $(LOADERS_CSFILES) $(LOADERS_ASSEMBLIES)
 
 FSpot.Query.dll.mdb: FSpot.Query.dll
 

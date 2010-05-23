@@ -7,7 +7,6 @@ using FSpot.Utils;
 namespace FSpot {
         public class Description {
 		string predicate;
-		string description;
 		string title;
 		ValueFormat formater;
 

@@ -57,80 +57,6 @@ public class PixbufUtils {
 		return scale;
 	}
 
-
-	// FIXME: These should be in GTK#.  When my patch is committed, these LoadFrom* methods will
-	// go away.
-
-	public class AspectLoader {
-		Gdk.PixbufLoader loader = new Gdk.PixbufLoader ();
-		int max_width;
-		int max_height;
-		PixbufOrientation orientation;
-
-		public AspectLoader (int max_width, int max_height)
-		{
-			this.max_height = max_height;
-			this.max_width = max_width;
-			loader.SizePrepared += HandleSizePrepared;
-		}
-
-		private void HandleSizePrepared (object obj, SizePreparedArgs args)
-		{
-			switch (orientation) {
-			case PixbufOrientation.LeftTop:
-			case PixbufOrientation.LeftBottom:
-			case PixbufOrientation.RightTop:
-			case PixbufOrientation.RightBottom:
-				int tmp = max_width;
-				max_width = max_height;
-				max_height = tmp;
-				break;
-			default:
-				break;
-			}
-
-			int scale_width = 0;
-			int scale_height = 0;
-
-			double scale = Fit (args.Width, args.Height, max_width, max_height, true, out scale_width, out scale_height);
-
-			if (scale < 1.0)
-				loader.SetSize (scale_width, scale_height);
-		}
-
-		public Pixbuf Load (System.IO.Stream stream, PixbufOrientation orientation)
-		{
-			int count;
-			byte [] data = new byte [8192];
-			while (((count = stream.Read (data, 0, data.Length)) > 0) && loader.Write (data, (ulong)count))
-				;
-
-			loader.Close ();
-			Pixbuf orig = loader.Pixbuf;
-			Gdk.Pixbuf rotated = FSpot.Utils.PixbufUtils.TransformOrientation (orig, orientation);
-
-			if (orig != rotated) {
-				rotated.CopyThumbnailOptionsFrom (orig);
-				orig.Dispose ();
-			}
-			loader.Dispose ();
-			return rotated;
-		}
-
-		public Pixbuf LoadFromFile (string path)
-		{
-			try {
-				orientation = GetOrientation (path);
-				using (FileStream fs = File.OpenRead (path)) {
-					return Load (fs, orientation);
-				}
-			} catch (Exception) {
-				System.Console.WriteLine ("Error loading photo {0}", path);
-				return null;
-			}
-		}
-	}
-
 	public static Pixbuf ScaleToMaxSize (Pixbuf pixbuf, int width, int height)
 	{
 		return ScaleToMaxSize (pixbuf, width, height, true);
@@ -184,21 +110,6 @@ public class PixbufUtils {
 
 		width = orig_width;
 		height = orig_height;
-#endif
-	}
-
-	static public Pixbuf LoadAtMaxSize (string path, int max_width, int max_height)
-	{
-#if true
-		AspectLoader loader = new AspectLoader (max_width, max_height);
-		return loader.LoadFromFile (path);
-#else
-		int width, height;
-		JpegUtils.GetSize (path, out width, out height);
-		PixbufUtils.Fit (width, height, max_width, max_height, false, out width, out height);
-		Gdk.Pixbuf image = JpegUtils.LoadScaled (path, width, height);
-
-		return image;
 #endif
 	}
 
