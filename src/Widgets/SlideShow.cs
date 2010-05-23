@@ -92,7 +92,7 @@ namespace FSpot.Widgets
 			if (running)
 				flip.Start ();
 			lock (sync_handle) {
-				if (prev != null && prev != PixbufUtils.ErrorPixbuf)
+				if (prev != null && prev != FSpotPixbufUtils.ErrorPixbuf)
 					prev.Dispose ();
 				prev = next;
 
@@ -160,9 +160,9 @@ namespace FSpot.Widgets
 		}
 		protected override void OnDestroyed ()
 		{
-			if (prev != null && prev != PixbufUtils.ErrorPixbuf)
+			if (prev != null && prev != FSpotPixbufUtils.ErrorPixbuf)
 				prev.Dispose ();
-			if (next != null && next != PixbufUtils.ErrorPixbuf)
+			if (next != null && next != FSpotPixbufUtils.ErrorPixbuf)
 				next.Dispose ();
 
 			base.OnDestroyed ();

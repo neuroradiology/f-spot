@@ -37,7 +37,7 @@ namespace FSpot.Editors.Processing {
 			Photo = photo;
 			Settings = new Dictionary<string, Setting> ();
 
-			SettingStore store = Core.Database.ProcessingSettings;
+			SettingStore store = App.Instance.Database.ProcessingSettings;
 			foreach (Setting setting in store.GetAll (Photo.Id, Photo.DefaultVersionId)) {
 				Settings.Add (setting.Key, setting);
 			}
@@ -129,7 +129,7 @@ namespace FSpot.Editors.Processing {
 		{
 			foreach (Setting setting in Settings.Values) {
 				setting.VersionId = version;
-				Core.Database.ProcessingSettings.Commit (setting);
+				App.Instance.Database.ProcessingSettings.Commit (setting);
 			}
 		}
 #endregion

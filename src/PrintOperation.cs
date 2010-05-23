@@ -115,7 +115,7 @@ namespace FSpot
 					{
 						Gdk.Pixbuf pixbuf;
 						try {
-							using (IImageLoader loader = ImageLoader.Create (selected_photos[p_index].DefaultVersionUri)) {
+							using (IImageLoader loader = ImageLoader.Create (selected_photos[p_index].DefaultVersion.Uri)) {
 								loader.Load (ImageLoaderItem.Full);
 								using (Gdk.Pixbuf full = loader.Full)
 									pixbuf = PixbufUtils.ScaleToMaxSize (full, (int) mx, (int) my);

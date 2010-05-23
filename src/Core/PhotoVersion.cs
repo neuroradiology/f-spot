@@ -36,7 +36,7 @@ namespace FSpot
 
 		public uint RefCount {
 			get {
-				return Core.Database.Photos.VersionRefCount (this);
+				return App.Instance.Database.Photos.VersionRefCount (this);
 			}
 		}
 	

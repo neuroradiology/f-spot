@@ -24,7 +24,7 @@ namespace FSpot.Jobs {
 
 		protected override bool Execute ()
 		{
-			Core.Database.Photos.CleanHiddenVersions ();
+			App.Instance.Database.Photos.CleanHiddenVersions ();
 			return true;
 		}
 	}

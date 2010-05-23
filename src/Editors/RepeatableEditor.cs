@@ -43,7 +43,7 @@ namespace FSpot.Editors {
 		sealed protected override void LoadPhoto (Photo photo, out Pixbuf photo_pixbuf, out Cms.Profile photo_profile)
 		{
 			// Figure out the original version to process
-			PhotoVersion version = photo.DefaultVersion;
+			PhotoVersion version = photo.DefaultVersion as PhotoVersion;
 			uint parent_version = version.Type == PhotoVersionType.Processable ? version.ParentVersionId : version.VersionId;
 			Uri uri = photo.VersionUri (parent_version);
 
@@ -73,20 +73,21 @@ namespace FSpot.Editors {
 			bool create_version = photo.DefaultVersion.IsProtected;
 
 			// Or if it's not a Processable version.
-			create_version |= photo.DefaultVersion.Type != PhotoVersionType.Processable;
+			create_version |= (photo.DefaultVersion as PhotoVersion).Type != PhotoVersionType.Processable;
 
 			uint parent_version_id = photo.DefaultVersionId;
 			uint saved_version = photo.SaveVersion (pixbuf, create_version);
 			if (create_version) {
-				photo.DefaultVersion.Type = PhotoVersionType.Processable;
-				photo.DefaultVersion.ParentVersionId = parent_version_id;
+                PhotoVersion version = photo.DefaultVersion as PhotoVersion;
+				version.Type = PhotoVersionType.Processable;
+				version.ParentVersionId = parent_version_id;
 				photo.Changes.ChangeVersion (photo.DefaultVersionId);
 			}
 			Pipeline.Save (saved_version);
 
 			photo.Changes.DataChanged = true;
-			Core.Database.Photos.Commit (photo);
-			ThumbnailFactory.DeleteThumbnail (photo.DefaultVersionUri);
+			App.Instance.Database.Photos.Commit (photo);
+			ThumbnailFactory.DeleteThumbnail (photo.DefaultVersion.Uri);
 		}
 
 		public override EditorState CreateState ()
@@ -101,7 +102,7 @@ namespace FSpot.Editors {
 
 			// Figure out the original version to process
 			Photo photo = State.Items [0] as Photo;
-			PhotoVersion version = photo.DefaultVersion;
+			PhotoVersion version = photo.DefaultVersion as PhotoVersion;
 			uint parent_version = version.Type == PhotoVersionType.Processable ? version.ParentVersionId : version.VersionId;
 			Uri uri = photo.VersionUri (parent_version);
 

@@ -116,7 +116,7 @@ namespace FSpot {
 				// A bizarre pixbuf = hack to try to deal with cinematic displays, etc.
 				int preview_size = ((this.Screen.Width + this.Screen.Height)/2)/3;
 				try {
-					using (IImageLoader loader = ImageLoader.Create (item.DefaultVersionUri)) {
+					using (IImageLoader loader = ImageLoader.Create (item.DefaultVersion.Uri)) {
 						loader.Load (ImageLoaderItem.Large);
 						using (Pixbuf large = loader.Large) {
 							if (large != null)

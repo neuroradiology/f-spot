@@ -141,7 +141,7 @@ namespace FSpot
 				uint highest = 0;
 				foreach (uint key in HiddenVersions.Keys)
 					highest = Math.Max (highest, key);
-				foreach (uint key in Versions.Keys)
+				foreach (uint key in versions.Keys)
 					highest = Math.Max (highest, key);
 				return highest;
 			}
@@ -328,14 +328,14 @@ namespace FSpot
 				throw new Exception ("Cannot delete original version");
 	
 			changes.HideVersion (version_id);
-			Versions.Remove (version_id);
+			versions.Remove (version_id);
 			ResetDefaultVersion (version_id);
 
 			if (clean_hidden_versions_timeout == 0) {
 				clean_hidden_versions_timeout = GLib.Timeout.Add (5000, delegate () {
 					clean_hidden_versions_timeout = 0;
 
-					Core.Database.Jobs.Create (typeof (CleanHiddenVersionsJob), "");
+					App.Instance.Database.Jobs.Create (typeof (CleanHiddenVersionsJob), "");
 					return true;
 				});
 			}

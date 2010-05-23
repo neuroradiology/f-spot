@@ -69,7 +69,7 @@ namespace FSpot.Editors {
 					loader.Load (ImageLoaderItem.Full);
 					photo_pixbuf = loader.Full;
 				} else {
-					using (IImageLoader loader = ImageLoader.Create (photo.DefaultVersionUri)) {
+					using (IImageLoader loader = ImageLoader.Create (photo.DefaultVersion.Uri)) {
 						loader.Load (ImageLoaderItem.Full);
 						photo_pixbuf = loader.Full;
 					}
@@ -152,15 +152,15 @@ namespace FSpot.Editors {
 			bool create_version = photo.DefaultVersion.IsProtected;
 
 			// Or if there's another version based on it...
-			create_version |= photo.DefaultVersion.RefCount != 0;
+			create_version |= (photo.DefaultVersion as PhotoVersion).RefCount != 0;
 
 			// Or if it's based on a processable version.
-			create_version |= photo.DefaultVersion.Type == PhotoVersionType.Processable;
+			create_version |= (photo.DefaultVersion as PhotoVersion).Type == PhotoVersionType.Processable;
 
 			photo.SaveVersion (pixbuf, create_version);
 			photo.Changes.DataChanged = true;
-			Core.Database.Photos.Commit (photo);
-			ThumbnailFactory.DeleteThumbnail (photo.DefaultVersionUri);
+			App.Instance.Database.Photos.Commit (photo);
+			ThumbnailFactory.DeleteThumbnail (photo.DefaultVersion.Uri);
 		}
 
 		protected abstract Pixbuf Process (Pixbuf input, Cms.Profile input_profile);
@@ -230,7 +230,8 @@ namespace FSpot.Editors {
 					if (!StateInitialized)
 						return;
 
-					State.PhotoImageView.ChangeImage (previewed, State.PhotoImageView.PixbufOrientation, false, false);
+					// FIXME State.PhotoImageView.ChangeImage (previewed, State.PhotoImageView.PixbufOrientation, false, false);
+                    State.PhotoImageView.Pixbuf = previewed;
                     App.Instance.Organizer.InfoBox.UpdateHistogram (previewed);
 
 					if (old_preview != null) {
@@ -274,7 +275,8 @@ namespace FSpot.Editors {
 
 		public void Restore () {
 			if (Original != null && State.PhotoImageView != null) {
-				State.PhotoImageView.ChangeImage (Original, state.PhotoImageView.PixbufOrientation, false, false);
+				// FIXME State.PhotoImageView.ChangeImage (Original, state.PhotoImageView.PixbufOrientation, false, false);
+                State.PhotoImageView.Pixbuf = Original;
 
 				App.Instance.Organizer.InfoBox.UpdateHistogram (null);
 			}

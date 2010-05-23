@@ -184,14 +184,14 @@ namespace FSpot.Widgets {
 
 			// I do not like the trip through MainWindow here, can this be
 			// done better?
-			if (MainWindow.Toplevel == null) {
+			if (!App.Instance.HasOrganizer) {
 				progress_bar_present = false;
 				return false;
 			}
 
 			progress_bar = new ProgressBar ();
 			progress_bar.Visible = false;
-			progress_bar_container = MainWindow.Toplevel.StatusContainer;
+			progress_bar_container = App.Instance.Organizer.StatusContainer;
 			progress_bar_container.Add (progress_bar);
 			progress_bar_present = true;
 
@@ -264,13 +264,12 @@ namespace FSpot.Widgets {
 
 			Gdk.Pixbuf prev = Pixbuf;
 			PixbufOrientation orientation = Accelerometer.GetViewOrientation (Loader.PixbufOrientation (current_item));
-			ChangeImage (Loader.Pixbuf (current_item), orientation, prepared_is_new, current_item != ImageLoaderItem.Full);
+            Pixbuf = Loader.Pixbuf (current_item);
+            this.ZoomFit (current_item != ImageLoaderItem.Full);
 			prepared_is_new = false;
 
 			if (prev != null)
 				prev.Dispose ();
-
-			this.ZoomFit (args.ReducedResolution);
 		}
 
 		void HandlePixbufAreaUpdated (object sender, AreaUpdatedEventArgs args)
@@ -298,7 +297,9 @@ namespace FSpot.Widgets {
 			Pixbuf prev = this.Pixbuf;
 			if (current_item != args.Items.Largest ()) {
 				current_item = args.Items.Largest ();
-				ChangeImage (Loader.Pixbuf (current_item), Accelerometer.GetViewOrientation (Loader.PixbufOrientation (current_item)), false, false);
+                Pixbuf = Loader.Pixbuf (current_item);
+                PixbufOrientation = Accelerometer.GetViewOrientation (Loader.PixbufOrientation (current_item));
+                ZoomFit (false);
 			}
 
 			if (Pixbuf == null)
@@ -334,7 +335,9 @@ namespace FSpot.Widgets {
 			Pixbuf err = new Pixbuf (FSpotPixbufUtils.ErrorPixbuf, 0, 0,
 									 FSpotPixbufUtils.ErrorPixbuf.Width,
 									 FSpotPixbufUtils.ErrorPixbuf.Height);
-			ChangeImage (err, PixbufOrientation.TopLeft, true, false);
+            Pixbuf = err;
+            PixbufOrientation = PixbufOrientation.TopLeft;
+            ZoomFit (false);
 			if (old != null)
 				old.Dispose ();
 

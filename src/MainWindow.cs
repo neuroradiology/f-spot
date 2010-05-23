@@ -2213,8 +2213,8 @@ namespace FSpot
 							DeleteException (e, photo.VersionUri (id).ToString ());
 						}
 					}
+					photo.DeleteHiddenVersions ();
 				}
-				photo.DeleteHiddenVersions ();
 				Database.Photos.Remove (photos);
 				
 				UpdateQuery ();

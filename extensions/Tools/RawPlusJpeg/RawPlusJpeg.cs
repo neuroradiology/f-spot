@@ -44,7 +44,7 @@ namespace RawPlusJpegExtension
 			for (int i = 0; i < photos.Length; i++) {
 				Photo p = photos [i];
 
-				ImageFile img = ImageFile.Create (p.DefaultVersionUri);
+				ImageFile img = ImageFile.Create (p.DefaultVersion.Uri);
 				if (!ImageFile.IsRaw (img) && !ImageFile.IsJpeg (img))
 					continue;
 

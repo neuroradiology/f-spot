@@ -114,7 +114,7 @@ namespace ZipExport {
 				if (scale_check.Active) {
 					FilterSet filters = new FilterSet ();
 					filters.Add (new JpegFilter ());
-					filters.Add (new ResizeFilter ((uint) scale_size.ValueAsInt));
+					filters.Add (new ResizeFilter (scale_size.ValueAsInt));
 					FilterRequest freq = new FilterRequest (photos [i].DefaultVersion.Uri);
 					filters.Convert (freq);
 					f = freq.Current.LocalPath;

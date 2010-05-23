@@ -33,13 +33,19 @@ namespace FSpot
 				return app;
 			}
 		}
+        
+        public bool HasOrganizer {
+            get {
+                return organizer != null;
+            }
+        }
 
 		public MainWindow Organizer {
 			get {
-				if (organizer == null) {
-					organizer = new MainWindow (Database);
-					Register (organizer.Window);
-				}
+                if (organizer == null) {
+                    organizer = new MainWindow (Database);
+                    Register (organizer.Window);
+                }
 				return organizer;
 			}
 		}

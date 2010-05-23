@@ -212,7 +212,7 @@ public class PhotoStore : DbStore<Photo> {
 	}		
 	
 	private void GetAllVersions  (string ids) {
-		SqliteDataReader reader = Database.Query("SELECT photo_id, version_id, name, base_uri, filename, md5_sum, protected, type, parent_version_id FROM photo_versions WHERE photo_id IN " + ids");
+		SqliteDataReader reader = Database.Query("SELECT photo_id, version_id, name, base_uri, filename, md5_sum, protected, type, parent_version_id FROM photo_versions WHERE photo_id IN " + ids);
 		
 		while (reader.Read ()) {
 			uint id = Convert.ToUInt32 (reader ["photo_id"]);
@@ -281,7 +281,7 @@ public class PhotoStore : DbStore<Photo> {
 
 	public uint VersionRefCount (PhotoVersion version)
 	{
-		string query = String.Format ("SELECT COUNT(*) AS ref_count FROM photo_versions WHERE photo_id = {0} AND parent_version_id = {1}", version.Photo.Id, version.VersionId);
+		string query = String.Format ("SELECT COUNT(*) AS ref_count FROM photo_versions WHERE photo_id = {0} AND parent_version_id = {1}", (version.Photo as Photo).Id, version.VersionId);
 		uint ref_count = Convert.ToUInt32 (Database.QuerySingle (query));
 		return ref_count;
 	}
@@ -557,7 +557,7 @@ public class PhotoStore : DbStore<Photo> {
 					"DELETE FROM photo_versions WHERE photo_id = :photo_id AND version_id = :version_id",
 					"photo_id", photo.Id,
 					"version_id", version_id));
-				Core.Database.ProcessingSettings.RemoveAll (photo.Id, version_id);
+				App.Instance.Database.ProcessingSettings.RemoveAll (photo.Id, version_id);
 			}
 		if (changes.VersionsAdded != null)
 			foreach (uint version_id in changes.VersionsAdded) {
