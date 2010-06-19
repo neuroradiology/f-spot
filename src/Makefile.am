@@ -74,7 +74,10 @@ SOURCES = \
 	Loaders/AreaUpdatedEventArgs.cs \
 	Loaders/ImageLoader.cs \
 	Loaders/IImageLoader.cs \
+	Loaders/IPhotoLoader.cs \
 	Loaders/GdkImageLoader.cs \
+	Loaders/PhotoLoaderCache.cs \
+	Loaders/XdgThumbnailLoader.cs \
 	ImageLoaderThread.cs \
 	Import/ImportController.cs \
 	Import/ImportSource.cs \

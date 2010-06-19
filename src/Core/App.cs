@@ -21,6 +21,8 @@ using Mono.Unix;
 
 using Hyena;
 
+using FSpot.Loaders;
+
 namespace FSpot
 {
 	public class App : Unique.App
@@ -76,6 +78,16 @@ namespace FSpot
 					}
 				}
 				return db;
+			}
+		}
+
+		public PhotoLoaderCache Loaders {
+			get {
+				lock (sync_handle) {
+					if (loader_cache == null)
+						loader_cache = new PhotoLoaderCache ();
+				}
+				return loader_cache;
 			}
 		}
 
@@ -162,6 +174,7 @@ namespace FSpot
 		List<Gtk.Window> toplevels;
 		MainWindow organizer;
 		Db db;
+		PhotoLoaderCache loader_cache;
 
 		App (): base ("org.gnome.FSpot.Core", null,
 				  "Import", Command.Import,
