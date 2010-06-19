@@ -125,6 +125,9 @@ SOURCES = \
 	TagQueryWidget.cs \
 	TagSelectionWidget.cs \
 	TagStore.cs \
+	Tasks/Task.cs \
+	Tasks/QueuedTask.cs \
+	Tasks/Tests/TaskTests.cs \
 	ThumbnailCache.cs \
 	ThumbnailGenerator.cs \
 	Term.cs \
