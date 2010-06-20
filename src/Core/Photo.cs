@@ -273,7 +273,8 @@ namespace FSpot
 						file.Delete ();
 					}	
 				try {
-					XdgThumbnailSpec.RemoveThumbnail (uri);
+					var loader = App.Instance.Loaders.RequestLoader (versions [version_id]);
+					loader.ClearCache ();
 				} catch {
 					//ignore an error here we don't really care.
 				}
