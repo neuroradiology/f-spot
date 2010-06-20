@@ -133,7 +133,6 @@ SOURCES = \
 	Tasks/Tests/TaskTests.cs \
 	Tasks/Tests/TaskPriorityTests.cs \
 	ThumbnailCache.cs \
-	ThumbnailGenerator.cs \
 	Term.cs \
 	TimeAdaptor.cs \
 	TipWindow.cs \

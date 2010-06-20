@@ -158,16 +158,13 @@ namespace FSpot {
 		private void WorkerTask ()
 		{
 			CacheEntry current = null;
-			//ThumbnailGenerator.Default.PushBlock ();
 			while (true) {
 				try {
 					lock (items) {
 						/* find the next item */
 						while ((current = FindNext ()) == null) {
 							if (!ShrinkIfNeeded ()){
-								//ThumbnailGenerator.Default.PopBlock ();
 								Monitor.Wait (items);
-								//ThumbnailGenerator.Default.PushBlock ();
 							}
 						}
 					}
