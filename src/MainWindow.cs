@@ -1046,16 +1046,16 @@ namespace FSpot
 	
 				bool use_icon = false;;
 				while (len-- > 0) {
-					FSpot.PixbufCache.CacheEntry entry = icon_view.Cache.Lookup (photos [len].DefaultVersion.Uri);
+					var entry = icon_view.Cache.Get (photos [len].DefaultVersion.Uri);
 	
 					Pixbuf thumbnail = null;
 					if (entry != null) {
 						Cms.Profile screen_profile;
 						if (FSpot.ColorManagement.Profiles.TryGetValue (Preferences.Get<string> (Preferences.COLOR_MANAGEMENT_DISPLAY_PROFILE), out screen_profile)) {
-							thumbnail = entry.Pixbuf.Copy ();
+							thumbnail = entry.Copy ();
 							FSpot.ColorManagement.ApplyProfile (thumbnail, screen_profile);
 						} else
-							thumbnail = entry.ShallowCopyPixbuf ();
+							thumbnail = entry.ShallowCopy ();
 					}
 					
 					if (thumbnail != null) {

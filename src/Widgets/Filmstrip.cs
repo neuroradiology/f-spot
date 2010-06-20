@@ -611,9 +611,9 @@ namespace FSpot.Widgets
 				var task = new WorkerThreadTask<bool> (() => {
 					Pixbuf pixbuf = preview_task.Result;
 					if (SquaredThumbs) {
-					current = PixbufUtils.IconFromPixbuf (pixbuf, ThumbSize);
+						current = PixbufUtils.IconFromPixbuf (pixbuf, ThumbSize);
 					} else {
-					current = pixbuf.ScaleSimple (ThumbSize, ThumbSize, InterpType.Bilinear);
+						current = pixbuf.ScaleSimple (ThumbSize, ThumbSize, InterpType.Bilinear);
 					}
 					pixbuf.Dispose ();
 

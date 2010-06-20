@@ -17,6 +17,9 @@ using System.Collections;
 using System.IO;
 using FSpot.Utils;
 using FSpot.Platform;
+using FSpot.Utils;
+using FSpot.Tasks;
+using Hyena;
 
 namespace FSpot.Widgets
 {
@@ -32,8 +35,14 @@ namespace FSpot.Widgets
 
 	public class IconView : Gtk.Layout {
 
-		// Public properties.
-		FSpot.PixbufCache cache;
+		DisposableCache<SafeUri, Pixbuf> pixbuf_cache;
+
+		public DisposableCache<SafeUri, Pixbuf> Cache {
+			get {
+				return pixbuf_cache;
+			}
+		}
+
 
 		/* preserve the scroll postion when possible */
 		private bool scroll;
@@ -90,12 +99,6 @@ namespace FSpot.Widgets
 		public int ThumbnailHeight {
 			get {
 				return (int) Math.Round ((double) thumbnail_width / ThumbnailRatio);
-			}
-		}
-
-		public FSpot.PixbufCache Cache {
-			get {
-				return cache;
 			}
 		}
 
@@ -214,8 +217,7 @@ namespace FSpot.Widgets
 
 		protected IconView () : base (null, null)
 		{
-			cache = new FSpot.PixbufCache ();
-			cache.OnPixbufLoaded += HandlePixbufLoaded;
+			pixbuf_cache = new DisposableCache<SafeUri, Pixbuf> (100);
 
 			ScrollAdjustmentsSet += new ScrollAdjustmentsSetHandler (HandleScrollAdjustmentsSet);
 
@@ -635,7 +637,7 @@ namespace FSpot.Widgets
 		public void UpdateThumbnail (int thumbnail_num)
 		{
 			FSpot.IBrowsableItem photo = collection [thumbnail_num];
-			cache.Remove (photo.DefaultVersion.Uri);
+			pixbuf_cache.Remove (photo.DefaultVersion.Uri);
 			InvalidateCell (thumbnail_num);
 		}
 
@@ -839,6 +841,25 @@ namespace FSpot.Widgets
 		// rectangle of dragging selection
 		private Rectangle rect_select;
 
+		void LoadThumbnail (IBrowsableItem item, int thumbnail_num)
+		{
+			var loader = App.Instance.Loaders.RequestLoader (item.DefaultVersion);
+			var preview_task = loader.FindBestPreview (ThumbnailWidth, ThumbnailHeight);
+			var task = new WorkerThreadTask<bool> (() => {
+				if (preview_task.Result == null)
+					return false;
+				ThreadAssist.ProxyToMain (() => {
+					using (var pixbuf = preview_task.Result) {
+						HandlePixbufLoaded (pixbuf.ShallowCopy (), thumbnail_num, item.DefaultVersion.Uri);
+					}
+				});
+				return false;
+			}) {
+				Priority = TaskPriority.Interactive
+			};
+			preview_task.ContinueWith (task);
+		}
+
 		System.Collections.Hashtable date_layouts = new Hashtable ();
 		// FIXME Cache the GCs?
 		private void DrawCell (int thumbnail_num, Gdk.Rectangle area)
@@ -850,11 +871,9 @@ namespace FSpot.Widgets
 
 			FSpot.IBrowsableItem photo = collection [thumbnail_num];
 
-			FSpot.PixbufCache.CacheEntry entry = cache.Lookup (photo.DefaultVersion.Uri);
+			var entry = pixbuf_cache.Get (photo.DefaultVersion.Uri);
 			if (entry == null)
-				cache.Request (photo.DefaultVersion.Uri, thumbnail_num, ThumbnailWidth, ThumbnailHeight);
-			else
-				entry.Data = thumbnail_num;
+				LoadThumbnail (photo, thumbnail_num);
 
 			bool selected = selection.Contains (thumbnail_num);
 			StateType cell_state = selected ? (HasFocus ? StateType.Selected : StateType.Active) : State;
@@ -881,7 +900,7 @@ namespace FSpot.Widgets
 
 			Gdk.Pixbuf thumbnail = null;
 			if (entry != null)
-				thumbnail = entry.ShallowCopyPixbuf ();
+				thumbnail = entry.ShallowCopy ();
 
 			Gdk.Rectangle draw = Gdk.Rectangle.Zero;
 			if (Gdk.Rectangle.Inflate (image_bounds, expansion + 1, expansion + 1).Intersect (area, out image_bounds) && thumbnail != null) {
@@ -893,8 +912,10 @@ namespace FSpot.Widgets
 				region.Y = (int) bounds.Y + ThumbnailHeight - region.Height + cell_border_width;
 
 				if (Math.Abs (region.Width - thumbnail.Width) > 1
-					&& Math.Abs (region.Height - thumbnail.Height) > 1)
-				cache.Reload (entry, thumbnail_num, thumbnail.Width, thumbnail.Height);
+					&& Math.Abs (region.Height - thumbnail.Height) > 1) {
+					pixbuf_cache.Remove (photo.DefaultVersion.Uri);
+					LoadThumbnail (photo, thumbnail_num);
+				}
 
 				region = Gdk.Rectangle.Inflate (region, expansion, expansion);
 				Pixbuf temp_thumbnail;
@@ -910,14 +931,6 @@ namespace FSpot.Widgets
 						*/
 						temp_thumbnail = thumbnail.ScaleSimple (region.Width, region.Height,
 								InterpType.Bilinear);
-
-
-						lock (entry) {
-							if (entry.Reload && expansion == 0 && !entry.IsDisposed) {
-								entry.SetPixbufExtended (temp_thumbnail.ShallowCopy (), false);
-								entry.Reload = true;
-							}
-						}
 					} else {
 						temp_thumbnail = thumbnail.ScaleSimple (region.Width, region.Height,
 								InterpType.Bilinear);
@@ -1250,7 +1263,6 @@ namespace FSpot.Widgets
 			int i;
 
 			FSpot.IBrowsableItem photo;
-			FSpot.PixbufCache.CacheEntry entry;
 
 			// Preload the cache with images aroud the expose area
 			// FIXME the preload need to be tuned to the Cache size but this is a resonable start
@@ -1272,17 +1284,11 @@ namespace FSpot.Widgets
 				int cell = back ? ecell - i - 1 : scell + mid + i;
 
 				photo = collection [cell];
-
-				entry = cache.Lookup (photo.DefaultVersion.Uri);
-				if (entry == null)
-					cache.Request (photo.DefaultVersion.Uri, cell, ThumbnailWidth, ThumbnailHeight);
+				LoadThumbnail (photo, cell);
 
 				cell = back ? scell + i : scell + mid - i - 1;
 				photo = collection [cell];
-
-				entry = cache.Lookup (photo.DefaultVersion.Uri);
-				if (entry == null)
-					cache.Request (photo.DefaultVersion.Uri, cell, ThumbnailWidth, ThumbnailHeight);
+				LoadThumbnail (photo, cell);
 			}
 		}
 
@@ -1368,40 +1374,34 @@ namespace FSpot.Widgets
 			Scroll ();
 		}
 
-		private void HandlePixbufLoaded (FSpot.PixbufCache cache, FSpot.PixbufCache.CacheEntry entry)
+		private void HandlePixbufLoaded (Pixbuf pixbuf, int thumbnail_num, SafeUri uri)
 		{
-			Gdk.Pixbuf result = entry.ShallowCopyPixbuf ();
-			int order = (int) entry.Data;
-
-			if (result == null)
-				return;
-
 			// We have to do the scaling here rather than on load because we need to preserve the
 			// Pixbuf option iformation to verify the thumbnail validity later
 			int width, height;
-			PixbufUtils.Fit (result, ThumbnailWidth, ThumbnailHeight, false, out width, out height);
-			if (result.Width > width && result.Height > height) {
+			PixbufUtils.Fit (pixbuf, ThumbnailWidth, ThumbnailHeight, false, out width, out height);
+			if (pixbuf.Width > width && pixbuf.Height > height) {
 				//  Log.Debug ("scaling");
-				Gdk.Pixbuf temp = PixbufUtils.ScaleDown (result, width, height);
-				result.Dispose ();
-				result = temp;
-			} else if (result.Width < ThumbnailWidth && result.Height < ThumbnailHeight) {
+				Gdk.Pixbuf temp = PixbufUtils.ScaleDown (pixbuf, width, height);
+				pixbuf.Dispose ();
+				pixbuf = temp;
+			} else if (pixbuf.Width < ThumbnailWidth && pixbuf.Height < ThumbnailHeight) {
 				// FIXME this is a workaround to handle images whose actual size is smaller than
 				// the thumbnail size, it needs to be fixed at a different level.
 				Gdk.Pixbuf temp = new Gdk.Pixbuf (Gdk.Colorspace.Rgb, true, 8, ThumbnailWidth, ThumbnailHeight);
 				temp.Fill (0x00000000);
-				result.CopyArea (0, 0,
-						result.Width, result.Height,
+				pixbuf.CopyArea (0, 0,
+						pixbuf.Width, pixbuf.Height,
 						temp,
-						(temp.Width - result.Width)/ 2,
-						temp.Height - result.Height);
+						(temp.Width - pixbuf.Width)/ 2,
+						temp.Height - pixbuf.Height);
 
-				result.Dispose ();
-				result = temp;
+				pixbuf.Dispose ();
+				pixbuf = temp;
 			}
 
-			cache.Update (entry, result);
-			InvalidateCell (order);
+			pixbuf_cache.Add (uri, pixbuf);
+			InvalidateCell (thumbnail_num);
 		}
 
 		public Gdk.Rectangle CellBounds (int cell)
@@ -1828,7 +1828,6 @@ namespace FSpot.Widgets
 
 		private void HandleDestroyed (object sender, System.EventArgs args)
 		{
-			cache.OnPixbufLoaded -= HandlePixbufLoaded;
 			CancelThrob ();
 		}
 	}

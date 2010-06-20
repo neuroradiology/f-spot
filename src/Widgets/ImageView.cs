@@ -337,6 +337,8 @@ namespace FSpot.Widgets
 
 		protected override void ForAll (bool include_internals, Gtk.Callback callback)
 		{
+			if (children == null)
+				return;
 			foreach (var child in children) 
 				callback (child.Widget);
 		}

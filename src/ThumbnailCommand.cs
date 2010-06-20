@@ -2,6 +2,7 @@ using System;
 using Gtk;
 using FSpot;
 using FSpot.Utils;
+using FSpot.Tasks;
 using FSpot.UI.Dialog;
 
 public class ThumbnailCommand {
@@ -16,7 +17,6 @@ public class ThumbnailCommand {
 	public bool Execute (Photo [] photos)
 	{
 		ProgressDialog progress_dialog = null;
-        var loader = ThumbnailLoader.Default;
 		if (photos.Length > 1) {
 			progress_dialog = new ProgressDialog (Mono.Unix.Catalog.GetString ("Updating Thumbnails"),
 							      ProgressDialog.CancelButtonType.Stop,
@@ -30,7 +30,7 @@ public class ThumbnailCommand {
 				break;
 
 			foreach (uint version_id in p.VersionIds) {
-				loader.Request (p.VersionUri (version_id), ThumbnailSize.Large, 10);
+                GenerateThumbnail (p.GetVersion (version_id));
 			}
 			
 			count++;
@@ -41,4 +41,14 @@ public class ThumbnailCommand {
 
 		return true;
 	}
+
+    void GenerateThumbnail (ILoadable item)
+    {
+        var loader = App.Instance.Loaders.RequestLoader (item);
+        var preview_task = loader.FindBestPreview (256, 256);
+        var task = new WorkerThreadTask<bool> (() => { preview_task.Result.Dispose (); return false; }) {
+            Priority = TaskPriority.Background
+        };
+        preview_task.ContinueWith (task);
+    }
 }

@@ -1,5 +1,6 @@
 using Hyena;
 using FSpot.Utils;
+using FSpot.Tasks;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -330,9 +331,19 @@ namespace FSpot.Import
             }
 
             // Prepare thumbnail (Import is I/O bound anyway)
-            ThumbnailLoader.Default.Request (destination, ThumbnailSize.Large, 10);
+            GenerateThumbnail (photo);
 
             imported_photos.Add (photo.Id);
+        }
+
+        void GenerateThumbnail (IBrowsableItem photo)
+        {
+            var loader = App.Instance.Loaders.RequestLoader (photo.DefaultVersion);
+            var preview_task = loader.FindBestPreview (256, 256);
+            var task = new WorkerThreadTask<bool> (() => { preview_task.Result.Dispose (); return false; }) {
+                Priority = TaskPriority.Background
+            };
+            preview_task.ContinueWith (task);
         }
 
         SafeUri FindImportDestination (IBrowsableItem item)

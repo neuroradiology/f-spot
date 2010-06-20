@@ -110,7 +110,6 @@ SOURCES = \
 	PhotoVersionMenu.cs \
 	PhotoView.cs \
 	PixbufUtils.cs \
-	PixbufCache.cs \
 	Preferences.cs  \
 	PrintOperation.cs \
 	ProgressItem.cs \
