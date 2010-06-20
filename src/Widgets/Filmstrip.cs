@@ -20,6 +20,7 @@ using Gdk;
 using FSpot.Utils;
 using FSpot.Platform;
 using FSpot.Bling;
+using FSpot.Tasks;
 using Hyena;
 
 namespace FSpot.Widgets
@@ -307,7 +308,6 @@ namespace FSpot.Widgets
 			this.selection.Collection.ItemsChanged += HandleCollectionItemsChanged;
 			this.squared_thumbs = squared_thumbs;
 			thumb_cache = new DisposableCache<SafeUri, Pixbuf> (30);
-			ThumbnailLoader.Default.OnPixbufLoaded += HandlePixbufLoaded;
 
 			animation = new DoubleAnimation (0, 0, TimeSpan.FromSeconds (1.5), SetPositionCore, new CubicEase (EasingMode.EaseOut));
 		}
@@ -548,18 +548,6 @@ namespace FSpot.Widgets
 			QueueDraw ();
 		}
 
-		void HandlePixbufLoaded (ImageLoaderThread pl, ImageLoaderThread.RequestItem item) {
-			if (!thumb_cache.Contains (item.Uri)) {
-				return;
-			}
-			
-			//FIXME use QueueDrawArea
-			//FIXME only invalidate if displayed
-			QueueDraw ();
-			
-
-		}
-		
 		protected override bool OnPopupMenu ()
 		{
 			DrawOrientationMenu (null);
@@ -610,34 +598,38 @@ namespace FSpot.Widgets
 			return GetPixbuf (i, false);
 		}
 
- 		protected virtual Pixbuf GetPixbuf (int i, bool highlighted)
+		protected virtual Pixbuf GetPixbuf (int i, bool highlighted)
 		{
 			Pixbuf current = null;
 			SafeUri uri = (selection.Collection [i]).DefaultVersion.Uri;
-			try {
-				var pixbuf = thumb_cache.Get (uri);
-				if (pixbuf != null)
-					current = pixbuf.ShallowCopy ();
-			} catch (IndexOutOfRangeException) {
-				current = null;
+
+			if (!thumb_cache.Contains (uri)) {
+				current = FSpot.Global.IconTheme.LoadIcon ("gtk-missing-image", ThumbSize, (Gtk.IconLookupFlags)0);
+
+				var loader = App.Instance.Loaders.RequestLoader ((selection.Collection [i]).DefaultVersion);
+				var preview_task = loader.FindBestPreview (ThumbSize, ThumbSize);
+				var task = new WorkerThreadTask<bool> (() => {
+					Pixbuf pixbuf = preview_task.Result;
+					if (SquaredThumbs) {
+					current = PixbufUtils.IconFromPixbuf (pixbuf, ThumbSize);
+					} else {
+					current = pixbuf.ScaleSimple (ThumbSize, ThumbSize, InterpType.Bilinear);
+					}
+					pixbuf.Dispose ();
+
+					ThreadAssist.ProxyToMain (() => {
+						thumb_cache.Add (uri, current);
+						QueueDraw ();
+						});
+					return false;
+				}) {
+					Priority = TaskPriority.Interactive
+				};
+				preview_task.ContinueWith (task);
+			} else {
+				current = thumb_cache.Get (uri).ShallowCopy ();
 			}
 
-			if (current == null) {
-                var pixbuf = XdgThumbnailSpec.LoadThumbnail (uri, ThumbnailSize.Large, null);
-                if (pixbuf == null) {
-					ThumbnailLoader.Default.Request (uri, ThumbnailSize.Large, 0);
-                    current = FSpot.Global.IconTheme.LoadIcon ("gtk-missing-image", ThumbSize, (Gtk.IconLookupFlags)0);
-                } else {
-					if (SquaredThumbs) {
-                        current = PixbufUtils.IconFromPixbuf (pixbuf, ThumbSize);
-                    } else {
-                        current = pixbuf.ScaleSimple (ThumbSize, ThumbSize, InterpType.Nearest);
-                    }
-                    pixbuf.Dispose ();
-					thumb_cache.Add (uri, current);
-                }
-			}
-			
 			//FIXME: we might end up leaking a pixbuf here
 			Cms.Profile screen_profile;
 			if (FSpot.ColorManagement.Profiles.TryGetValue (Preferences.Get<string> (Preferences.COLOR_MANAGEMENT_DISPLAY_PROFILE), out screen_profile)) { 
@@ -691,7 +683,6 @@ namespace FSpot.Widgets
 				this.selection.Changed -= HandlePointerChanged;
 				this.selection.Collection.Changed -= HandleCollectionChanged;
 				this.selection.Collection.ItemsChanged -= HandleCollectionItemsChanged;
-				ThumbnailLoader.Default.OnPixbufLoaded -= HandlePixbufLoaded;
 				if (background_pixbuf != null)
 					background_pixbuf.Dispose ();
 				if (background_tile != null)

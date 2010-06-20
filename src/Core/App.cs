@@ -21,6 +21,7 @@ using Mono.Unix;
 
 using Hyena;
 
+using FSpot.Tasks;
 using FSpot.Loaders;
 
 namespace FSpot
@@ -366,6 +367,7 @@ namespace FSpot
 				Banshee.Kernel.Scheduler.Dispose ();
 				Database.Dispose ();
 				ImageLoaderThread.CleanAll ();
+				WorkerThreadTaskScheduler.Instance.Finish ();
 				Gtk.Application.Quit ();
 				System.Environment.Exit (0);
 			}
