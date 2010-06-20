@@ -103,6 +103,11 @@ namespace FSpot.Tasks
 			QueueTaskScheduler.Instance.Unschedule (this);
 		}
 
+		protected override void InnerReschedule ()
+		{
+			// NOOP, not supported for this scheduler
+		}
+
 		protected override T InnerExecute () {
 			return handler ();
 		}

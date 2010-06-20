@@ -131,6 +131,7 @@ SOURCES = \
 	Tasks/Task.cs \
 	Tasks/QueuedTask.cs \
 	Tasks/Tests/TaskTests.cs \
+	Tasks/Tests/TaskPriorityTests.cs \
 	ThumbnailCache.cs \
 	ThumbnailGenerator.cs \
 	Term.cs \

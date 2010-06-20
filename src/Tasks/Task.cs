@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading;
 using System.Collections.Generic;
 
@@ -8,6 +9,8 @@ namespace FSpot.Tasks
 		void Start ();
 		void Cancel ();
 		void Execute ();
+
+		TaskPriority Priority { get; }
 	}
 
 	interface IChildrenHandling
@@ -19,6 +22,7 @@ namespace FSpot.Tasks
 	{
 		void Schedule ();
 		void Unschedule ();
+		void Reschedule ();
 	}
 
 	public enum TaskState
@@ -28,6 +32,13 @@ namespace FSpot.Tasks
 		Completed,
 		Cancelled,
 		Exception
+	}
+
+	public enum TaskPriority
+	{
+		Background,
+		Normal,
+		Interactive
 	}
 
 	public abstract class Task<T> : Task, ISchedulable, IChildrenHandling
@@ -54,6 +65,18 @@ namespace FSpot.Tasks
 			}
 		}
 
+		TaskPriority own_priority = TaskPriority.Normal;
+		TaskPriority run_at_priority = TaskPriority.Normal;
+		public TaskPriority Priority {
+			get {
+				return run_at_priority;
+			}
+			set {
+				own_priority = value;
+				RecalculateChildPriorities ();
+			}
+		}
+
 		private EventWaitHandle WaitEvent { get; set; }
 
 		public Task ()
@@ -62,6 +85,7 @@ namespace FSpot.Tasks
 			Children = new List<Task> ();
 			WaitEvent = new ManualResetEvent (false);
 			State = TaskState.Pending;
+			Priority = TaskPriority.Normal;
 		}
 
 		public void Start ()
@@ -91,6 +115,7 @@ namespace FSpot.Tasks
 				} else {
 					task.Parent = this;
 					Children.Add (task);
+					RecalculateChildPriorities ();
 					if (autostart) {
 						var to_start = Parent ?? this;
 						to_start.Start ();
@@ -103,8 +128,23 @@ namespace FSpot.Tasks
 		{
 			lock (Children) {
 				Children.Remove (task);
+				RecalculateChildPriorities ();
 				if (Children.Count == 0 && CancelWithChildren)
 					Cancel ();
+			}
+		}
+
+		void RecalculateChildPriorities ()
+		{
+			TaskPriority previous = run_at_priority;
+			if (Children.Count == 0) {
+				run_at_priority = own_priority;
+			} else {
+				run_at_priority = Children.Max (child => child.Priority);
+			}
+
+			if (previous != run_at_priority && State == TaskState.Scheduled) {
+				(this as ISchedulable).Reschedule ();
 			}
 		}
 
@@ -130,7 +170,7 @@ namespace FSpot.Tasks
 			if (State != TaskState.Scheduled && State != TaskState.Cancelled)
 				throw new Exception ("Can't start task manually!");
 
-			if (State == TaskState.Cancelled)
+			if (State == TaskState.Cancelled || State == TaskState.Completed)
 				return;
 
 			try {
@@ -169,8 +209,14 @@ namespace FSpot.Tasks
 			InnerUnschedule ();
 		}
 
+		void ISchedulable.Reschedule ()
+		{
+			InnerReschedule ();
+		}
+
 		protected abstract void InnerSchedule ();
 		protected abstract void InnerUnschedule ();
+		protected abstract void InnerReschedule ();
 
 #endregion
 
