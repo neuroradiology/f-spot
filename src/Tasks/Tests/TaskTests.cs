@@ -12,7 +12,7 @@ namespace FSpot.Tasks.Tests
 	{
 		[SetUp]
 		public void Initialize () {
-			QueueTaskScheduler.Instance = null;
+			WorkerThreadTaskScheduler.Instance = null;
 			Hyena.Log.Debugging = true;
 		}
 
@@ -96,7 +96,7 @@ namespace FSpot.Tasks.Tests
 			Assert.AreEqual (TaskState.Cancelled, t2.State);
 		}
 
-		class SimpleTask<T> : QueuedTask<T> {
+		class SimpleTask<T> : WorkerThreadTask<T> {
 			string label = null;
 
 			public SimpleTask (TaskHandler h) : base (h) {

@@ -11,6 +11,7 @@ namespace FSpot.Tasks
 		void Execute ();
 
 		TaskPriority Priority { get; }
+		Task Parent { get; set; }
 	}
 
 	interface IChildrenHandling
@@ -44,8 +45,8 @@ namespace FSpot.Tasks
 	public abstract class Task<T> : Task, ISchedulable, IChildrenHandling
 	{
 		public bool CancelWithChildren { get; set; }
+		public Task Parent { get; set; }
 
-		private Task Parent { get; set; }
 		private List<Task> Children { get; set; }
 
 		private T result;
@@ -102,12 +103,12 @@ namespace FSpot.Tasks
 			WaitEvent.WaitOne ();
 		}
 
-		public void ContinueWith (Task<T> task)
+		public void ContinueWith (Task task)
 		{
 			ContinueWith (task, true);
 		}
 
-		public void ContinueWith (Task<T> task, bool autostart)
+		public void ContinueWith (Task task, bool autostart)
 		{
 			lock (Children) {
 				if (State == TaskState.Completed) {

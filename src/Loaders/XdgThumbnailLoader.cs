@@ -20,10 +20,13 @@ namespace FSpot.Loaders
 
 		public Task<Pixbuf> FindBestPreview (int width, int height)
 		{
-			return new QueuedTask<Pixbuf> (() => {
+			return new WorkerThreadTask<Pixbuf> (() => {
 				var size = (width > 128 || height > 128) ? ThumbnailSize.Large : ThumbnailSize.Normal;
-				return XdgThumbnailSpec.LoadThumbnail (Loadable.Uri, size);
-			});
+				var pixbuf = XdgThumbnailSpec.LoadThumbnail (Loadable.Uri, size);
+				return pixbuf;
+			}) {
+				CancelWithChildren = true
+			};
 		}
 	}
 }

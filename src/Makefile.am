@@ -129,7 +129,7 @@ SOURCES = \
 	TagSelectionWidget.cs \
 	TagStore.cs \
 	Tasks/Task.cs \
-	Tasks/QueuedTask.cs \
+	Tasks/WorkerThreadTask.cs \
 	Tasks/Tests/TaskTests.cs \
 	Tasks/Tests/TaskPriorityTests.cs \
 	ThumbnailCache.cs \
