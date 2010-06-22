@@ -78,7 +78,6 @@ SOURCES = \
 	Loaders/GdkImageLoader.cs \
 	Loaders/PhotoLoaderCache.cs \
 	Loaders/XdgThumbnailLoader.cs \
-	ImageLoaderThread.cs \
 	Import/ImportController.cs \
 	Import/ImportSource.cs \
 	Import/FileImportSource.cs \

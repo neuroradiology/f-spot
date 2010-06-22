@@ -366,7 +366,6 @@ namespace FSpot
 				Log.Information ("Exiting...");
 				Banshee.Kernel.Scheduler.Dispose ();
 				Database.Dispose ();
-				ImageLoaderThread.CleanAll ();
 				WorkerThreadTaskScheduler.Instance.Finish ();
 				Gtk.Application.Quit ();
 				System.Environment.Exit (0);
