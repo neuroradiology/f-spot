@@ -46,10 +46,10 @@ public class ImageLoaderThread {
 
 
 	// Private members.
+    static List<ImageLoaderThread> instances = new List<ImageLoaderThread> ();
 
 	/* The thread used to handle the requests.  */
 	private Thread worker_thread;
-	private static ArrayList all_worker_threads = new ArrayList ();
 
 	/* The request queue; it's shared between the threads so it
 	   needs to be locked prior to access.  */
@@ -76,6 +76,7 @@ public class ImageLoaderThread {
 	   already or not.  */
 	private bool pending_notify_notified;
 
+	volatile bool should_cancel = false;
 
 	// Public API.
 
@@ -91,10 +92,17 @@ public class ImageLoaderThread {
 		
 		pending_notify = new ThreadNotify (new Gtk.ReadyEvent (HandleProcessedRequests));
 
+        instances.Add (this);
+	}
+
+    void StartWorker ()
+    {
+        if (worker_thread != null)
+            return;
+
+		should_cancel = false;
 		worker_thread = new Thread (new ThreadStart (WorkerThread));
 		worker_thread.Start ();
-
-		all_worker_threads.Add (worker_thread);
 	}
 
 	int block_count;
@@ -112,17 +120,23 @@ public class ImageLoaderThread {
 		}
 	}
 
-	// FIXME?
-	static public void Cleanup ()
+	public void Cleanup ()
 	{
-		foreach (Thread t in all_worker_threads)
-			t.Abort ();
+		should_cancel = true;
+		if (worker_thread != null) {
+			lock (queue) { 
+				Monitor.Pulse (queue); 
+			}
+			worker_thread.Join ();
+		}
+		worker_thread = null;
 	}
 
-	public void Request (Uri uri, int order)
-	{
-		Request (uri, order, 0, 0);
-	}
+    public static void CleanAll ()
+    {
+        foreach (var thread in instances)
+            thread.Cleanup ();
+    }
 
 	public virtual void Request (Uri uri, int order, int width, int height)
 	{
@@ -172,6 +186,8 @@ public class ImageLoaderThread {
 
 	private bool InsertRequest (Uri uri, int order, int width, int height)
 	{
+        StartWorker ();
+
 		/* Check if this is the same as the request currently being processed.  */
 		lock(processed_requests) {
 			if (current_request != null && current_request.uri == uri)
@@ -205,7 +221,7 @@ public class ImageLoaderThread {
 	private void WorkerThread ()
 	{
 		try {
-			while (true) {
+			while (!should_cancel) {
 				lock (processed_requests) {
 					if (current_request != null) {
 						processed_requests.Enqueue (current_request);
@@ -221,8 +237,11 @@ public class ImageLoaderThread {
 	
 				lock (queue) {
 					
-					while (queue.Count == 0 || block_count > 0)
+					while ((queue.Count == 0 || block_count > 0) && !should_cancel)
 						Monitor.Wait (queue);
+
+					if (should_cancel)
+						return;
 					
 					int pos = queue.Count - 1;
 	
