@@ -179,7 +179,7 @@ namespace FSpot.Tasks.Tests
 			Assert.AreEqual (new Task [] { task1, task2 }, WorkerThreadTaskScheduler.Instance.Tasks);
 		}
 
-		private class TestTask : WorkerThreadTask<bool> {
+		private class TestTask : Task<bool> {
 			public TestTask () : base (() => true) {
 
 			}

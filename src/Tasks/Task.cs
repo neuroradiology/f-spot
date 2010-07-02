@@ -26,6 +26,13 @@ namespace FSpot.Tasks
 		void Reschedule ();
 	}
 
+	public interface IScheduler
+	{
+		void Schedule (Task task);
+		void Unschedule (Task task);
+		void Reschedule (Task task);
+	}
+
 	public enum TaskState
 	{
 		Pending,
@@ -42,10 +49,18 @@ namespace FSpot.Tasks
 		Interactive
 	}
 
-	public abstract class Task<T> : Task, ISchedulable, IChildrenHandling
+	public class Task<T> : Task, ISchedulable, IChildrenHandling
 	{
+		static IScheduler DefaultScheduler {
+			get { return WorkerThreadTaskScheduler.Instance; }
+		}
+
+		public delegate T TaskHandler ();
+
 		public bool CancelWithChildren { get; set; }
 		public Task Parent { get; set; }
+		public IScheduler Scheduler { get; set; }
+		public TaskHandler Handler { get; set; }
 
 		private List<Task> Children { get; set; }
 
@@ -80,13 +95,18 @@ namespace FSpot.Tasks
 
 		private EventWaitHandle WaitEvent { get; set; }
 
-		public Task ()
+		public Task (TaskHandler handler) : this (handler, TaskPriority.Normal) {
+		}
+
+		public Task (TaskHandler handler, TaskPriority priority)
 		{
 			CancelWithChildren = false;
 			Children = new List<Task> ();
 			WaitEvent = new ManualResetEvent (false);
 			State = TaskState.Pending;
-			Priority = TaskPriority.Normal;
+			Priority = priority;
+			Scheduler = DefaultScheduler;
+			Handler = handler;
 		}
 
 		public void Start ()
@@ -175,7 +195,7 @@ namespace FSpot.Tasks
 				return;
 
 			try {
-				result = InnerExecute ();
+				result = Handler ();
 				State = TaskState.Completed;
 
 				foreach (var child in Children) {
@@ -189,8 +209,6 @@ namespace FSpot.Tasks
 			}
 		}
 
-		protected abstract T InnerExecute ();
-
 #region Scheduling
 
 		void ISchedulable.Schedule ()
@@ -200,24 +218,20 @@ namespace FSpot.Tasks
 			if (State != TaskState.Pending)
 				throw new Exception ("Can only schedule pending tasks!");
 			State = TaskState.Scheduled;
-			InnerSchedule ();
+			Scheduler.Schedule (this);
 		}
 
 		void ISchedulable.Unschedule ()
 		{
 			if (State == TaskState.Scheduled)
 				State = TaskState.Pending;
-			InnerUnschedule ();
+			Scheduler.Unschedule (this);
 		}
 
 		void ISchedulable.Reschedule ()
 		{
-			InnerReschedule ();
+			Scheduler.Reschedule (this);
 		}
-
-		protected abstract void InnerSchedule ();
-		protected abstract void InnerUnschedule ();
-		protected abstract void InnerReschedule ();
 
 #endregion
 

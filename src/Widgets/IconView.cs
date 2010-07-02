@@ -845,7 +845,7 @@ namespace FSpot.Widgets
 		{
 			var loader = App.Instance.Loaders.RequestLoader (item.DefaultVersion);
 			var preview_task = loader.FindBestPreview (ThumbnailWidth, ThumbnailHeight);
-			var task = new WorkerThreadTask<bool> (() => {
+			var task = new Task<bool> (() => {
 				if (preview_task.Result == null)
 					return false;
 				ThreadAssist.ProxyToMain (() => {
@@ -854,9 +854,7 @@ namespace FSpot.Widgets
 					}
 				});
 				return false;
-			}) {
-				Priority = TaskPriority.Interactive
-			};
+			}, TaskPriority.Interactive);
 			preview_task.ContinueWith (task);
 		}
 

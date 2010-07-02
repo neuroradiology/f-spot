@@ -46,9 +46,7 @@ public class ThumbnailCommand {
     {
         var loader = App.Instance.Loaders.RequestLoader (item);
         var preview_task = loader.FindBestPreview (256, 256);
-        var task = new WorkerThreadTask<bool> (() => { preview_task.Result.Dispose (); return false; }) {
-            Priority = TaskPriority.Background
-        };
+        var task = new Task<bool> (() => { preview_task.Result.Dispose (); return false; }, TaskPriority.Background);
         preview_task.ContinueWith (task);
     }
 }

@@ -96,7 +96,7 @@ namespace FSpot.Tasks.Tests
 			Assert.AreEqual (TaskState.Cancelled, t2.State);
 		}
 
-		class SimpleTask<T> : WorkerThreadTask<T> {
+		class SimpleTask<T> : Task<T> {
 			string label = null;
 
 			public SimpleTask (TaskHandler h) : base (h) {

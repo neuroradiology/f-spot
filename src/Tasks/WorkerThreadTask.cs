@@ -7,9 +7,9 @@ using System.Collections.Generic;
 namespace FSpot.Tasks
 {
 	/// <summary>
-	///    Simple task scheduler that executes all tasks on one worker thread.
+	///    Simple task scheduler that pumps the threadpool.
 	/// </summary>
-	internal class WorkerThreadTaskScheduler {
+	internal class WorkerThreadTaskScheduler : IScheduler {
 		static object sync_root = new object ();
 
 #region Singleton Pattern
@@ -42,7 +42,7 @@ namespace FSpot.Tasks
 
 		internal IntervalHeap<Task> heap = new IntervalHeap<Task> ();
 
-		internal void Schedule (Task task)
+		public void Schedule (Task task)
 		{
 			lock (heap) {
 				heap.Push (task, (int) task.Priority);
@@ -50,14 +50,14 @@ namespace FSpot.Tasks
 			}
 		}
 
-		internal void Unschedule (Task task)
+		public void Unschedule (Task task)
 		{
 			lock (heap) {
 				heap.Remove (task);
 			}
 		}
 
-		internal void Reschedule (Task task)
+		public void Reschedule (Task task)
 		{
 			lock (heap) {
 				heap.Remove (task);
@@ -85,6 +85,9 @@ namespace FSpot.Tasks
 
 		internal WorkerThreadTaskScheduler (bool start_worker)
 		{
+			max_tasks = Environment.ProcessorCount * 2;
+			Log.DebugFormat ("Doing at most {0} tasks", max_tasks);
+
 			// Not starting the worker means that the scheduler won't work,
 			// but this can be useful for unit tests.
 			if (start_worker) {
@@ -94,7 +97,10 @@ namespace FSpot.Tasks
 
 		EventWaitHandle wait = new AutoResetEvent (false);
 		Thread worker;
+
 		volatile bool should_halt = false;
+		int max_tasks = 0;
+		volatile int tasks_queued = 0;
 
 		void SchedulerWorker ()
 		{
@@ -105,12 +111,19 @@ namespace FSpot.Tasks
 						task = heap.Pop ();
 				}
 
-				if (task == null && !should_halt) {
+				if ((tasks_queued >= max_tasks || task == null) && !should_halt) {
 					wait.WaitOne ();
-					continue;
+					if (task == null)
+						continue;
 				}
 
-				task.Execute ();
+				Interlocked.Increment (ref tasks_queued);
+				ThreadPool.QueueUserWorkItem ((o) => {
+					task.Execute ();
+					Log.DebugFormat ("Finished task {0}", task);
+					Interlocked.Decrement (ref tasks_queued);
+					wait.Set ();
+				});
 			}
 		}
 
@@ -125,39 +138,4 @@ namespace FSpot.Tasks
 #endregion
 
 	}
-
-#region Task
-
-	public class WorkerThreadTask<T> : Task<T>
-	{
-		public delegate T TaskHandler ();
-
-		TaskHandler handler;
-
-		public WorkerThreadTask (TaskHandler h) {
-			this.handler = h;
-		}
-
-		protected override void InnerSchedule ()
-		{
-			WorkerThreadTaskScheduler.Instance.Schedule (this);
-		}
-
-		protected override void InnerUnschedule ()
-		{
-			WorkerThreadTaskScheduler.Instance.Unschedule (this);
-		}
-
-		protected override void InnerReschedule ()
-		{
-			WorkerThreadTaskScheduler.Instance.Reschedule (this);
-		}
-
-		protected override T InnerExecute () {
-			return handler ();
-		}
-	}
-
-#endregion
-
 }

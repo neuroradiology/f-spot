@@ -608,7 +608,7 @@ namespace FSpot.Widgets
 
 				var loader = App.Instance.Loaders.RequestLoader ((selection.Collection [i]).DefaultVersion);
 				var preview_task = loader.FindBestPreview (ThumbSize, ThumbSize);
-				var task = new WorkerThreadTask<bool> (() => {
+				var task = new Task<bool> (() => {
 					Pixbuf pixbuf = preview_task.Result;
 					if (SquaredThumbs) {
 						current = PixbufUtils.IconFromPixbuf (pixbuf, ThumbSize);
@@ -622,9 +622,7 @@ namespace FSpot.Widgets
 						QueueDraw ();
 						});
 					return false;
-				}) {
-					Priority = TaskPriority.Interactive
-				};
+				}, TaskPriority.Interactive);
 				preview_task.ContinueWith (task);
 			} else {
 				current = thumb_cache.Get (uri).ShallowCopy ();
