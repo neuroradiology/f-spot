@@ -4,6 +4,7 @@ using Gtk;
 using Gdk;
 using GLib;
 using FSpot.Utils;
+using Hyena;
 
 namespace FSpot {
 	public class GroupSelector : Fixed {
@@ -292,6 +293,8 @@ namespace FSpot {
 
 		protected override bool OnButtonPressEvent (Gdk.EventButton args)
 		{
+			ThreadAssist.AssertInMainThread ();
+
 			if (args.Button == 3)
 				return DrawOrderMenu (args); 
 

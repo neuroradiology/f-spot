@@ -188,24 +188,26 @@ namespace FSpot.Tasks
 
 		public void Execute ()
 		{
-			if (State != TaskState.Scheduled && State != TaskState.Cancelled)
-				throw new Exception ("Can't start task manually!");
-
-			if (State == TaskState.Cancelled || State == TaskState.Completed)
+			if (State == TaskState.Cancelled || State == TaskState.Completed) {
 				return;
+			}
 
 			try {
 				result = Handler ();
 				State = TaskState.Completed;
+				WaitEvent.Set ();
 
-				foreach (var child in Children) {
-					(child as ISchedulable).Schedule ();
+				if (Children.Count == 1) {
+					Children [0].Execute ();
+				} else {
+					foreach (var child in Children) {
+						(child as ISchedulable).Schedule ();
+					}
 				}
 			} catch (Exception e) {
 				State = TaskState.Exception;
-				throw e;
-			} finally {
 				WaitEvent.Set ();
+				throw e;
 			}
 		}
 

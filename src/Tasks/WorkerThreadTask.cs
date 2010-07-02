@@ -86,7 +86,6 @@ namespace FSpot.Tasks
 		internal WorkerThreadTaskScheduler (bool start_worker)
 		{
 			max_tasks = Environment.ProcessorCount * 2;
-			Log.DebugFormat ("Doing at most {0} tasks", max_tasks);
 
 			// Not starting the worker means that the scheduler won't work,
 			// but this can be useful for unit tests.
@@ -117,13 +116,14 @@ namespace FSpot.Tasks
 						continue;
 				}
 
+#pragma warning disable 0420 // ref vars are not volatile, unless with interlocked, so safe to silence.
 				Interlocked.Increment (ref tasks_queued);
 				ThreadPool.QueueUserWorkItem ((o) => {
 					task.Execute ();
-					Log.DebugFormat ("Finished task {0}", task);
 					Interlocked.Decrement (ref tasks_queued);
 					wait.Set ();
 				});
+#pragma warning restore 0420
 			}
 		}
 
