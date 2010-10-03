@@ -44,6 +44,8 @@
     <Compile Include="FSpot.Core\IPhotoVersionable.cs" />
     <Compile Include="FSpot.Core\FilePhoto.cs" />
     <Compile Include="FSpot.Core\PhotoList.cs" />
+    <Compile Include="FSpot.Core\ISource.cs" />
+    <Compile Include="FSpot.Core\IPhotoSource.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
