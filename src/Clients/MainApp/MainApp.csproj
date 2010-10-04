@@ -205,6 +205,16 @@
     <Compile Include="FSpot.Widgets\SelectionCollectionGridView.cs" />
     <Compile Include="FSpot.Widgets\CollectionCellGridView.cs" />
     <Compile Include="FSpot.Widgets\BrowseablePointerGridView.cs" />
+    <Compile Include="FSpot.Gui.MetadataEditor\BasicEditorPage.cs" />
+    <Compile Include="FSpot.Gui.MetadataEditor\EditorController.cs" />
+    <Compile Include="FSpot.Gui.MetadataEditor\EditorDialog.cs" />
+    <Compile Include="FSpot.Gui.MetadataEditor\EditorPage.cs" />
+    <Compile Include="FSpot.Gui.MetadataEditor\EditorPhoto.cs" />
+    <Compile Include="FSpot.Gui.MetadataEditor\FieldEditorSyncButton.cs" />
+    <Compile Include="FSpot.Gui.MetadataEditor\IFieldEditor.cs" />
+    <Compile Include="FSpot.Gui.MetadataEditor\InfoEditorPresetWidget.cs" />
+    <Compile Include="FSpot.Gui.MetadataEditor\LabelledFieldEditorWidget.cs" />
+    <Compile Include="FSpot.Gui.MetadataEditor\LabelledSyncEditorWidget.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="..\..\..\COPYING">
@@ -275,6 +285,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FSpot.UI.Dialog\ui\SelectionRatioDialog.ui">
       <LogicalName>SelectionRatioDialog.ui</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FSpot.Gui.MetadataEditor\ui\MetadataEditorDialog.ui">
+      <LogicalName>MetadataEditorDialog.ui</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
   <ProjectExtensions>

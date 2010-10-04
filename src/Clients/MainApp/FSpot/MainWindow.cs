@@ -80,6 +80,7 @@ namespace FSpot
 
 		[GtkBeans.Builder.Object] Gtk.Action sharpen;
 		[GtkBeans.Builder.Object] Gtk.Action adjust_time;
+        [GtkBeans.Builder.Object] Gtk.Action edit_metadata;
 
 		[GtkBeans.Builder.Object] Gtk.Action update_thumbnail;
 		[GtkBeans.Builder.Object] Gtk.Action delete_from_drive;
@@ -1788,6 +1789,13 @@ namespace FSpot
 			(new AdjustTimeDialog (Database, list)).Run ();
 		}
 
+        void HandleEditMetadata (object sender, EventArgs args)
+        {
+            PhotoList list = new PhotoList (Selection.Items);
+            list.Sort (new IPhotoComparer.CompareDateName ());
+            new FSpot.Gui.MetadataEditor.EditorDialog (list).Run ();
+        }
+
 		public void HideLoupe ()
 		{
 			loupe_menu_item.Active = false;
@@ -2641,6 +2649,7 @@ namespace FSpot
 
 			set_as_background.Sensitive = single_active;
 			adjust_time.Sensitive = active_selection;
+            edit_metadata.Sensitive = active_selection;
 
 			attach_tag.Sensitive = active_selection;
 			remove_tag.Sensitive = active_selection;

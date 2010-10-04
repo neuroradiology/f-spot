@@ -49,6 +49,16 @@ SOURCES =  \
 	FSpot.Filters/SharpFilter.cs \
 	FSpot.Filters/UniqueNameFilter.cs \
 	FSpot.Filters/WhiteListFilter.cs \
+	FSpot.Gui.MetadataEditor/BasicEditorPage.cs \
+	FSpot.Gui.MetadataEditor/EditorController.cs \
+	FSpot.Gui.MetadataEditor/EditorDialog.cs \
+	FSpot.Gui.MetadataEditor/EditorPage.cs \
+	FSpot.Gui.MetadataEditor/EditorPhoto.cs \
+	FSpot.Gui.MetadataEditor/FieldEditorSyncButton.cs \
+	FSpot.Gui.MetadataEditor/IFieldEditor.cs \
+	FSpot.Gui.MetadataEditor/InfoEditorPresetWidget.cs \
+	FSpot.Gui.MetadataEditor/LabelledFieldEditorWidget.cs \
+	FSpot.Gui.MetadataEditor/LabelledSyncEditorWidget.cs \
 	FSpot.Imaging/Ciff.cs \
 	FSpot.Imaging/DCRawFile.cs \
 	FSpot.Imaging/ImageFile.cs \
@@ -182,6 +192,7 @@ RESOURCES =  \
 	../../../icons/f-spot-128.png \
 	../../../icons/f-spot-not.png \
 	FSpot.addin.xml \
+	FSpot.Gui.MetadataEditor/ui/MetadataEditorDialog.ui \
 	FSpot.UI.Dialog/ui/AdjustTimeDialog.ui \
 	FSpot.UI.Dialog/ui/CreateTagDialog.ui \
 	FSpot.UI.Dialog/ui/DateRangeDialog.ui \

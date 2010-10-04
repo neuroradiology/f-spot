@@ -176,6 +176,13 @@
           </object>
         </child>
         <child>
+          <object class="GtkAction" id="edit_metadata">
+            <property name="name">edit_metadata</property>
+            <property name="label" translatable="yes">Edit Metadata</property>
+            <signal handler="HandleEditMetadata" name="activate"/>
+          </object>
+        </child>
+        <child>
           <object class="GtkAction" id="update_thumbnail">
             <property name="name">update_thumbnail</property>
             <property name="label" translatable="yes">Re_fresh Thumbnail</property>
@@ -609,6 +616,7 @@
           <separator/>
           <menuitem action="sharpen"/>
           <menuitem action="adjust_time"/>
+          <menuitem action="edit_metadata"/>
           <separator/>
           <menuitem action="update_thumbnail"/>
           <menuitem action="delete_from_drive"/>
