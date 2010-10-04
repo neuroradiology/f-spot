@@ -19,12 +19,14 @@ namespace FSpot.Database
 
     public class DatabasePhotoModelCache : SqliteModelCache<DatabasePhoto>
     {
+
 #region Constructors
 
         public DatabasePhotoModelCache (HyenaSqliteConnection connection, string uuid, ICacheableDatabaseModel model, PhotoModelProvider provider) : base(connection, uuid, model, provider)
         {
         }
-        
-        #endregion
+
+#endregion
+
     }
 }
