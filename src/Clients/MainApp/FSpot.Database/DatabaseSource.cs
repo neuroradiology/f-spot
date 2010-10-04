@@ -11,6 +11,8 @@ using System;
 
 using Mono.Unix;
 
+using Hyena.Data.Sqlite;
+
 using FSpot.Core;
 
 
@@ -23,18 +25,21 @@ namespace FSpot.Database
 
 #region Private Fields
 
-        private Db database;
         private PhotoQuery query;
+        private HyenaSqliteConnection connection;
+        private PhotoModelProvider photo_provider;
 
 #endregion
 
 #region Constructors
 
-        public DatabaseSource (Db database)
+        public DatabaseSource (HyenaSqliteConnection connection)
         {
-            this.database = database;
+            this.connection = connection;
 
-            query = new PhotoQuery (database.Photos);
+            photo_provider = new PhotoModelProvider (connection);
+
+            query = new PhotoQuery (connection, "CoreCache", photo_provider);
         }
 
 #endregion

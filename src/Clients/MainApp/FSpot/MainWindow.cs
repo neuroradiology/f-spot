@@ -374,13 +374,14 @@ namespace FSpot
 
 			LoadPreference (Preferences.TAG_ICON_SIZE);
 
-			try {
+            query = App.Instance.ActiveSource.Photos as PhotoQuery;
+			/*try {
 				query = new FSpot.PhotoQuery (Database.Photos);
 			} catch (System.Exception e) {
 				//FIXME assume any exception here is due to a corrupt db and handle that.
 				new RepairDbDialog (e, Database.Repair (), main_window);
 				query = new FSpot.PhotoQuery (Database.Photos);
-			}
+			}*/
 
 			UpdateStatusLabel ();
 			query.Changed += HandleQueryChanged;
@@ -861,18 +862,12 @@ namespace FSpot
 		// Selection Interface
 		//
 
-		private Photo [] SelectedPhotos (int [] selected_ids)
+		private IPhoto [] SelectedPhotos (int [] selected_ids)
 		{
-			Photo [] photo_list = new Photo [selected_ids.Length];
-
-			int i = 0;
-			foreach (int num in selected_ids)
-				photo_list [i ++] = query [num] as Photo;
-
-			return photo_list;
+            return (from i in selected_ids select query [i]).ToArray ();
 		}
 
-		public Photo [] SelectedPhotos ()
+		public IPhoto [] SelectedPhotos ()
 		{
 			return SelectedPhotos (SelectedIds ());
 		}
@@ -1031,7 +1026,7 @@ namespace FSpot
 
 		public void HandleIconViewDragBegin (object sender, DragBeginArgs args)
 		{
-			Photo [] photos = SelectedPhotos ();
+			var photos = SelectedPhotos ();
 
 			if (photos.Length > 0) {
 				int len = Math.Min (photos.Length, 4);
@@ -1090,7 +1085,8 @@ namespace FSpot
 			}
 
 			if (args.Info == DragDropTargets.PhotoListEntry.Info) {
-				args.SelectionData.SetPhotosData (SelectedPhotos (), args.Context.Targets[0]);
+                // TODO
+				//args.SelectionData.SetPhotosData (SelectedPhotos (), args.Context.Targets[0]);
 				return;
 			}
 
@@ -1209,10 +1205,10 @@ namespace FSpot
 					if (icon_view.Selection.Contains (p_item)) //We don't want to reparent ourselves!
 						return;
 					PhotoVersionCommands.Reparent cmd = new PhotoVersionCommands.Reparent ();
-					Photo[] photos_to_reparent = SelectedPhotos ();
+					var photos_to_reparent = SelectedPhotos ();
 					// Give feedback to user that something happened, and leave the parent selected after reparenting
 					icon_view.Selection.Add (p_item);
-					cmd.Execute (Database.Photos, photos_to_reparent, query.Photos [p_item], GetToplevel (null));
+					cmd.Execute (Database.Photos, photos_to_reparent as Photo[], query [p_item] as Photo, GetToplevel (null));
 					UpdateQuery ();
 				}
 				Gtk.Drag.Finish (args.Context, true, false, args.Time);
@@ -2081,7 +2077,7 @@ namespace FSpot
 				return;
 			}
 
-			Photo[] photos = SelectedPhotos();
+			var photos = SelectedPhotos();
 			string header = Catalog.GetPluralString ("Delete the selected photo permanently?",
 									    "Delete the {0} selected photos permanently?",
 									    photos.Length);
@@ -2106,7 +2102,7 @@ namespace FSpot
 						}
 					}
 				}
-				Database.Photos.Remove (photos);
+				Database.Photos.Remove (photos as Photo []);
 
 				UpdateQuery ();
 				Log.DebugTimerPrint (timer, "HandleDeleteCommand took {0}");
@@ -2121,7 +2117,7 @@ namespace FSpot
 				return;
 			}
 
-			Photo[] photos = SelectedPhotos();
+			var photos = SelectedPhotos();
 			if (photos.Length == 0)
 				return;
 
@@ -2134,7 +2130,7 @@ namespace FSpot
 			string ok_caption = Catalog.GetString("_Remove from Catalog");
 			if (ResponseType.Ok == HigMessageDialog.RunHigConfirmation(GetToplevel (sender), DialogFlags.DestroyWithParent,
 										   MessageType.Warning, header, msg, ok_caption)) {
-				Database.Photos.Remove (photos);
+				Database.Photos.Remove (photos as Photo []);
 				UpdateQuery ();
 			}
 		}
@@ -2199,8 +2195,11 @@ namespace FSpot
 
 			//How many pictures are associated to these tags?
 			Db db = App.Instance.Database;
-			FSpot.PhotoQuery count_query = new FSpot.PhotoQuery(db.Photos);
-			count_query.Terms = FSpot.OrTerm.FromTags(tags);
+			//FSpot.PhotoQuery count_query = new FSpot.PhotoQuery(db.Photos);
+            FSpot.PhotoQuery count_query = new FSpot.PhotoQuery(db.Database, "tmp44",
+                                                                new FSpot.Database.PhotoModelProvider (db.Database));
+
+            count_query.Terms = FSpot.OrTerm.FromTags(tags);
 			int associated_photos = count_query.Count;
 
 			string header;
@@ -2747,7 +2746,7 @@ namespace FSpot
 		public void HandleOpenWith (object sender, ApplicationActivatedEventArgs e)
 		{
 			GLib.AppInfo application = e.AppInfo;
-			Photo[] selected = SelectedPhotos ();
+			var selected = SelectedPhotos ();
 
 			if (selected == null || selected.Length < 1)
 				return;
@@ -2827,7 +2826,7 @@ namespace FSpot
 			}
 
 			if (create_new_versions)
-				Database.Photos.Commit (selected);
+				Database.Photos.Commit (selected as Photo []);
 
 			try {
 				application.LaunchUris (uri_list, null);

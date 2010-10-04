@@ -87,7 +87,7 @@ namespace FSpot
             get {
                 lock (sync_handle) {
                     if (active_source == null) {
-                        active_source = new DatabaseSource (Database);
+                        active_source = new DatabaseSource (Database.Database);
                     }
                 }
                 

@@ -92,8 +92,63 @@ namespace FSpot.Database
         {
             StringBuilder query_builder = new StringBuilder ("FROM photos ");
 
+            bool where_added = false;
+            bool hidden_contained = false;
+            foreach (var pair in Conditions) {
+
+                IQueryCondition condition = pair.Value;
+
+                if (condition == null)
+                    continue;
+
+//              if (condition is HiddenTag)
+//                  hidden_contained = true;
+
+                if (condition is IOrderCondition)
+                    continue;
+
+                string sql_clause = condition.SqlClause ();
+
+                if (sql_clause == null || sql_clause.Trim () == String.Empty)
+                    continue;
+                query_builder.Append (where_added ? " AND " : " WHERE ");
+                query_builder.Append (sql_clause);
+                where_added = true;
+            }
+
+            /* if a HiddenTag condition is not explicitly given, we add one */
+//          if ( ! hidden_contained) {
+//              string sql_clause = HiddenTag.HideHiddenTag.SqlClause ();
+//
+//              if (sql_clause != null && sql_clause.Trim () != String.Empty) {
+//                  query_builder.Append (where_added ? " AND " : " WHERE ");
+//                  query_builder.Append (sql_clause);
+//              }
+//          }
+
+            bool order_added = false;
+            foreach (var pair in Conditions) {
+
+                IQueryCondition condition = pair.Value;
+
+                if (condition == null)
+                    continue;
+
+                if (!(condition is IOrderCondition))
+                    continue;
+
+                string sql_clause = condition.SqlClause ();
+
+                if (sql_clause == null || sql_clause.Trim () == String.Empty)
+                    continue;
+                query_builder.Append (order_added ? " , " : "ORDER BY ");
+                query_builder.Append (sql_clause);
+                order_added = true;
+            }
+
             ReloadFragment = query_builder.ToString ();
         }
+
 
 #endregion
 
@@ -168,10 +223,68 @@ namespace FSpot.Database
 
         public int IndexOf (IPhoto item)
         {
-            return (int)cache.IndexOf (item);
+            DatabasePhoto photo = item as DatabasePhoto;
+
+            if (photo == null)
+                return -1;
+
+            return (int) cache.IndexOf (photo);
+        }
+
+
+#endregion
+
+#region PhotoQuery Methods (to be removed)
+
+        //Query Conditions
+        private Dictionary<Type, IQueryCondition> conditions;
+        private Dictionary<Type, IQueryCondition> Conditions {
+            get {
+                if (conditions == null)
+                    conditions = new Dictionary<Type, IQueryCondition> ();
+                return conditions;
+            }
+        }
+
+        public bool SetCondition (IQueryCondition condition)
+        {
+            if (condition == null)
+                throw new ArgumentNullException ("condition");
+            if (Conditions.ContainsKey (condition.GetType ()) && Conditions [condition.GetType ()] == condition)
+                return false;
+            Conditions [condition.GetType ()] = condition;
+            return true;
+        }
+
+        public T GetCondition<T> () where T : IQueryCondition
+        {
+            IQueryCondition val;
+            Conditions.TryGetValue (typeof (T), out val);
+            return (T)val;
+        }
+
+        public bool UnSetCondition<T> ()
+        {
+            if (!Conditions.ContainsKey (typeof(T)))
+                return false;
+            Conditions.Remove (typeof(T));
+            return true;
+        }
+
+        public void RequestReload ()
+        {
+            uint timer = Log.DebugTimerStart ();
+            Reload ();
+
+
+            if (Changed != null)
+                Changed (this);
+
+            Log.DebugTimerPrint (timer, "Reloading the query took {0}");
         }
 
 #endregion
+
 
     }
 }

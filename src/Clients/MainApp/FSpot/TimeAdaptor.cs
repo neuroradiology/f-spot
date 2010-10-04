@@ -169,7 +169,8 @@ namespace FSpot {
 		void DoReload ()
 		{
 			Thread.Sleep (200);
-			Dictionary <int, int[]> years_tmp = query.Store.PhotosPerMonth ();
+            // TODO
+			Dictionary <int, int[]> years_tmp = new Dictionary<int, int[]> (); //query.Store.PhotosPerMonth ();
 			int startyear_tmp = Int32.MaxValue;
 			int endyear_tmp = Int32.MinValue;
 

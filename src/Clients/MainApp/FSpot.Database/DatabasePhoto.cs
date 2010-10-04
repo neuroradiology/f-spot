@@ -68,7 +68,7 @@ namespace FSpot.Database
 #region Remaining IPhoto Implementation
 
         public Tag[] Tags {
-            get { return tags.ToArray (); }
+            get { return TagList.ToArray (); }
         }
 
         public IPhotoVersion DefaultVersion {

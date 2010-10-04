@@ -53,7 +53,9 @@ namespace FSpot.UI.Dialog
 			} else
 				preview_image.Pixbuf = preview_pixbuf;
 
-			query = new FSpot.PhotoQuery (db.Photos);
+            // TODO
+			//query = new FSpot.PhotoQuery (db.Photos);
+            query = new FSpot.PhotoQuery (db.Database, "dsf", new FSpot.Database.PhotoModelProvider (db.Database));
 
 			if (db.Tags.Hidden != null)
 				query.Terms = FSpot.OrTerm.FromTags (new Tag [] {t});
