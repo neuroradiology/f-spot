@@ -210,6 +210,8 @@
     <Compile Include="FSpot.Database\PhotoModelProvider.cs" />
     <Compile Include="FSpot.Database\PhotoVersionModelProvider.cs" />
     <Compile Include="FSpot.Database\DatabaseSource.cs" />
+    <Compile Include="FSpot.Database\DatabasePhotoListModel.cs" />
+    <Compile Include="FSpot.Database\DatabasePhotoModelCache.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="..\..\..\COPYING">

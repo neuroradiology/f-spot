@@ -18,6 +18,7 @@ SOURCES =  \
 	FSpot.Core/IPhoto.cs \
 	FSpot.Core/IPhotoComparer.cs \
 	FSpot.Core/IPhotoExtensions.cs \
+	FSpot.Core/IPhotoListModel.cs \
 	FSpot.Core/IPhotoSource.cs \
 	FSpot.Core/IPhotoVersion.cs \
 	FSpot.Core/IPhotoVersionable.cs \
