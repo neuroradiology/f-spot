@@ -205,6 +205,11 @@
     <Compile Include="FSpot.Widgets\SelectionCollectionGridView.cs" />
     <Compile Include="FSpot.Widgets\CollectionCellGridView.cs" />
     <Compile Include="FSpot.Widgets\BrowseablePointerGridView.cs" />
+    <Compile Include="FSpot.Database\DatabasePhoto.cs" />
+    <Compile Include="FSpot.Database\DatabasePhotoVersion.cs" />
+    <Compile Include="FSpot.Database\PhotoModelProvider.cs" />
+    <Compile Include="FSpot.Database\PhotoVersionModelProvider.cs" />
+    <Compile Include="FSpot.Database\DatabaseSource.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="..\..\..\COPYING">
