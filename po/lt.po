@@ -3,15 +3,15 @@
 # This file is distributed under the same license as the F-Spot package.
 # Justina Klingaitė <justina.klingaite@gmail.com>, 2005.
 # Žygimantas Beručka <zygis@gnome.org>, 2005-2009.
-# Aurimas Černius <aurisc4@gmail.com>, 2013.
+# Aurimas Černius <aurisc4@gmail.com>, 2013, 2016.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: F-Spot master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=f-"
 "spot&keywords=I18N+L10N&component=General\n"
-"POT-Creation-Date: 2012-11-03 07:45+0000\n"
-"PO-Revision-Date: 2013-03-09 15:57+0200\n"
+"POT-Creation-Date: 2016-01-08 06:18+0000\n"
+"PO-Revision-Date: 2016-01-23 17:54+0200\n"
 "Last-Translator: Aurimas Černius <aurisc4@gmail.com>\n"
 "Language-Team: Lietuvių <gnome-lt@lists.akl.lt>\n"
 "Language: lt\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n"
 "%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Gtranslator 2.91.6\n"
+"X-Generator: Gtranslator 2.91.7\n"
 
 #. ../src/Clients/MainApp/FSpot.addin.xml
 #: ../data/addin-xml-strings.cs:8 ../src/Clients/MainApp/FSpot.addin.xml.h:3
@@ -63,13 +63,11 @@ msgstr "Užtemdo nudažo paveikslėlio sritį."
 #: ../data/addin-xml-strings.cs:17 ../data/addin-xml-strings.cs:22
 #: ../data/addin-xml-strings.cs:27 ../data/addin-xml-strings.cs:32
 #: ../data/addin-xml-strings.cs:37
-#| msgid "Edit"
 msgid "Editors"
 msgstr "Redaktoriai"
 
 #. ../src/Extensions/Editors/FSpot.Editors.BW/Resources/BWEditor.addin.xml
 #: ../data/addin-xml-strings.cs:20
-#| msgid "Edit"
 msgid "BWEditor"
 msgstr "BWEditor"
 
@@ -97,18 +95,15 @@ msgstr "Suskaido paveikslėlio sritį pikseliais."
 
 #. ../src/Extensions/Editors/FSpot.Editors.Resize/Resources/ResizeEditor.addin.xml
 #: ../data/addin-xml-strings.cs:35
-#| msgid "_Resize to: "
 msgid "ResizeEditor"
 msgstr "ResizeEditor"
 
 #: ../data/addin-xml-strings.cs:36
-#| msgid "_Resize to: "
 msgid "Resize the image"
 msgstr "Keičia paveikslėlio dydį"
 
 #. ../src/Extensions/Exporters/FSpot.Exporters.CD/Resources/CDExport.addin.xml
 #: ../data/addin-xml-strings.cs:40
-#| msgid "Export"
 msgid "CD Export"
 msgstr "CD eksportavimas"
 
@@ -135,12 +130,10 @@ msgstr "_CD..."
 
 #. ../src/Extensions/Exporters/FSpot.Exporters.Facebook/Resources/FacebookExport.addin.xml
 #: ../data/addin-xml-strings.cs:46
-#| msgid "F_acebook..."
 msgid "FacebookExport"
 msgstr "FacebookExport"
 
 #: ../data/addin-xml-strings.cs:47
-#| msgid "Export to Facebook"
 msgid "Export pictures to Facebook"
 msgstr "Eksportuoti paveikslėliu į Facebook"
 
@@ -150,7 +143,6 @@ msgstr "F_acebook..."
 
 #. ../src/Extensions/Exporters/FSpot.Exporters.Flickr/Resources/FlickrExport.addin.xml
 #: ../data/addin-xml-strings.cs:52
-#| msgid "Folder Export"
 msgid "Flickr Export"
 msgstr "Flickr eksportavimas"
 
@@ -190,7 +182,6 @@ msgstr "_Aplankas..."
 
 #. ../src/Extensions/Exporters/FSpot.Exporters.Gallery/Resources/GalleryExport.addin.xml
 #: ../data/addin-xml-strings.cs:66
-#| msgid "Folder Export"
 msgid "Gallery Export"
 msgstr "Galerijos eksportavimas"
 
@@ -208,7 +199,6 @@ msgstr "Žiniatinklio _galerija..."
 
 #. ../src/Extensions/Exporters/FSpot.Exporters.PicasaWeb/Resources/PicasaWebExport.addin.xml
 #: ../data/addin-xml-strings.cs:72
-#| msgid "<b>PicasaWeb Export</b>"
 msgid "PicasaWeb Export"
 msgstr "Eksportavimas į PicasaWeb"
 
@@ -222,7 +212,6 @@ msgstr "_PicasaWeb..."
 
 #. ../src/Extensions/Exporters/FSpot.Exporters.SmugMug/Resources/SmugMugExport.addin.xml
 #: ../data/addin-xml-strings.cs:78
-#| msgid "<b>SmugMug Export</b>"
 msgid "SmugMug Export"
 msgstr "Eksportavimas į SmugMug"
 
@@ -236,7 +225,6 @@ msgstr "_SmugMug..."
 
 #. ../src/Extensions/Exporters/FSpot.Exporters.Tabblo/Resources/TabbloExport.addin.xml
 #: ../data/addin-xml-strings.cs:84
-#| msgid "Export"
 msgid "Tabblo Export"
 msgstr "Eksportuoti į Tabblo"
 
@@ -250,12 +238,10 @@ msgstr "_Tabblo..."
 
 #. ../src/Extensions/Exporters/FSpot.Exporters.Zip/Resources/ZipExport.addin.xml
 #: ../data/addin-xml-strings.cs:90
-#| msgid "Export"
 msgid "Zip export"
 msgstr "Eksportuoti į Zip"
 
 #: ../data/addin-xml-strings.cs:91
-#| msgid "Select export folder"
 msgid "Simple export to Zip file"
 msgstr "Paprastas eksportavimas į Zip failą"
 
@@ -317,7 +303,6 @@ msgstr "Sukurkite UFRaw formatu"
 
 #. ../src/Extensions/Tools/FSpot.Tools.LiveWebGallery/Resources/LiveWebGallery.addin.xml
 #: ../data/addin-xml-strings.cs:108
-#| msgid "Live Web Gallery"
 msgid "LiveWebGallery"
 msgstr "LiveWebGallery"
 
@@ -333,12 +318,10 @@ msgstr "Tiesioginė žiniatinklio galerija"
 
 #. ../src/Extensions/Tools/FSpot.Tools.MergeDb/Resources/MergeDb.addin.xml
 #: ../data/addin-xml-strings.cs:114
-#| msgid "Merge Db"
 msgid "MergeDb"
 msgstr "MergeDb"
 
 #: ../data/addin-xml-strings.cs:115
-#| msgid "Merge another F-Spot collection"
 msgid "Merge another db back to the main one"
 msgstr "Sujungti kitą db su pagrindine"
 
@@ -365,7 +348,6 @@ msgstr "Sukurti _fotomozaiką"
 
 #. ../src/Extensions/Tools/FSpot.Tools.PictureTile/PictureTile.addin.xml
 #: ../data/addin-xml-strings.cs:126
-#| msgid "PictureTile not available"
 msgid "PictureTile"
 msgstr "PictureTile"
 
@@ -391,7 +373,6 @@ msgid "Merge RAW+Jpeg as multiple versions of the same photo"
 msgstr "Sujunkite RAW+Jpeg kaip kelias tos pačios fotografijos versijas"
 
 #: ../data/addin-xml-strings.cs:135
-#| msgid "Merge Tags"
 msgid "Merge Raw"
 msgstr "Sujungti Raw"
 
@@ -415,9 +396,8 @@ msgid "Screensaver Configuration"
 msgstr "Ekrano užsklandos konfigūracija"
 
 #: ../data/addin-xml-strings.cs:145
-#| msgid "Screensaver Configuration"
 msgid "Screensaver options"
-msgstr "Ekrano užsklandos nustatymai"
+msgstr "Ekrano užsklandos parametrai"
 
 #: ../data/addin-xml-strings.cs:147
 msgid "Configure Screensaver"
@@ -425,7 +405,6 @@ msgstr "Konfigūruoti ekrano užsklandą"
 
 #. ../src/Extensions/Tools/FSpot.Tools.SyncCatalog/SyncCatalog.addin.xml
 #: ../data/addin-xml-strings.cs:150
-#| msgid "Metadata"
 msgid "SyncMetaData"
 msgstr "SyncMetaData"
 
@@ -439,7 +418,6 @@ msgstr "Sinchronizuokite katalogą su Photos"
 
 #. ../src/Extensions/Transitions/FSpot.Transitions.Cover/Resources/CoverTransition.addin.xml
 #: ../data/addin-xml-strings.cs:156
-#| msgid "Slide transition:"
 msgid "Cover Transition"
 msgstr "Perėjimo užsklanda"
 
@@ -449,13 +427,11 @@ msgstr "Skaidžių perėjimo užsklanda, kuri uždengia paveikslėlius"
 
 #: ../data/addin-xml-strings.cs:158 ../data/addin-xml-strings.cs:163
 #: ../data/addin-xml-strings.cs:168
-#| msgid "Slide transition:"
 msgid "Transitions"
 msgstr "Perėjimai"
 
 #. ../src/Extensions/Transitions/FSpot.Transitions.Dissolve/Resources/DissolveTransition.addin.xml
 #: ../data/addin-xml-strings.cs:161
-#| msgid "Slide transition:"
 msgid "Dissolve Transition"
 msgstr "Išnykstantis perėjimas"
 
@@ -465,7 +441,6 @@ msgstr "Skaidrių perėjimas, kuris panaikina paveikslėlius"
 
 #. ../src/Extensions/Transitions/FSpot.Transitions.Push/Resources/PushTransition.addin.xml
 #: ../data/addin-xml-strings.cs:166
-#| msgid "Slide transition:"
 msgid "Push Transition"
 msgstr "Stumiantis perėjimas"
 
@@ -482,12 +457,12 @@ msgstr "F-Spot"
 #: ../data/desktop-files/f-spot.desktop.in.in.h:2
 #: ../data/desktop-files/f-spot-import.desktop.in.in.h:2
 msgid "Photo Manager"
-msgstr "Fotografijų tvarkymo programa"
+msgstr "Fotografijų tvarkytuvė"
 
 #: ../data/desktop-files/f-spot.desktop.in.in.h:3
 #: ../data/desktop-files/f-spot-import.desktop.in.in.h:3
 msgid "F-Spot Photo Manager"
-msgstr "Fotografijų tvarkymo programa F-Spot"
+msgstr "Fotografijų tvarkytuvė F-Spot"
 
 #: ../data/desktop-files/f-spot.desktop.in.in.h:4
 msgid "Organize, enjoy, and share your photos"
@@ -663,7 +638,6 @@ msgstr ""
 "Naudoti esamą fotografijos failo pavadinimą kaip žiūryklės lango pavadinimą."
 
 #: ../f-spot.schemas.in.h:40
-#| msgid "_Interpolate image on zoom"
 msgid "Interpolate image on zoom."
 msgstr "Keičiant mastelį interpoliuoti paveikslėlį"
 
@@ -676,18 +650,13 @@ msgid "Display of transparent parts."
 msgstr "Rodyti permatomas dalis."
 
 #: ../f-spot.schemas.in.h:43
-#| msgid ""
-#| "<small><i>You can choose how to display transparent parts in images. This "
-#| "option has no effect on photos, but setting this as check pattern or "
-#| "custom color could be usefull when viewing icons or other artworks with "
-#| "transparent parts.</i></small>"
 msgid ""
 "You can choose how to display transparent parts in images. This option has "
 "no effect on photos but setting this value to CHECK_PATTERN or CUSTOM_COLOR "
 "could be useful when viewing icons or other artwork with transparent parts."
 msgstr ""
-"Galite pasirinkti kaip rodyti permatomas paveikslėlių dalis. Ši parinktis "
-"neturi jokio efekto fotografijoms, jos nustatymas į CHECK_PATTERN arba "
+"Galite pasirinkti kaip rodyti permatomas paveikslėlių dalis. Šis parametras "
+"neturi jokio efekto fotografijoms, jo nustatymas į CHECK_PATTERN arba "
 "CUSTOM_COLOR gali būti naudingas žiūrint piktogramas ir kitus paveikslėlius "
 "su permatomomis dalimis."
 
@@ -700,11 +669,10 @@ msgid ""
 "If the 'transparency' option is set, the color specified in this option will "
 "be used as the transparent color when viewing images."
 msgstr ""
-"Jei nustatyta „transparency“ parinktis, šioje parinktyje nustatyta spalva "
+"Jei nustatytas „transparency“ parametras, šiame parametre nustatyta spalva "
 "bus naudojama kaip permatoma spalva rodant paveikslėlius."
 
 #: ../lib/Mono.Google/Mono.Google/CaptchaException.cs:58
-#| msgid "Url"
 msgid "url"
 msgstr "url"
 
@@ -713,7 +681,6 @@ msgid "token"
 msgstr "leksema"
 
 #: ../lib/Mono.Google/Mono.Google/CaptchaException.cs:60
-#| msgid "_Captcha:"
 msgid "captcha_url"
 msgstr "captcha_url"
 
@@ -756,7 +723,7 @@ msgid ""
 "F-Spot preference dialog."
 msgstr ""
 "Žyma „{0}“ nepritaikyta jokioms fotografijoms. Pabandykite\n"
-"pridėti žymą kai kurioms fotografijoms arba F-Spot nustatymų\n"
+"pridėti žymą kai kurioms fotografijoms arba F-Spot nuostatų\n"
 "dialoge pasirinkite kitą žymą."
 
 #: ../src/Clients/MainApp/FSpot/App.cs:324
@@ -770,7 +737,7 @@ msgid ""
 "dialog."
 msgstr ""
 "F-Spot ieškomos žymos nėra. Pabandykite F-Spot\n"
-"nustatymų dialoge pasirinkti kitą žymą."
+"nuostatų dialoge pasirinkti kitą žymą."
 
 #: ../src/Clients/MainApp/FSpot.Database/Updater.cs:769
 msgid "Updating F-Spot Database"
@@ -869,7 +836,6 @@ msgid "Hide"
 msgstr "Paslėpti"
 
 #: ../src/Clients/MainApp/FSpot/FullScreenView.cs:87
-#| msgid "Hide Toolbar"
 msgid "Hide toolbar"
 msgstr "Paslėpti įrankių juostą"
 
@@ -878,7 +844,6 @@ msgid "Info"
 msgstr "Informacija"
 
 #: ../src/Clients/MainApp/FSpot/FullScreenView.cs:95
-#| msgid "Image Information"
 msgid "Image information"
 msgstr "Paveikslėlio informacija"
 
@@ -1288,7 +1253,6 @@ msgid "Original"
 msgstr "Originalas"
 
 #: ../src/Clients/MainApp/FSpot/PhotoView.cs:349
-#| msgid "_Description:"
 msgid "Description:"
 msgstr "Aprašymas:"
 
@@ -1298,7 +1262,7 @@ msgstr "Fotografijos"
 
 #: ../src/Clients/MainApp/FSpot/PrintOperation.cs:57
 msgid "Image Settings"
-msgstr "Paveikslėlio parametrai"
+msgstr "Paveikslėlio nustatymai"
 
 #: ../src/Clients/MainApp/FSpot/QueryWidget.cs:83
 msgid "Find: "
@@ -1364,13 +1328,6 @@ msgstr[2] "Nepavyko pasukti {0} fotografijų"
 
 #: ../src/Clients/MainApp/FSpot/RotateCommand.cs:218
 #, csharp-format
-#| msgid ""
-#| "The photo could not be rotated because it is on a read only file system "
-#| "or media such as a CDROM.  Please check the permissions and try again."
-#| msgid_plural ""
-#| "{0} photos could not be rotated because they are on a read only file "
-#| "system or media such as a CDROM.  Please check the permissions and try "
-#| "again."
 msgid ""
 "The photo could not be rotated because it is on a read only file system or "
 "media such as a CD-ROM.  Please check the permissions and try again."
@@ -1444,7 +1401,7 @@ msgstr "Pasirinkite aplanką"
 
 #: ../src/Clients/MainApp/FSpot/SingleView.cs:470
 msgid "Set as Background"
-msgstr "Nustatyti kaip darbastalio foną"
+msgstr "Nustatyti kaip darbalaukio foną"
 
 #: ../src/Clients/MainApp/FSpot/TagQueryWidget.cs:67
 #, csharp-format
@@ -1536,10 +1493,9 @@ msgstr "arba"
 
 #: ../src/Clients/MainApp/FSpot.UI.Dialog/AboutDialog.cs:125
 msgid "Photo management for GNOME"
-msgstr "GNOME fotografijų valdymas"
+msgstr "GNOME fotografijų tvarkymas"
 
 #: ../src/Clients/MainApp/FSpot.UI.Dialog/AboutDialog.cs:126
-#| msgid "Copyright © 2003-2009 Novell Inc."
 msgid "Copyright © 2003-2010 Novell Inc."
 msgstr "Autorinės teisės © 2003-2010 Novell Inc."
 
@@ -1651,12 +1607,10 @@ msgid "Photo {0} of {1}"
 msgstr "{0} fotografija iš {1}"
 
 #: ../src/Clients/MainApp/FSpot.UI.Dialog/ImportDialog.cs:48
-#| msgid "Open _Folder..."
 msgid "Choose Folder..."
 msgstr "Pasirinkite aplanką..."
 
 #: ../src/Clients/MainApp/FSpot.UI.Dialog/ImportDialog.cs:167
-#| msgid "Import Source:"
 msgid "Choose Import source..."
 msgstr "Pasirinkite importavimo šaltinį..."
 
@@ -1676,7 +1630,7 @@ msgstr ""
 "pabaigus importavimą.\n"
 "\n"
 "Paprastai rekomenduojama pasidaryti fotografijų atsarginę kopiją prieš jas "
-"ištrinant iš fotoaparato. <b>Atsargiai naudokitės šia parinktimi!</b>"
+"ištrinant iš fotoaparato. <b>Atsargiai naudokitės šiuo parametru!</b>"
 
 #: ../src/Clients/MainApp/FSpot.UI.Dialog/ImportDialog.cs:215
 msgid "Warning"
@@ -1684,12 +1638,10 @@ msgstr "Įspėjimas"
 
 #: ../src/Clients/MainApp/FSpot.UI.Dialog/ImportDialog.cs:334
 #, csharp-format
-#| msgid "Photo {0} of {1}"
 msgid "Importing Photos: {0} of {1}..."
 msgstr "Importuojamos fotografijos: {0} iš {1}..."
 
 #: ../src/Clients/MainApp/FSpot.UI.Dialog/ImportDialog.cs:358
-#| msgid "Rotating photos"
 msgid "Importing photos..."
 msgstr "Importuojamos fotografijos..."
 
@@ -1699,7 +1651,6 @@ msgid "Searching for photos... (You can already click Import to continue)"
 msgstr "Ieškoma fotografijų... (Jau galite spausti Importuoti ir tęsti)"
 
 #: ../src/Clients/MainApp/FSpot.UI.Dialog/ImportFailureDialog.cs:68
-#| msgid "Import Source:"
 msgid "Import failures"
 msgstr "Importo klaidos"
 
@@ -1746,7 +1697,6 @@ msgstr ""
 "perkelta į {0} ir buvo sukurta nauja duomenų bazė."
 
 #: ../src/Clients/MainApp/FSpot.UI.Dialog/SelectionRatioDialog.cs:74
-#| msgid "Camera Selection"
 msgid "New Selection"
 msgstr "Naujas pasirinkimas"
 
@@ -1932,7 +1882,6 @@ msgstr ""
 "Rodyti tik tas fotografijas, kurios buvo importuotos pasirinktose juostelėse."
 
 #: ../src/Clients/MainApp/FSpot.UI.Dialog/ui/LastImportRollFilterDialog.ui.h:7
-#| msgid "Path"
 msgid "at"
 msgstr "vietoje"
 
@@ -1941,16 +1890,12 @@ msgid "after"
 msgstr "po"
 
 #: ../src/Clients/MainApp/FSpot.UI.Dialog/ui/LastImportRollFilterDialog.ui.h:9
-#| msgid ""
-#| "at\n"
-#| "after\n"
-#| "between"
 msgid "between"
 msgstr "tarp"
 
 #: ../src/Clients/MainApp/FSpot.UI.Dialog/ui/PreferenceDialog.ui.h:1
 msgid "F-Spot Preferences"
-msgstr "F-Spot nustatymai"
+msgstr "F-Spot nuostatos"
 
 #: ../src/Clients/MainApp/FSpot.UI.Dialog/ui/PreferenceDialog.ui.h:2
 msgid "When importing photos, copy them to:"
@@ -2018,7 +1963,7 @@ msgstr "Pasirinkimo apribojimai"
 
 #: ../src/Clients/MainApp/FSpot.UI.Dialog/ui/SelectionRatioDialog.ui.h:2
 msgid "Manage your custom selection ratios"
-msgstr "Valdyti pasirinktines žymėjimo proporcijas"
+msgstr "Tvarkyti pasirinktines žymėjimo proporcijas"
 
 #: ../src/Clients/MainApp/FSpot.Widgets/EditorPage.cs:56
 #: ../src/Clients/MainApp/FSpot.Widgets/Sidebar.cs:74
@@ -2190,7 +2135,6 @@ msgid "Creator"
 msgstr "Kūrėjas"
 
 #: ../src/Clients/MainApp/FSpot.Widgets/InfoBox.cs:465
-#| msgid "Creator"
 msgid "Show Creator"
 msgstr "Rodyti kūrėją"
 
@@ -2211,12 +2155,10 @@ msgid "Rating"
 msgstr "Įvertinimas"
 
 #: ../src/Clients/MainApp/FSpot.Widgets/InfoBox.cs:485
-#| msgid "Rating"
 msgid "Show Rating"
 msgstr "Rodyti įvertinimą"
 
 #: ../src/Clients/MainApp/FSpot.Widgets/InfoBox.cs:489
-#| msgid "(No Tags)"
 msgid "Show Tags"
 msgstr "Rodyti žymas"
 
@@ -2307,7 +2249,6 @@ msgstr "A_tkabinti"
 
 #: ../src/Clients/MainApp/PhotoVersionCommands.cs:209
 #, csharp-format
-#| msgid "Really delete version \"{0}\"?"
 msgid "Really detach version \"{0}\" from \"{1}\"?"
 msgstr "Tikrai atkabinti versiją „{0}“ nuo „{1}“?"
 
@@ -2320,13 +2261,11 @@ msgstr ""
 "nutempkite fotografiją atgal prie tėvinės."
 
 #: ../src/Clients/MainApp/PhotoVersionCommands.cs:232
-#| msgid "Reparented"
 msgid "Re_parent"
 msgstr "_Keisti tėvą"
 
 #: ../src/Clients/MainApp/PhotoVersionCommands.cs:233
 #, csharp-format
-#| msgid "Really delete version \"{0}\"?"
 msgid "Really reparent \"{0}\" as version of \"{1}\"?"
 msgid_plural "Really reparent {2} photos as versions of \"{1}\"?"
 msgstr[0] "Tikrai keisti {2} fotografiją kaip „{1}“ versiją?"
@@ -2343,7 +2282,6 @@ msgstr ""
 
 #: ../src/Clients/MainApp/PhotoVersionCommands.cs:276
 #, csharp-format
-#| msgid "Received exception \"{0}\". Unable to save photo {1}"
 msgid "Received exception \"{0}\"."
 msgstr "Gauta išimtis „{0}“."
 
@@ -2438,29 +2376,24 @@ msgstr "Te_mp:"
 msgid "<b>_White Balance</b>"
 msgstr "<b>_Baltumo balansas</b>"
 
-#. Translators: this string means 'source of import'
+#. Translators: this string means
 #: ../src/Clients/MainApp/ui/import.ui.h:3
-#| msgid "Import roll"
 msgid "Import _from:"
 msgstr "Importuoti _iš:"
 
 #: ../src/Clients/MainApp/ui/import.ui.h:4
-#| msgid "Attach tag:"
 msgid "_Attach tags:"
 msgstr "_Atsegti žymą:"
 
 #: ../src/Clients/MainApp/ui/import.ui.h:5
-#| msgid "Detect duplicates"
 msgid "_Detect duplicates"
 msgstr "_Rasti dublikatus"
 
 #: ../src/Clients/MainApp/ui/import.ui.h:6
-#| msgid "Copy files to the Photos folder"
 msgid "C_opy files to the Photos folder"
 msgstr "K_opijuoti failus į fotografijų aplanką"
 
 #: ../src/Clients/MainApp/ui/import.ui.h:7
-#| msgid "Include subfolders"
 msgid "I_nclude subfolders"
 msgstr "Įtraukti poapla_nkius"
 
@@ -2469,7 +2402,6 @@ msgid "_Remove original files after import"
 msgstr "Pašalinti o_riginalo failus po importo"
 
 #: ../src/Clients/MainApp/ui/import.ui.h:9
-#| msgid "Import"
 msgid "_Import"
 msgstr "_Importuoti"
 
@@ -2581,7 +2513,6 @@ msgid "_Rename Version"
 msgstr "_Pervadinti versiją"
 
 #: ../src/Clients/MainApp/ui/main_window.ui.h:7
-#| msgid "_Delete Version"
 msgid "De_tach Version"
 msgstr "A_tkabinti versiją"
 
@@ -2623,7 +2554,6 @@ msgid "Select _None"
 msgstr "_Nepasirinkti jokių"
 
 #: ../src/Clients/MainApp/ui/main_window.ui.h:17
-#| msgid "Camera Selection"
 msgid "_Invert Selection"
 msgstr "_Invertuoti žymėjimą"
 
@@ -2642,7 +2572,7 @@ msgstr "_Atnaujinti miniatiūrą"
 #: ../src/Clients/MainApp/ui/main_window.ui.h:25
 #: ../src/Clients/MainApp/ui/single_view.ui.h:9
 msgid "Set as _Background"
-msgstr "Padaryti darbastalio _fonu"
+msgstr "Padaryti darbalaukio _fonu"
 
 #: ../src/Clients/MainApp/ui/main_window.ui.h:26
 msgid "_Attach Tag"
@@ -2650,7 +2580,7 @@ msgstr "_Pridėti žymą"
 
 #: ../src/Clients/MainApp/ui/main_window.ui.h:28
 msgid "Manage _Extensions"
-msgstr "Valdyti _plėtinius"
+msgstr "Tvarkyti _plėtinius"
 
 #: ../src/Clients/MainApp/ui/main_window.ui.h:29
 #: ../src/Clients/MainApp/ui/single_view.ui.h:10
@@ -2895,7 +2825,7 @@ msgstr "Pasirinkite žymą..."
 
 #: ../src/Clients/MainApp/ui/viewer_preferences.ui.h:1
 msgid "Preferences"
-msgstr "Nustatymai"
+msgstr "Nuostatos"
 
 #: ../src/Clients/MainApp/ui/viewer_preferences.ui.h:2
 msgid "_Interpolate image on zoom"
@@ -2934,9 +2864,9 @@ msgid ""
 "color could be usefull when viewing icons or other artworks with transparent "
 "parts.</i></small>"
 msgstr ""
-"<small><i>Galite pasirinkti kaip rodyti permatomas paveikslėlių dalis. Ši "
-"parinktis neturi jokio efekto fotografijoms, tačiau žiūrint piktogramas ar "
-"kitus paveikslėlius su permatomis dalimis, šios parinkties nustatymas į "
+"<small><i>Galite pasirinkti kaip rodyti permatomas paveikslėlių dalis. Šis "
+"parametras neturi jokio efekto fotografijoms, tačiau žiūrint piktogramas ar "
+"kitus paveikslėlius su permatomomis dalimis, šio parametro nustatymas į "
 "šachmatų lentos raštą ar kitą spalvą gali būti naudingas.</i></small>"
 
 #: ../src/Clients/MainApp/ui/viewer_preferences.ui.h:9
@@ -3032,7 +2962,6 @@ msgid "Blackout"
 msgstr "Užtemdyti"
 
 #: ../src/Extensions/Editors/FSpot.Editors.Blackout/FSpot.Addins.Editors/BlackoutEditor.cs:49
-#| msgid "Select the area that needs cropping."
 msgid "Select the area that you want blacked out."
 msgstr "Pasirinkite sritį užtemdymui."
 
@@ -3053,12 +2982,10 @@ msgid "Pixelate"
 msgstr "Pikseliuoti"
 
 #: ../src/Extensions/Editors/FSpot.Editors.Pixelate/FSpot.Addins.Editors/PixelateEditor.cs:51
-#| msgid "Select the area that needs cropping."
 msgid "Select the area that you want pixelated."
 msgstr "Pasirinkite sritį pikseliavimui."
 
-#: ../src/Extensions/Editors/FSpot.Editors.Resize/FSpot.Addins.Editors/ResizeEditor.cs:46
-#| msgid "_Resize to: "
+#: ../src/Extensions/Editors/FSpot.Editors.Resize/FSpot.Addins.Editors/ResizeEditor.cs:47
 msgid "Resize"
 msgstr "Keisti dydį"
 
@@ -3110,7 +3037,6 @@ msgid "_Browse Previously Scheduled Files"
 msgstr "_Naršyti anksčiau suplanuotus failus"
 
 #: ../src/Extensions/Exporters/FSpot.Exporters.CD/Resources/CDExport.ui.h:4
-#| msgid "<b><i>There is some previously scheduled items to write</i></b>"
 msgid "<b><i>There are some previously scheduled items to write</i></b>"
 msgstr "<b><i>Yra keletas anksčiau suplanuotų įrašymui elementų</i></b>"
 
@@ -3383,7 +3309,6 @@ msgstr "Trikrinama tapatybė..."
 
 #: ../src/Extensions/Exporters/FSpot.Exporters.Flickr/FSpot.Exporters.Flickr/FlickrExport.cs:161
 #, csharp-format
-#| msgid "Welcome {0} you are connected to {1}"
 msgid "Welcome, {0}. You are connected to {1}."
 msgstr "Sveiki, {0}, dabar esate prisijungę prie {1}."
 
@@ -3520,30 +3445,25 @@ msgstr "Kuriama galerija"
 
 #: ../src/Extensions/Exporters/FSpot.Exporters.Folder/FSpot.Exporters.Folder/FolderExport.cs:235
 #, csharp-format
-#| msgid "Exporting picture \"{0}\""
 msgid "Exporting \"{0}\"..."
 msgstr "Eksportuojamas paveikslėlis „{0}“..."
 
 #: ../src/Extensions/Exporters/FSpot.Exporters.Folder/FSpot.Exporters.Folder/FolderExport.cs:242
 #, csharp-format
-#| msgid "Error uploading picture \"{0}\" to Gallery:{2}{1}"
 msgid "Error Copying \"{0}\" to Gallery:{2}{1}"
 msgstr "Kopijuojant paveikslėlį „{0}“ į galeriją įvyko klaida:{2}{1}"
 
 #: ../src/Extensions/Exporters/FSpot.Exporters.Folder/FSpot.Exporters.Folder/FolderExport.cs:268
 #, csharp-format
-#| msgid "Transferring picture \"{0}\" To CD"
 msgid "Transferring to \"{0}\""
 msgstr "Siunčiama į „{0}“"
 
 #: ../src/Extensions/Exporters/FSpot.Exporters.Folder/FSpot.Exporters.Folder/FolderExport.cs:269
-#| msgid "Error Transferring"
 msgid "Transferring..."
 msgstr "Siunčiama..."
 
 #. No need to check result here as if result is not true, an Exception will be thrown before
 #: ../src/Extensions/Exporters/FSpot.Exporters.Folder/FSpot.Exporters.Folder/FolderExport.cs:274
-#| msgid "Upload Complete"
 msgid "Export Complete."
 msgstr "Eksportas užbaigtas."
 
@@ -3552,7 +3472,6 @@ msgid "Exporting Photos Completed."
 msgstr "Fotografijų eksportas užbaigtas."
 
 #: ../src/Extensions/Exporters/FSpot.Exporters.Folder/FSpot.Exporters.Folder/FolderExport.cs:340
-#| msgid "Export to"
 msgid "Exporting Photos"
 msgstr "Eksportuojamos fotografijos"
 
@@ -4022,7 +3941,6 @@ msgid "_Create"
 msgstr "_Sukurti"
 
 #: ../src/Extensions/Tools/FSpot.Tools.ChangePhotoPath/Resources/ChangePhotoPath.ui.h:1
-#| msgid "Image Directory"
 msgid "Change Photos directory"
 msgstr "Keisti fotografijų aplanką"
 
@@ -4043,7 +3961,6 @@ msgid "_Apply changes"
 msgstr "Prit_aikyti pakeitimus"
 
 #: ../src/Extensions/Tools/FSpot.Tools.DevelopInUFraw/FSpot.Tools.DevelopInUFraw/DevelopInUFRawBatch.cs:50
-#| msgid "Done sending photos"
 msgid "Developing photos"
 msgstr "Fotografijų kūrimas"
 
@@ -4133,7 +4050,7 @@ msgstr "Leisti žiūrovams pridėti žymas"
 
 #: ../src/Extensions/Tools/FSpot.Tools.LiveWebGallery/Resources/ui/LiveWebGallery.ui.h:11
 msgid "Options:"
-msgstr "Parinktys:"
+msgstr "Parametrai:"
 
 #: ../src/Extensions/Tools/FSpot.Tools.LiveWebGallery/Resources/ui/LiveWebGallery.ui.h:12
 msgid "Limit number of shared photos to"
@@ -4212,8 +4129,8 @@ msgid ""
 "imported from that database.</i></small>"
 msgstr ""
 "<small><i>Pasirinkite, ką imporuoti iš pasirinktos duomenų bazės.\n"
-"„Tik naujos juostelės“ – išmani parinktis, leidžianti išvengti pakartotino "
-"fotografijų, kurias esate importavę anksčiau, importavimo.\n"
+"„Tik naujos juostelės“ – išmanus parametras, leidžiantis išvengti "
+"pakartotino fotografijų, kurias esate importavę anksčiau, importavimo.\n"
 "„Viena importavimo juostelė“ – galite nurodyti, kurią juostelę norite vėl "
 "sulieti.\n"
 "„Viską“ – importuojama viskas, sukuriant kopijas, jei jau esate importavę iš "
@@ -4282,4 +4199,3 @@ msgstr "F-Spot fotografijos"
 #: ../tools/f-spot-screensaver.desktop.in.h:2
 msgid "Display a slideshow from F-Spot"
 msgstr "Rodyti skaidrių peržiūrą iš F-Spot"
-
