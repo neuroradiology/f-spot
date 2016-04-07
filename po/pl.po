@@ -11,14 +11,14 @@
 # Stanisław Małolepszy <smalolepszy@aviary.pl>, 2005-2006.
 # Marek Stępień <marcoos@aviary.pl>, 2005-2006.
 # Tomasz Dominikowski <dominikowski@gmail.com>, 2007-2009.
-# Piotr Drąg <piotrdrag@gmail.com>, 2010-2015.
-# Aviary.pl <gnomepl@aviary.pl>, 2005-2015.
+# Piotr Drąg <piotrdrag@gmail.com>, 2010-2016.
+# Aviary.pl <gnomepl@aviary.pl>, 2005-2016.
 msgid ""
 msgstr ""
 "Project-Id-Version: f-spot\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-03 01:12+0200\n"
-"PO-Revision-Date: 2015-09-03 01:13+0200\n"
+"POT-Creation-Date: 2016-04-07 20:20+0200\n"
+"PO-Revision-Date: 2016-04-07 20:21+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "Language: pl\n"
@@ -318,8 +318,7 @@ msgstr "Galeria WWW na żywo"
 #: ../data/addin-xml-strings.cs:109
 msgid "Share photos with other people on the same network via Web Browser"
 msgstr ""
-"Współdzieli zdjęcia z innymi osobami w tej samej sieci za pomocą "
-"przeglądarki WWW"
+"Udostępnia zdjęcia innym osobom w tej samej sieci za pomocą przeglądarki WWW"
 
 #: ../data/addin-xml-strings.cs:111
 msgid "Live Web Gallery"
@@ -1517,8 +1516,8 @@ msgstr ""
 "Stanisław Małolepszy <smalolepszy@aviary.pl>, 2005-2006\n"
 "Marek Stępień <marcoos@aviary.pl>, 2005-2006\n"
 "Tomasz Dominikowski <dominikowski@gmail.com>, 2007-2009\n"
-"Piotr Drąg <piotrdrag@gmail.com>, 2010-2015\n"
-"Aviary.pl <gnomepl@aviary.pl>, 2005-2015"
+"Piotr Drąg <piotrdrag@gmail.com>, 2010-2016\n"
+"Aviary.pl <gnomepl@aviary.pl>, 2005-2016"
 
 #: ../src/Clients/MainApp/FSpot.UI.Dialog/AboutDialog.cs:155
 msgid "F-Spot Website"
@@ -4041,7 +4040,7 @@ msgstr "Zdjęcia z etykietami"
 
 #: ../src/Extensions/Tools/FSpot.Tools.LiveWebGallery/Resources/ui/LiveWebGallery.ui.h:5
 msgid "Share:"
-msgstr "Współdzielone:"
+msgstr "Udostępniane:"
 
 #: ../src/Extensions/Tools/FSpot.Tools.LiveWebGallery/Resources/ui/LiveWebGallery.ui.h:6
 msgid ""
@@ -4050,7 +4049,7 @@ msgid ""
 msgstr ""
 "<small><i>Kiedy galeria jest włączona, powyżej znajduje się adres URL, \n"
 "który należy otworzyć na innym komputerze, aby uzyskać dostęp do\n"
-"współdzielonych zdjęć.</i></small>"
+"udostępnianych zdjęć.</i></small>"
 
 #: ../src/Extensions/Tools/FSpot.Tools.LiveWebGallery/Resources/ui/LiveWebGallery.ui.h:8
 msgid "Gallery URL:"
@@ -4070,7 +4069,7 @@ msgstr "Opcje:"
 
 #: ../src/Extensions/Tools/FSpot.Tools.LiveWebGallery/Resources/ui/LiveWebGallery.ui.h:12
 msgid "Limit number of shared photos to"
-msgstr "Ograniczenie liczby współdzielonych zdjęć do"
+msgstr "Ograniczenie liczby udostępnianych zdjęć do"
 
 #: ../src/Extensions/Tools/FSpot.Tools.LiveWebGallery/Resources/ui/LiveWebGallery.ui.h:13
 msgid ""
